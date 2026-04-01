@@ -1,0 +1,420 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum SourceKey {
+  TORAH
+  HEBREW_BIBLE
+  NEW_TESTAMENT
+  QURAN
+}
+
+enum Tradition {
+  JEWISH
+  CHRISTIAN
+  ISLAMIC
+  SHARED
+}
+
+enum ComparisonTag {
+  SHARED
+  SIMILAR_DIFFERENT
+  CONTRADICTION
+}
+
+enum VerseLinkType {
+  PARALLEL
+  CONTRAST
+  ELABORATION
+  FULFILLMENT_CLAIM
+}
+
+enum TranslationLabel {
+  ORIGINAL
+  CLASSIC
+  MODERN
+  SCHOLARLY
+}
+
+enum InterpretationScope {
+  LITERAL
+  MAJORITY_SCHOLARLY
+  SPECIFIC_TRADITION
+}
+
+enum CandidateStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ConceptCategory {
+  THEOLOGY
+  SOTERIOLOGY
+  ESCHATOLOGY
+  PROPHETHOOD
+  PRACTICE
+  LAW
+  COSMOLOGY
+}
+
+enum TraditionPresence {
+  AFFIRMED
+  MODIFIED
+  SILENT
+  REJECTED
+}
+
+enum TimelineEra {
+  PRIMORDIAL
+  PATRIARCHAL
+  EXODUS
+  KINGDOM
+  GOSPEL
+  EARLY_ISLAM
+}
+
+// ─── Source ──────────────────────────────────────────────────────────────────
+
+model Source {
+  id          Int       @id @default(autoincrement())
+  key         SourceKey @unique
+  title       String
+  tradition   Tradition
+  language    String
+  description String?   @db.Text
+  slug        String    @unique
+
+  verses Verse[]
+  claims Claim[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sources")
+}
+
+// ─── Verse ───────────────────────────────────────────────────────────────────
+
+model Verse {
+  id       Int    @id @default(autoincrement())
+  sourceId Int
+  source   Source @relation(fields: [sourceId], references: [id])
+
+  book         String
+  bookNumber   Int?
+  chapter      Int
+  verse        Int
+  referenceKey String @unique
+
+  translations      VerseTranslation[]
+  claimVerses       ClaimVerse[]
+  linksAsA          VerseLink[]            @relation("VerseLinkA")
+  linksAsB          VerseLink[]            @relation("VerseLinkB")
+  linkCandidatesAsA VerseLinkCandidate[]   @relation("CandidateA")
+  linkCandidatesAsB VerseLinkCandidate[]   @relation("CandidateB")
+  timelineVerses    TimelineEventVerse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sourceId, book, chapter, verse])
+  @@index([sourceId, book, chapter])
+  @@map("verses")
+}
+
+model VerseTranslation {
+  id        Int              @id @default(autoincrement())
+  verseId   Int
+  verse     Verse            @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  label     TranslationLabel
+  name      String
+  text      String           @db.Text
+  isDefault Boolean          @default(false)
+
+  @@unique([verseId, label, name])
+  @@map("verse_translations")
+}
+
+// ─── Figure ──────────────────────────────────────────────────────────────────
+
+model Figure {
+  id            Int     @id @default(autoincrement())
+  canonicalName String
+  slug          String  @unique
+  description   String? @db.Text
+  imageUrl      String?
+
+  aliases        FigureAlias[]
+  claims         ClaimFigure[]
+  timelineEvents TimelineEventFigure[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("figures")
+}
+
+model FigureAlias {
+  id        Int       @id @default(autoincrement())
+  figureId  Int
+  figure    Figure    @relation(fields: [figureId], references: [id], onDelete: Cascade)
+  tradition Tradition
+  name      String
+  language  String?
+  notes     String?
+
+  @@unique([figureId, tradition, name])
+  @@map("figure_aliases")
+}
+
+// ─── Theme ───────────────────────────────────────────────────────────────────
+
+model Theme {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  slug        String  @unique
+  description String? @db.Text
+  color       String?
+
+  claims ClaimTheme[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("themes")
+}
+
+// ─── Claim ───────────────────────────────────────────────────────────────────
+
+model Claim {
+  id       Int    @id @default(autoincrement())
+  sourceId Int
+  source   Source @relation(fields: [sourceId], references: [id])
+
+  statement           String               @db.Text
+  contentHash         String               @unique
+  notes               String?              @db.Text
+  isPublished         Boolean              @default(false)
+  interpretationScope InterpretationScope?
+  specificTradition   String?              // e.g. "Sunni", "Reform Judaism" — only when scope=SPECIFIC_TRADITION
+  embedding           Json?                // Float[] — stored for semantic search
+
+  verses        ClaimVerse[]
+  figures       ClaimFigure[]
+  themes        ClaimTheme[]
+  comparisons   ComparisonClaim[]
+  conceptClaims ConceptClaim[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sourceId])
+  @@index([isPublished])
+  @@map("claims")
+}
+
+model ClaimVerse {
+  id        Int     @id @default(autoincrement())
+  claimId   Int
+  claim     Claim   @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  verseId   Int
+  verse     Verse   @relation(fields: [verseId], references: [id])
+  isPrimary Boolean @default(false)
+
+  @@unique([claimId, verseId])
+  @@map("claim_verses")
+}
+
+model ClaimFigure {
+  claimId  Int
+  claim    Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  figureId Int
+  figure   Figure @relation(fields: [figureId], references: [id])
+
+  @@id([claimId, figureId])
+  @@map("claim_figures")
+}
+
+model ClaimTheme {
+  claimId Int
+  claim   Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  themeId Int
+  theme   Theme @relation(fields: [themeId], references: [id])
+
+  @@id([claimId, themeId])
+  @@map("claim_themes")
+}
+
+// ─── Comparison ──────────────────────────────────────────────────────────────
+
+model Comparison {
+  id              Int           @id @default(autoincrement())
+  title           String
+  slug            String        @unique
+  tag             ComparisonTag
+  summary         String?       @db.Text
+  isPublished     Boolean       @default(false)
+  isControversial Boolean       @default(false)
+  createdById     String?       // admin user email, for attribution (internal)
+
+  claims ComparisonClaim[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tag])
+  @@map("comparisons")
+}
+
+model ComparisonClaim {
+  comparisonId Int
+  comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+  claimId      Int
+  claim        Claim      @relation(fields: [claimId], references: [id])
+  position     Int        @default(0)
+
+  @@id([comparisonId, claimId])
+  @@map("comparison_claims")
+}
+
+// ─── VerseLink ───────────────────────────────────────────────────────────────
+
+model VerseLink {
+  id       Int           @id @default(autoincrement())
+  verseAId Int
+  verseA   Verse         @relation("VerseLinkA", fields: [verseAId], references: [id])
+  verseBId Int
+  verseB   Verse         @relation("VerseLinkB", fields: [verseBId], references: [id])
+  linkType VerseLinkType
+  notes    String?       @db.Text
+
+  @@unique([verseAId, verseBId, linkType])
+  @@map("verse_links")
+}
+
+// ─── VerseLinkCandidate (AI-proposed, never shown to users until approved) ───
+
+model VerseLinkCandidate {
+  id           Int             @id @default(autoincrement())
+  verseAId     Int
+  verseA       Verse           @relation("CandidateA", fields: [verseAId], references: [id])
+  verseBId     Int
+  verseB       Verse           @relation("CandidateB", fields: [verseBId], references: [id])
+  linkType     VerseLinkType
+  aiRationale  String          @db.Text
+  status       CandidateStatus @default(PENDING)
+  reviewedAt   DateTime?
+  reviewNotes  String?         @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@unique([verseAId, verseBId, linkType])
+  @@map("verse_link_candidates")
+}
+
+// ─── Concept ──────────────────────────────────────────────────────────────────
+
+model Concept {
+  id          Int             @id @default(autoincrement())
+  slug        String          @unique
+  name        String          @unique
+  category    ConceptCategory
+  summary     String?         @db.Text
+  isPublished Boolean         @default(false)
+
+  traditions ConceptTradition[]
+  claims     ConceptClaim[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([isPublished])
+  @@map("concepts")
+}
+
+model ConceptTradition {
+  id         Int       @id @default(autoincrement())
+  conceptId  Int
+  concept    Concept   @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  tradition  Tradition
+  definition String    @db.Text
+  nuances    String?   @db.Text
+
+  @@unique([conceptId, tradition])
+  @@map("concept_traditions")
+}
+
+model ConceptClaim {
+  conceptId Int
+  concept   Concept @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  claimId   Int
+  claim     Claim   @relation(fields: [claimId], references: [id])
+  position  Int     @default(0)
+
+  @@id([conceptId, claimId])
+  @@map("concept_claims")
+}
+
+// ─── TimelineEvent ────────────────────────────────────────────────────────────
+
+model TimelineEvent {
+  id          Int         @id @default(autoincrement())
+  slug        String      @unique
+  name        String
+  era         TimelineEra
+  position    Int
+  summary     String?     @db.Text
+  isPublished Boolean     @default(false)
+
+  traditions TimelineEventTradition[]
+  verses     TimelineEventVerse[]
+  figures    TimelineEventFigure[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([era, position])
+  @@index([isPublished])
+  @@map("timeline_events")
+}
+
+model TimelineEventTradition {
+  id        Int               @id @default(autoincrement())
+  eventId   Int
+  event     TimelineEvent     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tradition Tradition
+  presence  TraditionPresence
+  notes     String?           @db.Text
+
+  @@unique([eventId, tradition])
+  @@map("timeline_event_traditions")
+}
+
+model TimelineEventVerse {
+  eventId Int
+  event   TimelineEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  verseId Int
+  verse   Verse         @relation(fields: [verseId], references: [id])
+
+  @@id([eventId, verseId])
+  @@map("timeline_event_verses")
+}
+
+model TimelineEventFigure {
+  eventId  Int
+  event    TimelineEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  figureId Int
+  figure   Figure        @relation(fields: [figureId], references: [id])
+
+  @@id([eventId, figureId])
+  @@map("timeline_event_figures")
+}
