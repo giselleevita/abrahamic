@@ -7,6 +7,7 @@ import { seedClaims } from './claims'
 import { seedComparisons } from './comparisons'
 import { seedConcepts } from './concepts'
 import { seedTimeline } from './timeline'
+import { seedVerseLinks } from './verseLinks'
 
 const prisma = new PrismaClient()
 
@@ -20,6 +21,7 @@ async function main() {
   await seedComparisons(prisma)
   await seedConcepts(prisma)
   await seedTimeline(prisma)
+  await seedVerseLinks(prisma)   // ← must run after verses are seeded
   console.log('\n✅ Seed complete')
 }
 
