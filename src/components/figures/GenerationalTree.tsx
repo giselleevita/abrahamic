@@ -6,6 +6,7 @@ import Link from 'next/link'
 interface FigureWithRelations extends Figure {
   relationsFrom?: Array<{
     toFigure: Figure
+    toFigureId: number
     relationType: string
     notes?: string | null
     source?: { id: number; key: string; title: string } | null
