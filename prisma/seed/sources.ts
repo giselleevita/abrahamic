@@ -38,6 +38,24 @@ export async function seedSources(prisma: PrismaClient) {
       description:
         "The Qur'an (القرآن) is the central religious text of Islam, believed by Muslims to be the word of God (Allah) as revealed to the Prophet Muhammad through the angel Jibril (Gabriel) over approximately 23 years. It comprises 114 chapters (surahs) containing 6,236 verses (ayat).",
     },
+    {
+      key: 'SIRAH_IBN_HISHAM' as const,
+      title: 'Sirah Ibn Hisham',
+      tradition: 'ISLAMIC' as const,
+      language: 'Arabic',
+      slug: 'sirah-ibn-hisham',
+      description:
+        "Sirah Ibn Hisham (Sirat Rasul Allah) is an early Islamic biographical work on the life of Muhammad compiled by Ibn Hisham (d. 218 AH / 833 CE). It is based on earlier accounts by Ibn Ishaq and represents the most widely used historical source for Muhammad's biography and early Islamic genealogy. It documents the genealogies (nasab) of Arab tribes, particularly the Quraysh lineage.",
+    },
+    {
+      key: 'HADITH_TRADITION' as const,
+      title: 'Hadith Collections',
+      tradition: 'ISLAMIC' as const,
+      language: 'Arabic',
+      slug: 'hadith-collections',
+      description:
+        "Hadith (حديث) refers to the recorded traditions and sayings of the Prophet Muhammad, his companions, and teachings of Islamic law. Major collections include Sahih Bukhari, Sahih Muslim, Sunan Abu Dawud, Jami' al-Tirmidhi, and others. These sources document genealogical information and historical events in the Islamic tradition.",
+    },
   ]
 
   for (const source of sources) {

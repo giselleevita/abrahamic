@@ -14,6 +14,8 @@ enum SourceKey {
   HEBREW_BIBLE
   NEW_TESTAMENT
   QURAN
+  SIRAH_IBN_HISHAM
+  HADITH_TRADITION
 }
 
 enum Tradition {
@@ -102,6 +104,7 @@ model Source {
 
   verses Verse[]
   claims Claim[]
+  figureRelations FigureRelation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -129,6 +132,7 @@ model Verse {
   linkCandidatesAsA VerseLinkCandidate[]   @relation("CandidateA")
   linkCandidatesAsB VerseLinkCandidate[]   @relation("CandidateB")
   timelineVerses    TimelineEventVerse[]
+  figureRelations   FigureRelation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -194,6 +198,10 @@ model FigureRelation {
   toFigure      Figure            @relation("RelationsTo", fields: [toFigureId], references: [id], onDelete: Cascade)
   relationType  FigureRelationType
   notes         String?           @db.Text
+  sourceId      Int?
+  source        Source?           @relation(fields: [sourceId], references: [id])
+  verseId       Int?
+  verse         Verse?            @relation(fields: [verseId], references: [id])
 
   @@unique([fromFigureId, toFigureId, relationType])
   @@map("figure_relations")

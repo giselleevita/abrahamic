@@ -19,20 +19,20 @@ const ERA_LABEL: Record<typeof ERA_ORDER[number], string> = {
   KINGDOM: 'Kingdom', GOSPEL: 'Gospel', EARLY_ISLAM: 'Early Islam',
 }
 const ERA_BG: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL:  'from-indigo-100 to-blue-50',
-  PATRIARCHAL: 'from-amber-100 to-yellow-50',
-  EXODUS:      'from-rose-100 to-red-50',
-  KINGDOM:     'from-violet-100 to-purple-50',
-  GOSPEL:      'from-sky-100 to-cyan-50',
-  EARLY_ISLAM: 'from-emerald-100 to-teal-50',
+  PRIMORDIAL:  'from-jewish-700 to-jewish-600',
+  PATRIARCHAL: 'from-gold-700 to-gold-600',
+  EXODUS:      'from-christian-700 to-christian-600',
+  KINGDOM:     'from-jewish-700 to-jewish-600',
+  GOSPEL:      'from-christian-700 to-christian-600',
+  EARLY_ISLAM: 'from-islamic-700 to-islamic-600',
 }
 const ERA_ACCENT: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL:  'text-indigo-700',
-  PATRIARCHAL: 'text-amber-700',
-  EXODUS:      'text-rose-700',
-  KINGDOM:     'text-violet-700',
-  GOSPEL:      'text-sky-700',
-  EARLY_ISLAM: 'text-emerald-700',
+  PRIMORDIAL:  'text-jewish-50',
+  PATRIARCHAL: 'text-primary-950',
+  EXODUS:      'text-christian-50',
+  KINGDOM:     'text-jewish-50',
+  GOSPEL:      'text-christian-50',
+  EARLY_ISLAM: 'text-islamic-50',
 }
 
 const HERO_VIDEO_SRC = '/hero-creation-banner.mp4'
@@ -95,10 +95,10 @@ export default async function HomePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative mb-12 min-h-[34rem] overflow-hidden rounded-[2rem] border border-stone-800 bg-stone-950 px-6 py-8 shadow-[0_24px_80px_rgba(12,10,9,0.32)] sm:px-10 sm:py-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.24),transparent_34%),radial-gradient(circle_at_80%_18%,rgba(34,197,94,0.18),transparent_28%),linear-gradient(135deg,#050505_0%,#16110d_42%,#0b1b16_100%)]" />
+      <section className="relative mb-12 min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary-800 bg-primary-950 px-6 py-8 shadow-[0_24px_80px_rgba(26,22,19,0.5)] sm:px-10 sm:py-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,165,116,0.15),transparent_34%),radial-gradient(circle_at_80%_18%,rgba(15,76,127,0.12),transparent_28%),linear-gradient(135deg,#1a1613_0%,#231d19_42%,#1a1613_100%)]" />
         <video
-          className="absolute inset-0 h-full w-full object-cover opacity-50"
+          className="absolute inset-0 h-full w-full object-cover opacity-40"
           autoPlay
           loop
           muted
@@ -108,55 +108,55 @@ export default async function HomePage() {
         >
           <source src={HERO_VIDEO_SRC} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.82)_0%,rgba(5,5,5,0.58)_42%,rgba(5,5,5,0.3)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-stone-950 via-stone-950/55 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(26,22,19,0.85)_0%,rgba(26,22,19,0.65)_42%,rgba(26,22,19,0.35)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-950 via-primary-950/55 to-transparent" />
 
         <div className="relative z-10 flex min-h-[30rem] flex-col justify-between gap-10">
           <div className="max-w-3xl">
-            <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/8 px-4 py-2 backdrop-blur-sm">
-              <span className="h-2 w-2 rounded-full bg-amber-300" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-200">
+            <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-gold-500/25 bg-gold-600/10 px-4 py-2 backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-gold-400" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gold-200">
                 In The Beginning
               </span>
             </div>
 
             <div className="mb-6 flex gap-1.5">
-              <div className="h-1.5 w-20 rounded-full bg-blue-400" />
-              <div className="h-1.5 w-20 rounded-full bg-red-400" />
-              <div className="h-1.5 w-20 rounded-full bg-green-400" />
+              <div className="h-1.5 w-20 rounded-full bg-jewish-500" />
+              <div className="h-1.5 w-20 rounded-full bg-christian-500" />
+              <div className="h-1.5 w-20 rounded-full bg-islamic-500" />
             </div>
 
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.92] tracking-tight text-white sm:text-7xl">
+            <h1 className="font-serif max-w-4xl text-5xl font-bold leading-[0.92] tracking-tight text-primary-50 sm:text-7xl">
               Three traditions. One question. What did they actually say?
             </h1>
 
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-stone-200 sm:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-primary-300 sm:text-lg">
               From Genesis to the Quran, creation opens the story. Explore sourced comparisons across traditions in a clear, neutral reference built for study.
             </p>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              <span className="rounded-full border border-blue-400/40 bg-blue-500/15 px-3 py-1 font-mono text-xs text-blue-100 backdrop-blur-sm">
+              <span className="rounded-full border border-jewish-500/40 bg-jewish-600/15 px-3 py-1 font-mono text-xs text-jewish-200 backdrop-blur-sm">
                 Genesis 1:1
               </span>
-              <span className="rounded-full border border-red-400/40 bg-red-500/15 px-3 py-1 font-mono text-xs text-red-100 backdrop-blur-sm">
+              <span className="rounded-full border border-christian-500/40 bg-christian-600/15 px-3 py-1 font-mono text-xs text-christian-200 backdrop-blur-sm">
                 John 1:1
               </span>
-              <span className="rounded-full border border-green-400/40 bg-green-500/15 px-3 py-1 font-mono text-xs text-green-100 backdrop-blur-sm">
+              <span className="rounded-full border border-islamic-500/40 bg-islamic-600/15 px-3 py-1 font-mono text-xs text-islamic-200 backdrop-blur-sm">
                 Quran 21:30
               </span>
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/comparisons" className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-stone-900 hover:bg-stone-100 transition-colors">
+              <Link href="/comparisons" className="rounded-lg bg-gold-600 px-5 py-2.5 text-sm font-semibold text-primary-950 hover:bg-gold-500 transition-colors">
                 Browse Comparisons
               </Link>
-              <Link href="/concepts" className="rounded-lg border border-white/20 bg-white/8 px-5 py-2.5 text-sm font-semibold text-stone-100 hover:border-white/35 hover:bg-white/12 transition-colors">
+              <Link href="/concepts" className="rounded-lg border border-gold-500/30 bg-gold-600/20 px-5 py-2.5 text-sm font-semibold text-gold-200 hover:border-gold-400/50 hover:bg-gold-600/30 transition-colors">
                 Explore Concepts
               </Link>
-              <Link href="/timeline" className="rounded-lg border border-white/20 bg-white/8 px-5 py-2.5 text-sm font-semibold text-stone-100 hover:border-white/35 hover:bg-white/12 transition-colors">
+              <Link href="/timeline" className="rounded-lg border border-primary-700 bg-primary-800/40 px-5 py-2.5 text-sm font-semibold text-primary-200 hover:border-primary-600 hover:bg-primary-800/60 transition-colors">
                 View Timeline
               </Link>
-              <Link href="/sources" className="rounded-lg border border-white/20 bg-white/8 px-5 py-2.5 text-sm font-semibold text-stone-100 hover:border-white/35 hover:bg-white/12 transition-colors">
+              <Link href="/sources" className="rounded-lg border border-primary-700 bg-primary-800/40 px-5 py-2.5 text-sm font-semibold text-primary-200 hover:border-primary-600 hover:bg-primary-800/60 transition-colors">
                 Read Sources
               </Link>
             </div>

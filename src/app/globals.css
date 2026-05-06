@@ -1,38 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
 
 :root {
-  --background: #0c0a09;
-  --foreground: #f5f5f4;
+  --background: #1a1613;
+  --foreground: #f8f6f3;
+  --accent: #d4a574;
+  --jewish: #0f4c7f;
+  --christian: #7c2d3e;
+  --islamic: #3d2a5c;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #1a1613;
+  color: #f8f6f3;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-image: linear-gradient(135deg, #1a1613 0%, #231d19 100%);
 }
 
-/* Force a dark-only visual theme across existing utility-class surfaces. */
+/* Headings use elegant serif */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: 3rem;
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: 2.25rem;
+  line-height: 1.375;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 1.375;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.625;
+}
+
+/* Links - gold accent */
+a {
+  color: #d4a574;
+  transition-property: color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+a:hover {
+  color: #c29560;
+}
+
+/* Code blocks */
+code, pre {
+  background-color: #231d19;
+  color: #f1ede7;
+  border-radius: 0.25rem;
+  border: 1px solid #3a322d;
+}
+
+/* Semantic color overrides */
 .bg-white,
 .bg-stone-50,
-.bg-stone-100 {
-  background-color: #111827 !important;
+.bg-stone-100,
+.bg-slate-50,
+.bg-slate-100,
+.bg-gray-50,
+.bg-gray-100 {
+  background-color: #231d19 !important;
 }
 
 .text-stone-900,
 .text-stone-800,
-.text-stone-700 {
-  color: #f5f5f4 !important;
+.text-stone-700,
+.text-slate-900,
+.text-slate-800,
+.text-gray-900,
+.text-gray-800 {
+  color: #f8f6f3 !important;
 }
 
 .text-stone-600,
 .text-stone-500,
-.text-stone-400 {
-  color: #d6d3d1 !important;
+.text-stone-400,
+.text-slate-600,
+.text-slate-500,
+.text-gray-600,
+.text-gray-500 {
+  color: #d4cfc5 !important;
 }
 
 .border-stone-50,
 .border-stone-100,
 .border-stone-200,
-.border-stone-300 {
-  border-color: #374151 !important;
+.border-stone-300,
+.border-slate-200,
+.border-slate-300,
+.border-gray-200,
+.border-gray-300 {
+  border-color: #3a322d !important;
+}
+
+/* Buttons - default gold */
+button:not([class*='bg-']) {
+  background-color: #c29560 !important;
+  color: #1a1613 !important;
+}
+
+button:not([class*='bg-']):hover {
+  background-color: #b7865e !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #231d19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6e6259;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8b7d71;
 }

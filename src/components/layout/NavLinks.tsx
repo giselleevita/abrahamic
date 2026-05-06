@@ -27,13 +27,13 @@ export function NavLinks() {
             href={link.href}
             className={`relative rounded-md px-3 py-1.5 transition-colors ${
               active
-                ? 'bg-stone-100 text-stone-900'
-                : 'text-stone-500 hover:bg-stone-50 hover:text-stone-800'
+                ? 'bg-gold-600 text-primary-950'
+                : 'text-primary-400 hover:text-gold-400'
             }`}
           >
             {link.label}
             {active && (
-              <span className="absolute bottom-0.5 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-stone-800" />
+              <span className="absolute bottom-0.5 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-gold-500" />
             )}
           </Link>
         )
