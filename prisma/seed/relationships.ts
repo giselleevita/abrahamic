@@ -136,11 +136,11 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
           data: {
             fromFigureId: fromFigure.id,
             toFigureId: toFigure.id,
-            relationType: rel.type as any,
+            relationType: rel.type as 'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING' | 'DESCENDANT',
             notes: rel.notes,
           },
         })
-      } catch (e) {
+      } catch {
         // Unique constraint or other error — skip
       }
     }

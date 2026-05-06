@@ -47,7 +47,7 @@ export async function seedFigureLegacy(prisma: PrismaClient) {
         where: { slug: data.slug },
         data: { legacy: data.legacy },
       })
-    } catch (e) {
+    } catch {
       // Figure might not exist yet, skip
     }
   }

@@ -44,14 +44,27 @@ interface FigureWithRelations {
   legacy: string | null
   createdAt: Date
   updatedAt: Date
-  relationsFrom?: Array<{ toFigure: any; relationType: string; toFigureId: number }>
+  relationsFrom?: Array<{
+    toFigure: {
+      id: number
+      canonicalName: string
+      slug: string
+      description: string | null
+      imageUrl: string | null
+      legacy: string | null
+      createdAt: Date
+      updatedAt: Date
+    }
+    relationType: string
+    toFigureId: number
+  }>
 }
 
 function FamilyTreeSection({ tradition, figures }: { tradition: Tradition; figures: FigureWithRelations[] }) {
   const rootFigures = figures.filter(f => {
     const hasParent = figures.some(other =>
       other.relationsFrom?.some(
-        (r: any) => r.toFigureId === f.id && r.relationType === 'PARENT'
+        (r: FigureWithRelations['relationsFrom'][0]) => r.toFigureId === f.id && r.relationType === 'PARENT'
       )
     )
     return !hasParent
