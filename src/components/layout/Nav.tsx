@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { SearchBar } from '@/components/layout/SearchBar'
 import { MobileMenu } from '@/components/layout/MobileMenu'
 import { NavLinks } from '@/components/layout/NavLinks'
+import { HorizontalFamilyTree } from '@/components/layout/HorizontalFamilyTree'
 
 export function Nav() {
   return (
@@ -23,6 +24,12 @@ export function Nav() {
         </div>
 
         <MobileMenu />
+      </div>
+
+      <div className="border-t border-stone-800 bg-stone-950/50 hidden sm:block">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <HorizontalFamilyTree />
+        </div>
       </div>
     </header>
   )

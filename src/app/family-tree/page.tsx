@@ -62,11 +62,12 @@ interface FigureWithRelations {
 
 function FamilyTreeSection({ tradition, figures }: { tradition: Tradition; figures: FigureWithRelations[] }) {
   const rootFigures = figures.filter(f => {
-    const hasParent = figures.some(other =>
-      other.relationsFrom?.some(
-        (r: FigureWithRelations['relationsFrom'][0]) => r.toFigureId === f.id && r.relationType === 'PARENT'
+    const hasParent = figures.some(other => {
+      if (!other.relationsFrom) return false
+      return other.relationsFrom.some(
+        (r) => r.toFigureId === f.id && r.relationType === 'PARENT'
       )
-    )
+    })
     return !hasParent
   })
 
