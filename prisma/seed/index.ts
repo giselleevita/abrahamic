@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client'
 import { seedSources } from './sources'
 import { seedThemes } from './themes'
 import { seedFigures } from './figures'
+import { seedFigureRelationships } from './relationships'
+import { seedFigureLegacy } from './legacy'
 import { seedVerses } from './verses'
 import { seedClaims } from './claims'
 import { seedComparisons } from './comparisons'
@@ -16,6 +18,8 @@ async function main() {
   await seedSources(prisma)
   await seedThemes(prisma)
   await seedFigures(prisma)
+  await seedFigureRelationships(prisma)
+  await seedFigureLegacy(prisma)
   await seedVerses(prisma)
   await seedClaims(prisma)
   await seedComparisons(prisma)

@@ -81,6 +81,14 @@ enum TimelineEra {
   EARLY_ISLAM
 }
 
+enum FigureRelationType {
+  PARENT
+  CHILD
+  SPOUSE
+  SIBLING
+  DESCENDANT
+}
+
 // ─── Source ──────────────────────────────────────────────────────────────────
 
 model Source {
@@ -151,10 +159,13 @@ model Figure {
   slug          String  @unique
   description   String? @db.Text
   imageUrl      String?
+  legacy        String? @db.Text   // What they were known for, contributions to belief
 
-  aliases        FigureAlias[]
-  claims         ClaimFigure[]
-  timelineEvents TimelineEventFigure[]
+  aliases         FigureAlias[]
+  claims          ClaimFigure[]
+  timelineEvents  TimelineEventFigure[]
+  relationsFrom   FigureRelation[] @relation("RelationsFrom")
+  relationsTo     FigureRelation[] @relation("RelationsTo")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -173,6 +184,19 @@ model FigureAlias {
 
   @@unique([figureId, tradition, name])
   @@map("figure_aliases")
+}
+
+model FigureRelation {
+  id            Int               @id @default(autoincrement())
+  fromFigureId  Int
+  fromFigure    Figure            @relation("RelationsFrom", fields: [fromFigureId], references: [id], onDelete: Cascade)
+  toFigureId    Int
+  toFigure      Figure            @relation("RelationsTo", fields: [toFigureId], references: [id], onDelete: Cascade)
+  relationType  FigureRelationType
+  notes         String?           @db.Text
+
+  @@unique([fromFigureId, toFigureId, relationType])
+  @@map("figure_relations")
 }
 
 // ─── Theme ───────────────────────────────────────────────────────────────────
