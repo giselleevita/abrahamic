@@ -1,7 +1,6 @@
 import prisma from '@/lib/prisma'
-import { FamilyTreeNode } from '@/components/figures/FamilyTreeNode'
+import { GenerationalTree } from '@/components/figures/GenerationalTree'
 import { CrossTraditionFigures } from '@/components/figures/CrossTraditionFigures'
-import { TRADITION_BG } from '@/lib/constants'
 import type { Tradition } from '@prisma/client'
 
 const TRADITIONS: Tradition[] = ['JEWISH', 'CHRISTIAN', 'ISLAMIC']
@@ -17,6 +16,8 @@ async function getFiguresWithRelations(tradition: Tradition) {
       relationsFrom: {
         include: {
           toFigure: true,
+          source: true,
+          verse: true,
         },
       },
     },
@@ -57,33 +58,26 @@ interface FigureWithRelations {
     }
     relationType: string
     toFigureId: number
+    source?: {
+      id: number
+      key: string
+      title: string
+    } | null
+    verse?: {
+      id: number
+      book: string
+      chapter: number
+      verse: number
+      referenceKey: string
+    } | null
+    notes?: string | null
   }>
 }
 
 function FamilyTreeSection({ tradition, figures }: { tradition: Tradition; figures: FigureWithRelations[] }) {
-  const rootFigures = figures.filter(f => {
-    const hasParent = figures.some(other => {
-      if (!other.relationsFrom) return false
-      return other.relationsFrom.some(
-        (r) => r.toFigureId === f.id && r.relationType === 'PARENT'
-      )
-    })
-    return !hasParent
-  })
-
   return (
-    <section className={`rounded-lg p-6 ${TRADITION_BG[tradition]}`}>
-      <h2 className="text-2xl font-bold mb-6 capitalize">{tradition.toLowerCase()} lineage</h2>
-
-      {rootFigures.length > 0 ? (
-        <div className="space-y-4">
-          {rootFigures.map(figure => (
-            <FamilyTreeNode key={figure.id} figure={figure} isRoot />
-          ))}
-        </div>
-      ) : (
-        <p className="text-gray-600">No figures found for this tradition.</p>
-      )}
+    <section>
+      <GenerationalTree figures={figures} tradition={tradition} />
     </section>
   )
 }
@@ -100,13 +94,12 @@ export default async function FamilyTreePage() {
   ])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-12">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen px-4 py-12">
+      <div className="max-w-7xl mx-auto">
         <header className="mb-12">
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Abrahamic Genealogy</h1>
-          <p className="text-lg text-slate-600">
-            A comprehensive family tree of key figures across Judaism, Christianity, and Islam,
-            showing relationships, lineages, and contributions to religious thought.
+          <h1 className="text-4xl font-serif font-bold text-primary-50 mb-2">Abrahamic Genealogy</h1>
+          <p className="text-lg text-primary-400 max-w-2xl">
+            A comprehensive family tree organized by generation, showing the lineages of key figures across Judaism, Christianity, and Islam. Each generation is marked by a timeline spine, with figures grouped horizontally for easy comparison across traditions.
           </p>
         </header>
 

@@ -249,6 +249,207 @@ export async function seedFigures(prisma: PrismaClient) {
         { tradition: 'ISLAMIC' as const, name: 'Maryam', language: 'Arabic', notes: "مَرْيَم — Surah 19 (Maryam) named after her; described as the most righteous woman (3:42); gave birth under a palm tree; only woman named in Quran; declared pure and chaste" },
       ],
     },
+    // ── Islamic Genealogy ────────────────────────────────────────────────────
+    {
+      canonicalName: 'Kedar',
+      slug: 'kedar',
+      description:
+        `Kedar is the second son of Ishmael mentioned in Genesis 25:13. In the Islamic tradition, Kedar is the ancestor of Arab peoples, and his lineage through Adnan leads to Muhammad. The genealogical connection is documented in Islamic historical sources (Sirah) tracing the Quraysh tribe to Kedar through multiple generations. Lineage: Ishmael → Kedar → Adnan → [24+ generations] → Quraysh → Hashim → Abdullah → Muhammad.`,
+      aliases: [
+        { tradition: 'JEWISH' as const, name: 'Kedar', language: 'Hebrew', notes: "קֵדָר — listed as second son of Ishmael (Genesis 25:13); ancestor of Kedarite Arabs; known for archers and merchants (Jeremiah 49:28–33)" },
+        { tradition: 'ISLAMIC' as const, name: 'Qaydar', language: 'Arabic', notes: "قَيْدَار — ancestor of Arabian tribes; his lineage through Adnan leads to the Quraysh and Muhammad (Sirah tradition)" },
+      ],
+    },
+    {
+      canonicalName: 'Adnan',
+      slug: 'adnan',
+      description:
+        `Adnan is a crucial figure in Islamic genealogy as the ancestor of the Quraysh tribe and, through them, of Muhammad. Islamic sources identify Adnan as a descendant of Kedar through multiple generations. The lineage from Kedar to Adnan represents a long chain of Arabian patriarchs documented in Sirah al-Ibn Hisham. Lineage: Ishmael → [through Kedar and others] → Adnan → Umayyah → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Adnan', language: 'Arabic', notes: "عَدْنَان — Qur'anic context: ancestor of Muhammad; the lineage from Kedar to Adnan spans many generations in Islamic tradition; identified as a unifying ancestor of Arabian tribes" },
+      ],
+    },
+    {
+      canonicalName: 'Umayyah',
+      slug: 'umayyah',
+      description:
+        `Umayyah is the son of Adnan in the Islamic genealogical chain. He continues the lineage toward the Quraysh tribe and Muhammad. Lineage: Adnan → Umayyah → Murrah → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Umayyah', language: 'Arabic', notes: "أُمَيَّة — son of Adnan (Sirah al-Ibn Hisham); continuation of the prophetic lineage; ancestor of the Quraysh through his descendants" },
+      ],
+    },
+    {
+      canonicalName: 'Murrah',
+      slug: 'murrah',
+      description:
+        `Murrah is the son of Umayyah in the Islamic genealogical tradition. Lineage: Umayyah → Murrah → Kaab → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Murrah', language: 'Arabic', notes: "مُرَّة — son of Umayyah (Sirah al-Ibn Hisham); ancestor of the Quraysh tribe" },
+      ],
+    },
+    {
+      canonicalName: 'Kaab',
+      slug: 'kaab',
+      description:
+        `Kaab is the son of Murrah in the Islamic genealogical tradition. Lineage: Murrah → Kaab → Luayy → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Kaab', language: 'Arabic', notes: "كَعْب — son of Murrah (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Luayy',
+      slug: 'luayy',
+      description:
+        `Luayy is the son of Kaab in the Islamic genealogical tradition. Lineage: Kaab → Luayy → Ghalib → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Luayy', language: 'Arabic', notes: "لُوَيّ — son of Kaab (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Ghalib',
+      slug: 'ghalib',
+      description:
+        `Ghalib is the son of Luayy in the Islamic genealogical tradition. Lineage: Luayy → Ghalib → Fihr → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Ghalib', language: 'Arabic', notes: "غَالِب — son of Luayy (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Fihr',
+      slug: 'fihr',
+      description:
+        `Fihr is the son of Ghalib and a significant figure in Islamic genealogy as the founder of the Quraysh tribe. The tribe is known as "Quraysh" (also spelled Quraish) and is the tribe into which Muhammad was born. Lineage: Ghalib → Fihr (founder of Quraysh) → Malik → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Fihr', language: 'Arabic', notes: "فِهْر — son of Ghalib (Sirah al-Ibn Hisham); founder of the Quraysh tribe; father of Malik; the tribe is named after him (also called Banu Fihr)" },
+      ],
+    },
+    {
+      canonicalName: 'Malik',
+      slug: 'malik',
+      description:
+        `Malik is the son of Fihr (founder of Quraysh) in the Islamic genealogical tradition. Lineage: Fihr → Malik → Nadhr → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Malik', language: 'Arabic', notes: "مَالِك — son of Fihr (Sirah al-Ibn Hisham); member of the Quraysh tribe" },
+      ],
+    },
+    {
+      canonicalName: 'Nadhr',
+      slug: 'nadhr',
+      description:
+        `Nadhr is the son of Malik in the Islamic genealogical tradition. Lineage: Malik → Nadhr → Kinana → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Nadhr', language: 'Arabic', notes: "نَضْر — son of Malik (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Kinana',
+      slug: 'kinana',
+      description:
+        `Kinana is the son of Nadhr in the Islamic genealogical tradition. Lineage: Nadhr → Kinana → Khuzaymah → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Kinana', language: 'Arabic', notes: "كِنَانَة — son of Nadhr (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Khuzaymah',
+      slug: 'khuzaymah',
+      description:
+        `Khuzaymah is the son of Kinana in the Islamic genealogical tradition. Lineage: Kinana → Khuzaymah → Mudrika → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Khuzaymah', language: 'Arabic', notes: "خُزَيْمَة — son of Kinana (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Mudrika',
+      slug: 'mudrika',
+      description:
+        `Mudrika is the son of Khuzaymah in the Islamic genealogical tradition. Lineage: Khuzaymah → Mudrika → Ilyas → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Mudrika', language: 'Arabic', notes: "مُدْرِكَة — son of Khuzaymah (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Ilyas',
+      slug: 'ilyas',
+      description:
+        `Ilyas is the son of Mudrika in the Islamic genealogical tradition. Lineage: Mudrika → Ilyas → Mudar → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Ilyas', language: 'Arabic', notes: "إِلْيَاس — son of Mudrika (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Mudar',
+      slug: 'mudar',
+      description:
+        `Mudar is the son of Ilyas in the Islamic genealogical tradition. Lineage: Ilyas → Mudar → Nizar → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Mudar', language: 'Arabic', notes: "مُضَر — son of Ilyas (Sirah al-Ibn Hisham); ancestor of northern Arabian tribes including the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Nizar',
+      slug: 'nizar',
+      description:
+        `Nizar is the son of Mudar in the Islamic genealogical tradition. Lineage: Mudar → Nizar → Maad → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Nizar', language: 'Arabic', notes: "نِزَار — son of Mudar (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Maad',
+      slug: 'maad',
+      description:
+        `Maad is the son of Nizar in the Islamic genealogical tradition. Lineage: Nizar → Maad → Qais → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Maad', language: 'Arabic', notes: "مَعَد — son of Nizar (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Qais',
+      slug: 'qais',
+      description:
+        `Qais is the son of Maad in the Islamic genealogical tradition. Lineage: Maad → Qais → Qahtan → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Qais', language: 'Arabic', notes: "قَيْس — son of Maad (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Qahtan',
+      slug: 'qahtan',
+      description:
+        `Qahtan is the son of Qais in the Islamic genealogical tradition. Lineage: Qais → Qahtan → Hashim → [continues] → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Qahtan', language: 'Arabic', notes: "قَحْطَان — son of Qais (Sirah al-Ibn Hisham); ancestor of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Hashim',
+      slug: 'hashim',
+      description:
+        `Hashim (Abd al-Manaf's father) is the great-grandfather of Muhammad and founder of the Hashim clan (Banu Hashim). He held the honored position of providing water and food to Hajj pilgrims. His wealth and status gave Muhammad his position within Mecca society. Lineage: Qahtan → Hashim → Abdul-Muttalib → Abdullah → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Hashim', language: 'Arabic', notes: "هَاشِم — son of Abd al-Manaf (Sirah al-Ibn Hisham); founder of the Hashim clan (Banu Hashim); provided water (siqayah) and food to Hajj pilgrims; great-grandfather of Muhammad; his son was Abdul-Muttalib" },
+      ],
+    },
+    {
+      canonicalName: 'Abdul-Muttalib',
+      slug: 'abdul-muttalib',
+      description:
+        `Abdul-Muttalib is the grandfather of Muhammad. He was the chief of the Quraysh and held the guardianship of the Ka'ba. He took an oath to sacrifice one of his sons if he had ten; when his youngest son Abdullah was selected by lots, he ransomed him for 100 camels. This son Abdullah became Muhammad's father. Lineage: Hashim → Abdul-Muttalib → Abdullah → Muhammad.`,
+      aliases: [
+        { tradition: 'ISLAMIC' as const, name: 'Abdul-Muttalib', language: 'Arabic', notes: "عَبْد المُطَّلِب — birth name: Shaybah; son of Hashim; grandfather of Muhammad; made a vow to sacrifice a son (the ransom was 100 camels for Abdullah); guardian of the Ka'ba; leader of the Quraysh" },
+      ],
+    },
+    {
+      canonicalName: 'Abdullah',
+      slug: 'abdullah',
+      description:
+        `Abdullah is the father of Muhammad. He was the son of Abdul-Muttalib, born as a result of the ransom of 100 camels. He died before Muhammad was born, making Muhammad an orphan. Abdullah is occasionally referenced in Islamic tradition and the Quran as Muhammad's father. Lineage: Abdul-Muttalib → Abdullah → Muhammad.`,
+      aliases: [
+        { tradition: 'JEWISH' as const, name: 'Abdullah', language: 'Hebrew/Arabic', notes: "עבדאללה / عَبْد اللَّهِ — not recognized in Jewish tradition; mentioned as Muhammad's father in Islamic sources" },
+        { tradition: 'ISLAMIC' as const, name: 'Abdullah ibn Abdul-Muttalib', language: 'Arabic', notes: "عَبْد اللَّهِ بن عبد المُطَّلِب — father of Muhammad; son of Abdul-Muttalib; died before Muhammad's birth; one of the 'Chosen Ones' (Qur'an 3:144 refers to Muhammad but in context of lineage); ransomed for 100 camels per his father's vow" },
+      ],
+    },
     // ── Early Islam ──────────────────────────────────────────────────────────
     {
       canonicalName: 'Muhammad',

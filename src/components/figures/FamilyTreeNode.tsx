@@ -6,7 +6,13 @@ import { useState } from 'react'
 
 interface FamilyTreeNodeProps {
   figure: Figure & {
-    relationsFrom?: Array<{ toFigure: Figure; relationType: string; notes?: string }>
+    relationsFrom?: Array<{
+      toFigure: Figure
+      relationType: string
+      notes?: string | null
+      source?: { id: number; key: string; title: string } | null
+      verse?: { id: number; book: string; chapter: number; verse: number; referenceKey: string } | null
+    }>
   }
   depth?: number
   isRoot?: boolean
@@ -18,6 +24,31 @@ const RELATIONSHIP_LABELS: Record<string, string> = {
   SPOUSE: '♥',
   SIBLING: '∞',
   DESCENDANT: '↓↓',
+}
+
+const SOURCE_COLORS: Record<string, { badge: string; dot: string }> = {
+  TORAH: { badge: 'bg-jewish-700 text-jewish-50 border border-jewish-600', dot: 'bg-jewish-500' },
+  HEBREW_BIBLE: { badge: 'bg-jewish-700 text-jewish-50 border border-jewish-600', dot: 'bg-jewish-500' },
+  NEW_TESTAMENT: { badge: 'bg-christian-700 text-christian-50 border border-christian-600', dot: 'bg-christian-500' },
+  QURAN: { badge: 'bg-islamic-700 text-islamic-50 border border-islamic-600', dot: 'bg-islamic-500' },
+}
+
+function VerseReference({
+  verse,
+  source,
+}: {
+  verse: { book: string; chapter: number; verse: number }
+  source?: { key: string; title: string } | null
+}) {
+  const sourceKey = source?.key || 'QURAN'
+  const colors = SOURCE_COLORS[sourceKey] || SOURCE_COLORS.ISLAMIC
+
+  return (
+    <span className={`text-xs px-2 py-1 rounded whitespace-nowrap inline-flex items-center gap-1 ${colors.badge}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${colors.dot}`} />
+      {verse.book} {verse.chapter}:{verse.verse}
+    </span>
+  )
 }
 
 export function FamilyTreeNode({ figure, depth = 0, isRoot = false }: FamilyTreeNodeProps) {
@@ -61,6 +92,11 @@ export function FamilyTreeNode({ figure, depth = 0, isRoot = false }: FamilyTree
         <div>
           {children.map(relation => (
             <div key={relation.toFigure.id}>
+              {relation.verse && (
+                <div className="ml-6 py-1 flex items-center gap-2">
+                  <VerseReference verse={relation.verse} source={relation.source} />
+                </div>
+              )}
               {relation.notes && (
                 <div className="ml-6 text-xs text-gray-500 italic py-1">{relation.notes}</div>
               )}
