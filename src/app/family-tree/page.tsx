@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma'
 import { FamilyTreeNode } from '@/components/figures/FamilyTreeNode'
+import { CrossTraditionFigures } from '@/components/figures/CrossTraditionFigures'
 import { TRADITION_BG } from '@/lib/constants'
 import type { Tradition } from '@prisma/client'
 
@@ -18,6 +19,16 @@ async function getFiguresWithRelations(tradition: Tradition) {
           toFigure: true,
         },
       },
+    },
+    orderBy: { canonicalName: 'asc' },
+  })
+  return figures
+}
+
+async function getAllFiguresWithAliases() {
+  const figures = await prisma.figure.findMany({
+    include: {
+      aliases: true,
     },
     orderBy: { canonicalName: 'asc' },
   })
@@ -64,12 +75,15 @@ function FamilyTreeSection({ tradition, figures }: { tradition: Tradition; figur
 }
 
 export default async function FamilyTreePage() {
-  const figuresByTradition = await Promise.all(
-    TRADITIONS.map(async tradition => ({
-      tradition,
-      figures: await getFiguresWithRelations(tradition),
-    }))
-  )
+  const [figuresByTradition, allFigures] = await Promise.all([
+    Promise.all(
+      TRADITIONS.map(async tradition => ({
+        tradition,
+        figures: await getFiguresWithRelations(tradition),
+      }))
+    ),
+    getAllFiguresWithAliases(),
+  ])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-12">
@@ -81,6 +95,10 @@ export default async function FamilyTreePage() {
             showing relationships, lineages, and contributions to religious thought.
           </p>
         </header>
+
+        <div className="mb-12">
+          <CrossTraditionFigures figures={allFigures} />
+        </div>
 
         <div className="space-y-8">
           {figuresByTradition.map(({ tradition, figures }) => (
