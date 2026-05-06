@@ -36,8 +36,30 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
     { from: 'sarah', to: 'isaac', type: 'SPOUSE', notes: 'Mother of Isaac' },
     { from: 'abraham', to: 'keturah', type: 'SPOUSE' },
 
-    // Ishmael's lineage
+    // Ishmael's lineage (Islamic genealogy to Muhammad)
     { from: 'ishmael', to: 'kedar', type: 'PARENT' },
+    { from: 'kedar', to: 'adnan', type: 'PARENT', notes: 'Ancestor of Muhammad through the Quraysh tribe' },
+    { from: 'adnan', to: 'umayyah', type: 'PARENT' },
+    { from: 'umayyah', to: 'murrah', type: 'PARENT' },
+    { from: 'murrah', to: 'kaab', type: 'PARENT' },
+    { from: 'kaab', to: 'luayy', type: 'PARENT' },
+    { from: 'luayy', to: 'ghalib', type: 'PARENT' },
+    { from: 'ghalib', to: 'fihr', type: 'PARENT', notes: 'Founder of Quraysh tribe' },
+    { from: 'fihr', to: 'malik', type: 'PARENT' },
+    { from: 'malik', to: 'nadhr', type: 'PARENT' },
+    { from: 'nadhr', to: 'kinana', type: 'PARENT' },
+    { from: 'kinana', to: 'khuzaymah', type: 'PARENT' },
+    { from: 'khuzaymah', to: 'mudrika', type: 'PARENT' },
+    { from: 'mudrika', to: 'ilyas', type: 'PARENT' },
+    { from: 'ilyas', to: 'mudar', type: 'PARENT' },
+    { from: 'mudar', to: 'nizar', type: 'PARENT' },
+    { from: 'nizar', to: 'maad', type: 'PARENT' },
+    { from: 'maad', to: 'qais', type: 'PARENT' },
+    { from: 'qais', to: 'qahtan', type: 'PARENT' },
+    { from: 'qahtan', to: 'hashim', type: 'PARENT', notes: 'Muhammad\'s great-grandfather; founder of Hashim clan' },
+    { from: 'hashim', to: 'abdul-muttalib', type: 'PARENT' },
+    { from: 'abdul-muttalib', to: 'abdullah', type: 'PARENT' },
+    { from: 'abdullah', to: 'muhammad', type: 'PARENT', notes: 'Muhammad\'s father' },
 
     // Isaac's family
     { from: 'isaac', to: 'jacob', type: 'PARENT' },
