@@ -27,12 +27,12 @@ const ERA_BG: Record<typeof ERA_ORDER[number], string> = {
   EARLY_ISLAM: 'from-islamic-700 to-islamic-600',
 }
 const ERA_ACCENT: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL:  'text-jewish-50',
+  PRIMORDIAL:  'text-white',
   PATRIARCHAL: 'text-primary-950',
-  EXODUS:      'text-christian-50',
-  KINGDOM:     'text-jewish-50',
-  GOSPEL:      'text-christian-50',
-  EARLY_ISLAM: 'text-islamic-50',
+  EXODUS:      'text-white',
+  KINGDOM:     'text-white',
+  GOSPEL:      'text-white',
+  EARLY_ISLAM: 'text-white',
 }
 
 const HERO_VIDEO_SRC = '/hero-creation-banner.mp4'
@@ -214,23 +214,23 @@ export default async function HomePage() {
       <section className="mb-14">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-stone-900">Key Figures</h2>
-          <Link href="/figures" className="text-sm text-stone-500 hover:text-stone-700">View all →</Link>
+          <Link href="/figures" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {figures.map((figure) => (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {figures.slice(0, 8).map((figure) => (
             <Link
               key={figure.slug}
               href={`/figures/${figure.slug}`}
-              className="group flex items-center gap-2 rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm hover:border-stone-400 hover:shadow-sm transition-all"
+              className="group flex flex-col items-center gap-2 rounded-lg border border-stone-200 bg-white p-4 hover:border-stone-400 hover:shadow-sm transition-all"
             >
-              <span className="font-medium text-stone-900">{figure.canonicalName}</span>
-              <span className="flex gap-1">
+              <div className="flex gap-1.5">
                 {figure.aliases.slice(0, 3).map((a) => (
                   <Badge key={a.id} className={`${TRADITION_BG[a.tradition]} text-[10px]`}>
                     {a.name}
                   </Badge>
                 ))}
-              </span>
+              </div>
+              <span className="text-xs text-stone-500 text-center mt-1">{figure.aliases.length > 0 ? `${figure.aliases.length} tradition${figure.aliases.length !== 1 ? 's' : ''}` : 'Figure'}</span>
             </Link>
           ))}
         </div>
@@ -240,7 +240,7 @@ export default async function HomePage() {
       <section className="mb-14">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-stone-900">Themes</h2>
-          <Link href="/themes" className="text-sm text-stone-500 hover:text-stone-700">View all →</Link>
+          <Link href="/themes" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
         </div>
         <div className="flex flex-wrap gap-2">
           {themes.map((theme) => (
@@ -261,7 +261,7 @@ export default async function HomePage() {
         <section className="mb-14">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-stone-900">Theological Concepts</h2>
-            <Link href="/concepts" className="text-sm text-stone-500 hover:text-stone-700">View all →</Link>
+            <Link href="/concepts" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
           </div>
           <p className="mb-5 text-sm text-stone-500 max-w-2xl">
             Key theological and philosophical ideas — and how Judaism, Christianity, and Islam each understand them.
@@ -301,7 +301,7 @@ export default async function HomePage() {
         <section className="mb-14">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-stone-900">Timeline of Humanity</h2>
-            <Link href="/timeline" className="text-sm text-stone-500 hover:text-stone-700">View full timeline →</Link>
+            <Link href="/timeline" className="text-sm font-medium text-stone-600 hover:text-stone-900">View full timeline →</Link>
           </div>
           <p className="mb-5 text-sm text-stone-500 max-w-2xl">
             Key events from creation to the founding of Islam — and how each tradition records, modifies, or disputes them.
@@ -317,7 +317,7 @@ export default async function HomePage() {
                   className={`rounded-xl bg-gradient-to-r ${ERA_BG[era]} border border-stone-100 p-5 hover:border-stone-300 hover:shadow-sm transition-all`}
                 >
                   <p className={`text-base font-bold ${ERA_ACCENT[era]}`}>{ERA_LABEL[era]}</p>
-                  <p className="mt-1 text-sm text-stone-500">{count} event{count !== 1 ? 's' : ''}</p>
+                  <p className={`mt-1 text-sm ${era === 'PATRIARCHAL' ? 'text-primary-800' : 'text-white/80'}`}>{count} event{count !== 1 ? 's' : ''}</p>
                 </Link>
               )
             })}
@@ -330,7 +330,7 @@ export default async function HomePage() {
         <section className="mb-14">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-stone-900">Featured Comparisons</h2>
-            <Link href="/comparisons" className="text-sm text-stone-500 hover:text-stone-700">
+            <Link href="/comparisons" className="text-sm font-medium text-stone-600 hover:text-stone-900">
               View all →
             </Link>
           </div>
