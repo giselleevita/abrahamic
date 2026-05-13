@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminClaimsPage() {
   const claims = await prisma.claim.findMany({
     include: {

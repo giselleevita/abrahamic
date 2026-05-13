@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { COMPARISON_TAG_LABEL, COMPARISON_TAG_STYLE } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminComparisonsPage() {
   const comparisons = await prisma.comparison.findMany({
     include: {

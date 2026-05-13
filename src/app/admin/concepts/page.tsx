@@ -7,6 +7,8 @@ const CATEGORY_LABEL: Record<ConceptCategory, string> = {
   PROPHETHOOD: 'Prophethood', PRACTICE: 'Practice', LAW: 'Law & Covenant', COSMOLOGY: 'Cosmology',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminConceptsPage() {
   const concepts = await prisma.concept.findMany({
     include: { _count: { select: { traditions: true } } },

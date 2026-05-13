@@ -7,6 +7,8 @@ const ERA_LABEL: Record<TimelineEra, string> = {
   KINGDOM: 'Kingdom', GOSPEL: 'Gospel', EARLY_ISLAM: 'Early Islam',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminTimelinePage() {
   const events = await prisma.timelineEvent.findMany({
     include: { _count: { select: { traditions: true } } },

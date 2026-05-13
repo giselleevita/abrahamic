@@ -3,6 +3,8 @@ import { GenerationalTree } from '@/components/figures/GenerationalTree'
 import { CrossTraditionFigures } from '@/components/figures/CrossTraditionFigures'
 import type { Tradition } from '@prisma/client'
 
+export const dynamic = 'force-dynamic'
+
 const TRADITIONS: Tradition[] = ['JEWISH', 'CHRISTIAN', 'ISLAMIC']
 
 async function getFiguresWithRelations(tradition: Tradition) {
