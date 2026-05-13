@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" width="320" height="64">
+  
+  <text x="0" y="44" class="word">Abrahamic</text>
+  <circle cx="232" cy="32" r="5" fill="#0f4c7f"></circle>
+  <circle cx="248" cy="32" r="5" fill="#7c2d3e"></circle>
+  <circle cx="264" cy="32" r="5" fill="#3d2a5c"></circle>
+</svg>
