@@ -9,6 +9,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: abrahamic
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -20,6 +35,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: "postgresql://user:password@localhost:5432/abrahamic"
+
+      - name: Run migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: "postgresql://user:password@localhost:5432/abrahamic"
+
       - name: Type check
         run: npx tsc --noEmit
 
@@ -30,4 +55,5 @@ jobs:
         run: npx next build
         env:
           DATABASE_URL: "postgresql://user:password@localhost:5432/abrahamic"
-          SKIP_ENV_VALIDATION: "1"
+          NEXTAUTH_SECRET: "ci-secret-not-for-production-use"
+          NEXTAUTH_URL: "http://localhost:3000"
