@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
@@ -163,7 +164,7 @@ model Figure {
   slug          String  @unique
   description   String? @db.Text
   imageUrl      String?
-  legacy        String? @db.Text   // What they were known for, contributions to belief
+  legacy        String? @db.Text
 
   aliases         FigureAlias[]
   claims          ClaimFigure[]
@@ -236,8 +237,8 @@ model Claim {
   notes               String?              @db.Text
   isPublished         Boolean              @default(false)
   interpretationScope InterpretationScope?
-  specificTradition   String?              // e.g. "Sunni", "Reform Judaism" — only when scope=SPECIFIC_TRADITION
-  embedding           Json?                // Float[] — stored for semantic search
+  specificTradition   String?
+  embedding           Json?
 
   verses        ClaimVerse[]
   figures       ClaimFigure[]
@@ -295,7 +296,7 @@ model Comparison {
   summary         String?       @db.Text
   isPublished     Boolean       @default(false)
   isControversial Boolean       @default(false)
-  createdById     String?       // admin user email, for attribution (internal)
+  createdById     String?
 
   claims ComparisonClaim[]
 
@@ -331,8 +332,6 @@ model VerseLink {
   @@unique([verseAId, verseBId, linkType])
   @@map("verse_links")
 }
-
-// ─── VerseLinkCandidate (AI-proposed, never shown to users until approved) ───
 
 model VerseLinkCandidate {
   id           Int             @id @default(autoincrement())
