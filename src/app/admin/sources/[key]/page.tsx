@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { use } from 'react'
 
@@ -68,7 +69,7 @@ function EditSourceForm({ sourceKey }: { sourceKey: string }) {
   return (
     <div>
       <div className="mb-6 flex items-center gap-3">
-        <a href="/admin/sources" className="text-sm text-stone-500 hover:text-stone-700">← Sources</a>
+        <Link href="/admin/sources" className="text-sm text-stone-500 hover:text-stone-700">← Sources</Link>
         <h1 className="text-2xl font-bold text-stone-900">{source.title}</h1>
         <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500">{source.tradition}</span>
       </div>

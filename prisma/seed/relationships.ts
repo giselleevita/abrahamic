@@ -220,7 +220,7 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
 
     if (fromFigure && toFigure) {
       // Look up verse reference if available
-      let verseRef = rel.verseKey ? relationshipVerses[rel.verseKey] : null
+      const verseRef = rel.verseKey ? relationshipVerses[rel.verseKey] : null
       let verse = null
 
       if (verseRef) {

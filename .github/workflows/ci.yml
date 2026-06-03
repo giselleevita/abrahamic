@@ -13,8 +13,8 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: abrahamic
         ports:
           - 5432:5432
@@ -38,22 +38,25 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
         env:
-          DATABASE_URL: "postgresql://user:password@localhost:5432/abrahamic"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
 
       - name: Run migrations
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL: "postgresql://user:password@localhost:5432/abrahamic"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
 
       - name: Type check
         run: npx tsc --noEmit
 
       - name: Lint
-        run: npx next lint
+        run: npm run lint
 
       - name: Build
         run: npx next build
         env:
-          DATABASE_URL: "postgresql://user:password@localhost:5432/abrahamic"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           NEXTAUTH_SECRET: "ci-secret-not-for-production-use"
           NEXTAUTH_URL: "http://localhost:3000"

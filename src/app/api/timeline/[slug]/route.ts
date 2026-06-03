@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth'
 
 const ERAS = ['PRIMORDIAL','PATRIARCHAL','EXODUS','KINGDOM','GOSPEL','EARLY_ISLAM'] as const
 const TRADITIONS = ['JEWISH','CHRISTIAN','ISLAMIC','SHARED'] as const
