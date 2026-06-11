@@ -11,13 +11,13 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 
 ## Status
 
-> **In development.** Next.js scaffold initialized with Prisma schema and `src/` structure.
+> **In development.** The application includes browsing, search, comparison, timeline, genealogy, and editorial administration flows. Content licensing and production deployment hardening remain open before a public release.
 
 ## Stack
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | Database | PostgreSQL via Prisma ORM |
 | Styling | Tailwind CSS |
@@ -33,7 +33,6 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 │   └── lib/        # Data access and utilities
 ├── prisma/         # Schema and migrations
 ├── public/         # Static assets
-└── AGENTS.md       # Agent coding instructions
 ```
 
 ## Getting Started
@@ -56,4 +55,4 @@ DATABASE_URL="postgresql://user:password@localhost:5432/abrahamic"
 
 ## License
 
-Private — all rights reserved.
+Source code is proprietary and currently provided for review only. Scripture translation excerpts require a separate licensing review before redistribution or public deployment.
