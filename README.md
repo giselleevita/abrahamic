@@ -1,5 +1,7 @@
 # Abrahamic Scripture Comparison
 
+[![CI](https://github.com/giselleevita/abrahamic/actions/workflows/ci.yml/badge.svg)](https://github.com/giselleevita/abrahamic/actions/workflows/ci.yml)
+
 A web application for side-by-side comparison of texts across the Abrahamic scriptures — Torah, Bible, and Quran — with thematic search, verse alignment, and commentary layers.
 
 ## What It Does
@@ -12,6 +14,14 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 ## Status
 
 > **In development.** The application includes browsing, search, comparison, timeline, genealogy, and editorial administration flows. Content licensing and production deployment hardening remain open before a public release.
+
+## Engineering Scope
+
+- Next.js App Router frontend with responsive comparison and editorial workflows
+- PostgreSQL/Prisma data model with checked-in migrations
+- NextAuth-based administration boundary
+- CI validation for migrations, TypeScript, ESLint, and production builds
+- Explicit content-licensing limitation before public deployment
 
 ## Stack
 
