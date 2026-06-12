@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import prisma from '@/lib/prisma'
-import { Badge } from '@/components/ui/Badge'
 import { ClaimCard } from '@/components/claims/ClaimCard'
 import type { ClaimWithRelations } from '@/types'
 

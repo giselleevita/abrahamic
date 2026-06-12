@@ -176,6 +176,7 @@ export async function getEmbedding(text: string): Promise<number[]> {
   // For production, replace with a proper embeddings API call.
   // This lightweight version asks the model to score relevance 0-100 and uses
   // that as a single-dimensional "embedding" for ranking purposes.
+  void text
   throw new Error('Use semanticRankClaims instead of getEmbedding directly')
 }
 

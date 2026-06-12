@@ -18,14 +18,6 @@ interface FamilyTreeNodeProps {
   isRoot?: boolean
 }
 
-const RELATIONSHIP_LABELS: Record<string, string> = {
-  PARENT: '→',
-  CHILD: '↓',
-  SPOUSE: '♥',
-  SIBLING: '∞',
-  DESCENDANT: '↓↓',
-}
-
 const SOURCE_COLORS: Record<string, { badge: string; dot: string }> = {
   TORAH: { badge: 'bg-jewish-700 text-jewish-50 border border-jewish-600', dot: 'bg-jewish-500' },
   HEBREW_BIBLE: { badge: 'bg-jewish-700 text-jewish-50 border border-jewish-600', dot: 'bg-jewish-500' },

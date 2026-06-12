@@ -103,7 +103,12 @@ export async function PATCH(
         ? {
             aliases: {
               deleteMany: {},
-              create: aliases.map(({ id: _id, ...a }) => a),
+              create: aliases.map((alias) => ({
+                tradition: alias.tradition,
+                name: alias.name,
+                language: alias.language,
+                notes: alias.notes,
+              })),
             },
           }
         : {}),

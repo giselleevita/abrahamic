@@ -1,10 +1,4 @@
-import { createHash } from 'crypto'
 import type { PrismaClient } from '@prisma/client'
-
-function claimHash(sourceId: number, statement: string): string {
-  const normalized = statement.trim().toLowerCase().replace(/\s+/g, ' ')
-  return createHash('sha256').update(`${sourceId}::${normalized}`).digest('hex')
-}
 
 type ComparisonData = {
   title: string
@@ -351,9 +345,6 @@ const comparisonsData: ComparisonData[] = [
 ]
 
 export async function seedComparisons(prisma: PrismaClient) {
-  const sources = await prisma.source.findMany()
-  const sourceMap = new Map(sources.map((s) => [s.key, s.id]))
-
   const allClaims = await prisma.claim.findMany({ include: { source: true } })
 
   for (const comp of comparisonsData) {

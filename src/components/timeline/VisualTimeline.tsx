@@ -86,12 +86,11 @@ const ERA_EMOJI: Record<TimelineEra, string> = {
 
 interface EventCardProps {
   event: EventData
-  dotColor: string
   textAccent: string
   isLeft: boolean
 }
 
-function EventCard({ event, dotColor, textAccent, isLeft }: EventCardProps) {
+function EventCard({ event, textAccent, isLeft }: EventCardProps) {
   const [expanded, setExpanded] = useState(false)
 
   const traditionDots = TRADITION_ORDER.map((trad) => {
@@ -130,7 +129,7 @@ function EventCard({ event, dotColor, textAccent, isLeft }: EventCardProps) {
 
         {/* Tradition dots row */}
         <div className="flex items-center gap-2">
-          {traditionDots.map(({ trad, presence, cfg }) => (
+          {traditionDots.map(({ trad, cfg }) => (
             <span
               key={trad}
               title={`${TRADITION_LABEL[trad]}: ${cfg.label}`}
@@ -263,7 +262,6 @@ export default function VisualTimeline({ groups }: VisualTimelineProps) {
                           {isLeft && (
                             <EventCard
                               event={event}
-                              dotColor={group.dotColor}
                               textAccent={group.textAccent}
                               isLeft
                             />
@@ -280,7 +278,6 @@ export default function VisualTimeline({ groups }: VisualTimelineProps) {
                           {!isLeft && (
                             <EventCard
                               event={event}
-                              dotColor={group.dotColor}
                               textAccent={group.textAccent}
                               isLeft={false}
                             />
@@ -296,7 +293,6 @@ export default function VisualTimeline({ groups }: VisualTimelineProps) {
                         <div className={`absolute left-[-5px] top-4 h-3 w-3 rounded-full border-2 border-white ${group.dotColor} shadow-sm`} />
                         <EventCard
                           event={event}
-                          dotColor={group.dotColor}
                           textAccent={group.textAccent}
                           isLeft={false}
                         />
