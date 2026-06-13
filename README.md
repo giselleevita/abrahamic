@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/giselleevita/abrahamic/actions/workflows/ci.yml/badge.svg)](https://github.com/giselleevita/abrahamic/actions/workflows/ci.yml)
 
+**Live (Vercel):** https://abrahamic.vercel.app
+
 A web application for side-by-side comparison of texts across the Abrahamic scriptures — Torah, Bible, and Quran — with thematic search, verse alignment, and commentary layers.
 
 ## What It Does
