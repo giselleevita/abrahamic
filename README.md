@@ -63,6 +63,14 @@ Create a `.env` file in the root:
 DATABASE_URL="postgresql://user:password@localhost:5432/abrahamic"
 ```
 
+## Deployment (Vercel)
+
+GitHub CI validates migrations and production builds against Postgres. Vercel builds use `prisma generate && next build` (see `vercel.json`) so deploys do not require database connectivity at build time.
+
+1. Set `DATABASE_URL` (and `DIRECT_URL` if using connection pooling) in the Vercel project.
+2. Run `npx prisma migrate deploy` against that database before or after the first deploy (one-off or via release hook).
+3. Redeploy after migrations are applied.
+
 ## License
 
 Source code is proprietary and currently provided for review only. Scripture translation excerpts require a separate licensing review before redistribution or public deployment.
