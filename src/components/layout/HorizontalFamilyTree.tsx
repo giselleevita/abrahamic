@@ -3,6 +3,10 @@ import Link from 'next/link'
 import { TRADITION_COLORS } from '@/lib/constants'
 
 async function getRootFigures() {
+  if (!process.env.DATABASE_URL) {
+    return []
+  }
+
   const figures = await prisma.figure.findMany({
     take: 12,
     orderBy: { canonicalName: 'asc' },
