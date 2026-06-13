@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { hasDatabaseUrl } from '@/lib/db-ready'
 import prisma from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
@@ -19,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
   ]
 
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return staticRoutes
   }
 
