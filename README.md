@@ -67,8 +67,10 @@ DATABASE_URL="postgresql://user:password@localhost:5432/abrahamic"
 
 GitHub CI validates migrations and production builds against Postgres. Vercel builds use `prisma generate && next build` (see `vercel.json`) so deploys do not require database connectivity at build time.
 
-1. Set `DATABASE_URL` (and `DIRECT_URL` if using connection pooling) in the Vercel project.
-2. Run `npx prisma migrate deploy` against that database before or after the first deploy (one-off or via release hook).
+Vercel Postgres injects `PRISMA_DATABASE_URL` / `POSTGRES_URL`. The app maps those to Prisma's `DATABASE_URL` at runtime (see `src/lib/prisma.ts`).
+
+1. Connect Vercel Postgres (or set `DATABASE_URL` and `DIRECT_URL`) in the Vercel project.
+2. Run `npm run db:deploy` against that database before or after the first deploy.
 3. Redeploy after migrations are applied.
 
 ## License

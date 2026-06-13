@@ -1,9 +1,10 @@
 import prisma from '@/lib/prisma'
 import Link from 'next/link'
 import { TRADITION_COLORS } from '@/lib/constants'
+import { hasDatabaseUrl } from '@/lib/db-ready'
 
 async function getRootFigures() {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return []
   }
 
