@@ -15,7 +15,17 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 
 ## Status
 
-> **In development.** The application includes browsing, search, comparison, timeline, genealogy, and editorial administration flows. Content licensing and production deployment hardening remain open before a public release.
+> **Public engineering demo** at https://abrahamic.vercel.app — showcases the full platform (figures, themes, comparisons, timeline, search, admin) with **public-domain verse text only** (JPS 1917, KJV, Hebrew/Arabic originals). See [`docs/LICENSING.md`](docs/LICENSING.md).
+
+## Public demo policy (max content, minimal licensing risk)
+
+| Included on public deploy | Excluded from public deploy |
+|---------------------------|----------------------------|
+| Figures, themes, concepts, timeline, comparisons, claims, verse links | JPS 1985, ESV, Yusuf Ali, Sahih International |
+| Editorial claim summaries (original paraphrases) | Full modern translation libraries |
+| JPS 1917, KJV, Hebrew (MT), Arabic verse text | |
+
+Seed logic in `prisma/seed/translation-policy.ts` filters translations before insert and deletes any previously seeded copyrighted names.
 
 ## Engineering Scope
 
@@ -23,7 +33,7 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 - PostgreSQL/Prisma data model with checked-in migrations
 - NextAuth-based administration boundary
 - CI validation for migrations, TypeScript, ESLint, and production builds
-- Explicit content-licensing limitation before public deployment
+- Public-demo translation policy enforced at seed time
 
 ## Stack
 
@@ -52,6 +62,7 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 ```bash
 npm install
 npx prisma migrate dev
+npm run db:seed
 npm run dev
 ```
 
@@ -72,9 +83,15 @@ GitHub CI validates migrations and production builds against Postgres. Vercel bu
 Vercel Postgres injects `PRISMA_DATABASE_URL` / `POSTGRES_URL`. The app maps those to Prisma's `DATABASE_URL` at runtime (see `src/lib/prisma.ts`).
 
 1. Connect Vercel Postgres (or set `DATABASE_URL` and `DIRECT_URL`) in the Vercel project.
-2. Run `npm run db:deploy` against that database before or after the first deploy.
-3. Redeploy after migrations are applied.
+2. Run `npm run db:deploy` against that database.
+3. Run `npm run db:seed` to load demo content (public-domain translations only).
+4. Redeploy if needed.
+
+```bash
+vercel env run --environment production -- npm run db:deploy
+vercel env run --environment production -- npm run db:seed
+```
 
 ## License
 
-Source code is proprietary and currently provided for review only. Scripture translation excerpts require a separate licensing review before redistribution or public deployment.
+Source code is proprietary and provided for technical review. The **public demo** serves public-domain translation excerpts (JPS 1917, KJV) and original-language text plus original editorial summaries — not a licensed scripture publication. See [`docs/LICENSING.md`](docs/LICENSING.md).

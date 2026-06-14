@@ -23,6 +23,7 @@ const SECTIONS = [
     title: 'Platform',
     links: [
       { href: '/search', label: 'Search' },
+      { href: '/licensing', label: 'Licensing' },
     ],
   },
 ]

@@ -1,4 +1,5 @@
 import type { PrismaClient } from '@prisma/client'
+import { COPYRIGHTED_TRANSLATION_NAMES, publicDemoTranslations } from './translation-policy'
 
 type VerseData = {
   sourceKey: 'TORAH' | 'HEBREW_BIBLE' | 'NEW_TESTAMENT' | 'QURAN'
@@ -802,12 +803,20 @@ const versesData: VerseData[] = [
 ]
 
 export async function seedVerses(prisma: PrismaClient) {
+  await prisma.verseTranslation.deleteMany({
+    where: { name: { in: [...COPYRIGHTED_TRANSLATION_NAMES] } },
+  })
+
   const sources = await prisma.source.findMany()
   const sourceMap = new Map(sources.map((s) => [s.key, s.id]))
+
+  let translationCount = 0
 
   for (const v of versesData) {
     const sourceId = sourceMap.get(v.sourceKey)!
     const referenceKey = `${v.sourceKey}.${v.book}.${v.chapter}.${v.verse}`
+    const translations = publicDemoTranslations(v.translations)
+    if (translations.length === 0) continue
 
     const verse = await prisma.verse.upsert({
       where: { referenceKey },
@@ -822,14 +831,15 @@ export async function seedVerses(prisma: PrismaClient) {
       },
     })
 
-    for (const t of v.translations) {
+    for (const t of translations) {
       await prisma.verseTranslation.upsert({
         where: { verseId_label_name: { verseId: verse.id, label: t.label, name: t.name } },
-        update: {},
+        update: { text: t.text, isDefault: t.isDefault ?? false },
         create: { verseId: verse.id, label: t.label, name: t.name, text: t.text, isDefault: t.isDefault ?? false },
       })
+      translationCount++
     }
   }
 
-  console.log(`✓ Verses seeded (${versesData.length} verses)`)
+  console.log(`✓ Verses seeded (${versesData.length} verses, ${translationCount} public-demo translations)`)
 }
