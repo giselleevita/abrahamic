@@ -1,63 +1,35 @@
-# Licensing — public engineering demo
+# Content policy — no publisher licenses required
 
-This repository powers a **technical portfolio demo**, not a commercial scripture app.
+The public demo is designed so you **do not need to pay for or negotiate translation licenses**.
 
-## Design goal
+## What visitors see
 
-Show **as much of the platform as possible** (data model, UI, comparisons, search, admin) while **not redistributing modern copyrighted translations** on a public URL.
+| Content type | Source | License needed? |
+|--------------|--------|-----------------|
+| Figures, themes, timeline, comparisons, claims | Written for this demo | No |
+| Reader notes (English) | Original project text | No |
+| Hebrew / Arabic verse text | Source-language text in seed | No translation license |
+| JPS 1985, ESV, KJV, Yusuf Ali, Sahih, etc. | **Not seeded, not served** | N/A |
 
-## Verse text on public deploy
+## Verse display model
 
-Enforced in `prisma/seed/translation-policy.ts` when you run `npm run db:seed`:
+1. **Original language** — Hebrew (Tanakh) or Arabic (Qur'an) where available  
+2. **Reader note (original)** — short English context written for the demo; explicitly **not** scripture translation text  
 
-### Allowed (seeded and shown)
+Seed and API layers enforce this via `src/lib/public-demo-policy.ts`.
 
-| Name | Use |
-|------|-----|
-| **Hebrew (MT)** | Original-language Tanakh excerpts |
-| **Arabic** | Original-language Qur'an excerpts |
-| **JPS 1917** | English Tanakh (public domain in the US) |
-| **KJV** | English Bible (public domain) |
-
-### Blocked (never seeded; deleted if found)
-
-| Name | Reason |
-|------|--------|
-| **JPS 1985** | Copyrighted (Jewish Publication Society) |
-| **ESV** | Copyrighted (Crossway) |
-| **Sahih International** | Copyrighted modern translation |
-| **Yusuf Ali** | Copyright / rights vary; excluded for safety |
-
-## Everything else stays rich
-
-The seed still loads (editorial, not third-party translation):
-
-- Sources, books, chapters, verse references
-- Figures, relationships, legacy notes
-- Themes, concepts, timeline events
-- Comparisons and tagged claims (paraphrased statements)
-- Verse cross-links
-
-Claims are **original summaries** pointing at verse references — not pasted translation text.
-
-## Production checklist
+## Re-seed production
 
 ```bash
-npm run db:deploy   # migrations
-npm run db:seed     # applies public-demo translation filter
+npm run db:seed
 ```
 
-On Vercel:
+This deletes removed translation names and rebuilds reader notes.
 
-```bash
-vercel env run --environment production -- npm run db:deploy
-vercel env run --environment production -- npm run db:seed
-```
+## Local development
 
-## UI notice
-
-The site shows a banner linking to `/licensing` explaining the public-demo scope.
+The full `verses.ts` dataset still contains reference translation names for development comparison, but `buildPublicDemoTranslations()` strips them at seed time.
 
 ## Not legal advice
 
-This policy reflects a conservative portfolio posture. A commercial scripture product would need publisher agreements per translation and jurisdiction.
+This is a conservative portfolio posture. Commercial scripture products need independent legal review.

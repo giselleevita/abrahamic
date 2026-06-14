@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { filterVersesWithTranslations } from '@/lib/filter-public-translations'
 
 export async function GET(
   req: NextRequest,
@@ -44,5 +45,9 @@ export async function GET(
     orderBy: { bookNumber: 'asc' },
   })
 
-  return NextResponse.json({ source, verses, books })
+  return NextResponse.json({
+    source,
+    verses: filterVersesWithTranslations(verses),
+    books,
+  })
 }
