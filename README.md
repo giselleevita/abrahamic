@@ -17,15 +17,15 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 
 > **Public engineering demo** at https://abrahamic.vercel.app — showcases the full platform (figures, themes, comparisons, timeline, search, admin) with **public-domain verse text only** (JPS 1917, KJV, Hebrew/Arabic originals). See [`docs/LICENSING.md`](docs/LICENSING.md).
 
-## Public demo policy (max content, minimal licensing risk)
+## Public demo policy (no publisher licenses)
 
-| Included on public deploy | Excluded from public deploy |
-|---------------------------|----------------------------|
-| Figures, themes, concepts, timeline, comparisons, claims, verse links | JPS 1985, ESV, Yusuf Ali, Sahih International |
-| Editorial claim summaries (original paraphrases) | Full modern translation libraries |
-| JPS 1917, KJV, Hebrew (MT), Arabic verse text | |
+| On public deploy | Not shown |
+|------------------|-----------|
+| Full platform: figures, themes, comparisons, claims, search | Any third-party English translation |
+| Original Hebrew / Arabic text | JPS, KJV, ESV, Yusuf Ali, Sahih International |
+| **Reader note (original)** — English context written for this demo | |
 
-Seed logic in `prisma/seed/translation-policy.ts` filters translations before insert and deletes any previously seeded copyrighted names.
+Enforced in `src/lib/public-demo-policy.ts` at seed and API time. See [`docs/LICENSING.md`](docs/LICENSING.md).
 
 ## Engineering Scope
 
@@ -94,4 +94,4 @@ vercel env run --environment production -- npm run db:seed
 
 ## License
 
-Source code is proprietary and provided for technical review. The **public demo** serves public-domain translation excerpts (JPS 1917, KJV) and original-language text plus original editorial summaries — not a licensed scripture publication. See [`docs/LICENSING.md`](docs/LICENSING.md).
+Source code is proprietary and provided for technical review. The **public demo** uses original-language text and **original reader notes** only — no licensed translations. See [`docs/LICENSING.md`](docs/LICENSING.md).

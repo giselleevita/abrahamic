@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client'
-import { COPYRIGHTED_TRANSLATION_NAMES, publicDemoTranslations } from './translation-policy'
+import { REMOVED_TRANSLATION_NAMES, buildPublicDemoTranslations } from './translation-policy'
 
 type VerseData = {
   sourceKey: 'TORAH' | 'HEBREW_BIBLE' | 'NEW_TESTAMENT' | 'QURAN'
@@ -804,7 +804,7 @@ const versesData: VerseData[] = [
 
 export async function seedVerses(prisma: PrismaClient) {
   await prisma.verseTranslation.deleteMany({
-    where: { name: { in: [...COPYRIGHTED_TRANSLATION_NAMES] } },
+    where: { name: { in: [...REMOVED_TRANSLATION_NAMES] } },
   })
 
   const sources = await prisma.source.findMany()
@@ -815,7 +815,15 @@ export async function seedVerses(prisma: PrismaClient) {
   for (const v of versesData) {
     const sourceId = sourceMap.get(v.sourceKey)!
     const referenceKey = `${v.sourceKey}.${v.book}.${v.chapter}.${v.verse}`
-    const translations = publicDemoTranslations(v.translations)
+    const translations = buildPublicDemoTranslations(
+      {
+        sourceKey: v.sourceKey,
+        book: v.book,
+        chapter: v.chapter,
+        verse: v.verse,
+      },
+      v.translations,
+    )
     if (translations.length === 0) continue
 
     const verse = await prisma.verse.upsert({
