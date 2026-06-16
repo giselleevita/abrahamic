@@ -23,7 +23,7 @@ See [`docs/LICENSING.md`](LICENSING.md) for the conservative content posture.
 
 | Step | URL / file | What to verify |
 |------|------------|----------------|
-| 1 | [Genesis 1](https://abrahamic.vercel.app/sources/TANAKH/read?book=Genesis&chapter=1) | Hebrew (MT) + Reader note only |
+| 1 | [Genesis 1](https://abrahamic.vercel.app/sources/torah/read?book=Genesis&chapter=1) | Hebrew (MT) + Reader note only |
 | 2 | [/licensing](https://abrahamic.vercel.app/licensing) | No licensed English translations served |
 | 3 | [/comparisons](https://abrahamic.vercel.app/comparisons) | Cross-tradition editorial comparisons |
 | 4 | [/themes](https://abrahamic.vercel.app/themes) | Thematic browse and alignment |
