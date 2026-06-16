@@ -95,3 +95,5 @@ vercel env run --environment production -- npm run db:seed
 ## License
 
 Source code is proprietary and provided for technical review. The **public demo** uses original-language text and **original reader notes** only — no licensed translations. See [`docs/LICENSING.md`](docs/LICENSING.md).
+
+**15-minute review:** [`docs/REVIEWER_GUIDE.md`](docs/REVIEWER_GUIDE.md) · **Live demo:** [abrahamic.vercel.app](https://abrahamic.vercel.app)
