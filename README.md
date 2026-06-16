@@ -15,7 +15,7 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 
 ## Status
 
-> **Public engineering demo** at https://abrahamic.vercel.app — showcases the full platform (figures, themes, comparisons, timeline, search, admin) with **public-domain verse text only** (JPS 1917, KJV, Hebrew/Arabic originals). See [`docs/LICENSING.md`](docs/LICENSING.md).
+> **Public engineering demo** at https://abrahamic.vercel.app — showcases the full platform (figures, themes, comparisons, timeline, search, admin) with **original Hebrew/Arabic text and project-authored reader notes only** — no licensed English translations. See [`docs/LICENSING.md`](docs/LICENSING.md).
 
 ## Public demo policy (no publisher licenses)
 
@@ -84,7 +84,7 @@ Vercel Postgres injects `PRISMA_DATABASE_URL` / `POSTGRES_URL`. The app maps tho
 
 1. Connect Vercel Postgres (or set `DATABASE_URL` and `DIRECT_URL`) in the Vercel project.
 2. Run `npm run db:deploy` against that database.
-3. Run `npm run db:seed` to load demo content (public-domain translations only).
+3. Run `npm run db:seed` to load license-free demo content.
 4. Redeploy if needed.
 
 ```bash
