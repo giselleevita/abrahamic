@@ -3,8 +3,9 @@ import './globals.css'
 import { Nav } from '@/components/layout/Nav'
 import { Footer } from '@/components/layout/Footer'
 import { PublicDemoBanner } from '@/components/layout/PublicDemoBanner'
+import { getSiteUrl } from '@/lib/site-url'
 
-const BASE_URL = process.env.NEXTAUTH_URL ?? 'http://localhost:3000'
+const BASE_URL = getSiteUrl()
 
 export const metadata: Metadata = {
   title: {

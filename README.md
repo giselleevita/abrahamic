@@ -83,9 +83,10 @@ GitHub CI validates migrations and production builds against Postgres. Vercel bu
 Vercel Postgres injects `PRISMA_DATABASE_URL` / `POSTGRES_URL`. The app maps those to Prisma's `DATABASE_URL` at runtime (see `src/lib/prisma.ts`).
 
 1. Connect Vercel Postgres (or set `DATABASE_URL` and `DIRECT_URL`) in the Vercel project.
-2. Run `npm run db:deploy` against that database.
-3. Run `npm run db:seed` to load license-free demo content.
-4. Redeploy if needed.
+2. Set `NEXTAUTH_URL` to your production URL (e.g. `https://abrahamic.vercel.app`) for auth callbacks and Open Graph metadata.
+3. Run `npm run db:deploy` against that database.
+4. Run `npm run db:seed` to load license-free demo content.
+5. Redeploy if needed.
 
 ```bash
 vercel env run --environment production -- npm run db:deploy

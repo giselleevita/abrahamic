@@ -1,11 +1,12 @@
 import type { MetadataRoute } from 'next'
 import { hasDatabaseUrl } from '@/lib/db-ready'
 import prisma from '@/lib/prisma'
+import { getSiteUrl } from '@/lib/site-url'
 
 export const dynamic = 'force-dynamic'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXTAUTH_URL ?? 'http://localhost:3000'
+  const base = getSiteUrl()
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
@@ -18,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/glossary`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${base}/verse-links`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
     { url: `${base}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${base}/licensing`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
   ]
 
   if (!hasDatabaseUrl()) {
