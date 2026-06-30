@@ -12,21 +12,21 @@ export const metadata: Metadata = {
     template: '%s — Abrahamic Texts',
   },
   description:
-    'A structured, neutral, and citable comparison of Jewish, Christian, and Islamic sacred texts. Every claim is cited. Every comparison is editorially authored.',
+    'Public engineering demo: structured comparison of Jewish, Christian, and Islamic scriptures with license-free original-language text and project-authored reader notes.',
   metadataBase: new URL(BASE_URL),
   openGraph: {
     type: 'website',
     siteName: 'Abrahamic Texts',
     title: 'Abrahamic Texts',
     description:
-      'A structured, neutral comparison of Jewish, Christian, and Islamic scriptures. Every claim is cited. Every comparison is editorially authored.',
+      'Public engineering demo — cross-tradition scripture comparison with editorial workflows. License-free original Hebrew/Arabic text and reader notes only.',
     url: BASE_URL,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Abrahamic Texts',
     description:
-      'A structured, neutral comparison of Jewish, Christian, and Islamic scriptures. Every claim is cited.',
+      'Public demo — cross-tradition scripture comparison. License-free original-language text and project-authored reader notes.',
   },
 }
 
