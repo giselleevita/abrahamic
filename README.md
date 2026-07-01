@@ -1,8 +1,9 @@
 # Abrahamic Scripture Comparison
 
 [![CI](https://github.com/giselleevita/abrahamic/actions/workflows/ci.yml/badge.svg)](https://github.com/giselleevita/abrahamic/actions/workflows/ci.yml)
+[![Live demo](https://img.shields.io/badge/demo-abrahamic.vercel.app-000?style=flat&logo=vercel&logoColor=white)](https://abrahamic.vercel.app)
 
-**Live (Vercel):** https://abrahamic.vercel.app — production deploys on merge to `main`. GitHub Actions CI may show failing until account billing is restored; Vercel build and the public demo are independent of Actions minutes.
+**Live (Vercel):** https://abrahamic.vercel.app — production deploys on merge to `main`. GitHub Actions CI may show failing until account billing is restored; see [`docs/CI_STATUS.md`](docs/CI_STATUS.md). Vercel build and the public demo are independent of Actions minutes.
 
 A web application for side-by-side comparison of texts across the Abrahamic scriptures — Torah, Bible, and Quran — with thematic search, verse alignment, and commentary layers.
 
