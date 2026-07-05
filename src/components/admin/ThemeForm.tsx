@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Theme } from '@prisma/client'
+import type { Theme } from '@/generated/prisma/client'
 
 interface Props {
   initialData?: Theme

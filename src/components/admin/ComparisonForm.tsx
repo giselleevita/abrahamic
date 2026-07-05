@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Claim, Source, Comparison } from '@prisma/client'
+import type { Claim, Source, Comparison } from '@/generated/prisma/client'
 import { COMPARISON_TAG_LABEL, TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
 

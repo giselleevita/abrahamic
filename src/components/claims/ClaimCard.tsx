@@ -1,5 +1,5 @@
 import type { ClaimWithRelations } from '@/types'
-import type { Tradition } from '@prisma/client'
+import type { Tradition } from '@/generated/prisma/client'
 
 interface Props {
   claim: ClaimWithRelations

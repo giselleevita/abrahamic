@@ -1,4 +1,4 @@
-import type { TraditionPresence } from '@prisma/client'
+import type { TraditionPresence } from '@/generated/prisma/client'
 import { TRADITION_PRESENCE_LABEL, TRADITION_PRESENCE_STYLE, TRADITION_PRESENCE_ICON } from '@/lib/constants'
 
 export function TraditionPresenceBadge({ presence }: { presence: TraditionPresence }) {

@@ -1,6 +1,6 @@
 import type { ComparisonWithClaims } from '@/types'
 import { COMPARISON_TAG_LABEL } from '@/lib/constants'
-import type { Tradition } from '@prisma/client'
+import type { Tradition } from '@/generated/prisma/client'
 
 interface Props {
   comparison: ComparisonWithClaims

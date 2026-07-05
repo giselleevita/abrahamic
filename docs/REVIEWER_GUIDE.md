@@ -15,7 +15,7 @@ Abrahamic is a **cross-tradition scripture comparison platform** — side-by-sid
 - **Data:** Prisma + PostgreSQL (`prisma/`) — sources, verses, translations, claims, comparisons
 - **Admin:** NextAuth-gated editorial flows under `src/app/admin/`
 - **Public demo policy:** `src/lib/public-demo-policy.ts` + `src/lib/filter-public-translations.ts` enforce allowed translation names at seed and API layers
-- **Deploy:** Vercel with runtime DB URL mapping (`src/lib/prisma-env.ts`); migrations via `scripts/migrate-deploy.sh`
+- **Deploy:** Vercel with runtime DB URL mapping (`src/lib/prisma-env.ts`); migrations via `scripts/migrate-deploy.sh`; seed via `npx prisma db seed` (Prisma 7)
 
 See [`docs/LICENSING.md`](LICENSING.md) for the conservative content posture.
 
@@ -33,6 +33,7 @@ See [`docs/LICENSING.md`](LICENSING.md) for the conservative content posture.
 ```bash
 npm install
 npx prisma migrate dev
+npx prisma db seed
 npm run dev
 # http://localhost:3000
 ```

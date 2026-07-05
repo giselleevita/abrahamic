@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { VerseLinkCandidate, Verse, Source } from '@prisma/client'
+import type { VerseLinkCandidate, Verse, Source } from '@/generated/prisma/client'
 
 type CandidateWithVerses = VerseLinkCandidate & {
   verseA: Verse & { source: Source }

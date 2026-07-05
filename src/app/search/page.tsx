@@ -5,7 +5,7 @@ import { TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
 import { ClaimCard } from '@/components/claims/ClaimCard'
 import type { ClaimWithRelations, FigureWithAliases } from '@/types'
-import type { ConceptCategory, TimelineEra } from '@prisma/client'
+import type { ConceptCategory, TimelineEra } from '@/generated/prisma/client'
 
 export const metadata: Metadata = { title: 'Search' }
 export const dynamic = 'force-dynamic'

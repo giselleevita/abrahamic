@@ -1,6 +1,6 @@
 'use client'
 
-import type { Figure } from '@prisma/client'
+import type { Figure } from '@/generated/prisma/client'
 import { TRADITION_COLORS } from '@/lib/constants'
 
 interface CrossTraditionFiguresProps {

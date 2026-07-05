@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Source, Figure, Theme, Claim, InterpretationScope } from '@prisma/client'
+import type { Source, Figure, Theme, Claim, InterpretationScope } from '@/generated/prisma/client'
 
 type VerseOption = {
   id: number

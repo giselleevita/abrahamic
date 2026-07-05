@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { ComparisonTag } from '@prisma/client'
+import type { ComparisonTag } from '@/generated/prisma/client'
 import { COMPARISON_TAG_LABEL, COMPARISON_TAG_STYLE } from '@/lib/constants'
 import { ComparisonBlock } from './ComparisonBlock'
 import type { ComparisonWithClaims } from '@/types'

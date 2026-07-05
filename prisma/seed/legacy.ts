@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@/generated/prisma/client'
 
 export async function seedFigureLegacy(prisma: PrismaClient) {
   const legacyData = [

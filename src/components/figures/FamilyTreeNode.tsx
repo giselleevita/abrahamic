@@ -1,6 +1,6 @@
 'use client'
 
-import type { Figure } from '@prisma/client'
+import type { Figure } from '@/generated/prisma/client'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 

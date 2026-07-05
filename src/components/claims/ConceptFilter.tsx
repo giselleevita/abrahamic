@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import type { ConceptCategory, Tradition } from '@prisma/client'
+import type { ConceptCategory, Tradition } from '@/generated/prisma/client'
 
 type TradRow = { tradition: Tradition; definition: string }
 type ConceptItem = {

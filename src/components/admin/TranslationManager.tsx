@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Source, Verse, VerseTranslation } from '@prisma/client'
+import type { Source, Verse, VerseTranslation } from '@/generated/prisma/client'
 
 type VerseWithTranslations = Verse & { translations: VerseTranslation[] }
 

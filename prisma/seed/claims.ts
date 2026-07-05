@@ -1,5 +1,5 @@
 import { createHash } from 'crypto'
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@/generated/prisma/client'
 
 function claimHash(sourceId: number, statement: string): string {
   const normalized = statement.trim().toLowerCase().replace(/\s+/g, ' ')

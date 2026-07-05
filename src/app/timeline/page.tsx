@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import prisma from '@/lib/prisma'
-import type { TimelineEra, TraditionPresence } from '@prisma/client'
+import type { TimelineEra, TraditionPresence } from '@/generated/prisma/client'
 import VisualTimeline from '@/components/timeline/VisualTimeline'
 
 export const metadata: Metadata = { title: 'Timeline' }

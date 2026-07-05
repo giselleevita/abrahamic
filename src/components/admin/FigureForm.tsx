@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Figure, FigureAlias, Tradition } from '@prisma/client'
+import type { Figure, FigureAlias, Tradition } from '@/generated/prisma/client'
 
 type FigureWithAliases = Figure & { aliases: FigureAlias[] }
 

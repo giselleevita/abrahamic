@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@/generated/prisma/client'
 
 // Map of relationship keys to verse references: "Genesis:5:3" format
 const relationshipVerses: Record<string, { source: 'TORAH' | 'HEBREW_BIBLE' | 'QURAN' | 'NEW_TESTAMENT'; book: string; chapter: number; verse: number } | null> = {

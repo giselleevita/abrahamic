@@ -13,4 +13,4 @@ if [[ -z "${DIRECT_URL}" ]]; then
   export DIRECT_URL="${DATABASE_URL}"
 fi
 
-exec npx tsx prisma/seed/index.ts
+exec npx prisma db seed

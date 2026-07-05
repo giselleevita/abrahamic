@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import prisma from '../../src/lib/prisma'
 import { seedSources } from './sources'
 import { seedThemes } from './themes'
 import { seedFigures } from './figures'
@@ -10,8 +10,6 @@ import { seedComparisons } from './comparisons'
 import { seedConcepts } from './concepts'
 import { seedTimeline } from './timeline'
 import { seedVerseLinks } from './verseLinks'
-
-const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Seeding database...\n')

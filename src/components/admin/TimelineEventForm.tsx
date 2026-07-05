@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { TimelineEvent, TimelineEventTradition, TimelineEra } from '@prisma/client'
+import type { TimelineEvent, TimelineEventTradition, TimelineEra } from '@/generated/prisma/client'
 
 type EventWithTraditions = TimelineEvent & { traditions: TimelineEventTradition[] }
 

@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma'
 import Link from 'next/link'
-import type { TimelineEra } from '@prisma/client'
+import type { TimelineEra } from '@/generated/prisma/client'
 
 const ERA_LABEL: Record<TimelineEra, string> = {
   PRIMORDIAL: 'Primordial', PATRIARCHAL: 'Patriarchal', EXODUS: 'Exodus',

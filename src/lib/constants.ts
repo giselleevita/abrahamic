@@ -1,4 +1,4 @@
-import type { SourceKey, Tradition, ComparisonTag, TraditionPresence } from '@prisma/client'
+import type { SourceKey, Tradition, ComparisonTag, TraditionPresence } from '@/generated/prisma/client'
 
 export const TRADITION_COLORS: Record<Tradition, string> = {
   JEWISH: '#0f4c7f',    // sapphire blue

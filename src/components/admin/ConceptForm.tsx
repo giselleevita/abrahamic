@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Concept, ConceptTradition, ConceptCategory, Tradition } from '@prisma/client'
+import type { Concept, ConceptTradition, ConceptCategory, Tradition } from '@/generated/prisma/client'
 
 type ConceptWithTraditions = Concept & { traditions: ConceptTradition[] }
 

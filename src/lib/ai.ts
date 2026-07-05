@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import type { VerseLinkType } from '@prisma/client'
+import type { VerseLinkType } from '@/generated/prisma/client'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 

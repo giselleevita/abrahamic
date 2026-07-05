@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma'
 import Link from 'next/link'
-import type { ConceptCategory } from '@prisma/client'
+import type { ConceptCategory } from '@/generated/prisma/client'
 
 const CATEGORY_LABEL: Record<ConceptCategory, string> = {
   THEOLOGY: 'Theology', SOTERIOLOGY: 'Soteriology', ESCHATOLOGY: 'Eschatology',

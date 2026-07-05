@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { Verse, VerseTranslation, VerseLink, Source } from '@prisma/client'
+import type { Verse, VerseTranslation, VerseLink, Source } from '@/generated/prisma/client'
 import { Badge } from '@/components/ui/Badge'
 import { TRADITION_BG } from '@/lib/constants'
 

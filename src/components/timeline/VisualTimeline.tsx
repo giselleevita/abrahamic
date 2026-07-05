@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import type { Tradition, TraditionPresence, TimelineEra } from '@prisma/client'
+import type { Tradition, TraditionPresence, TimelineEra } from '@/generated/prisma/client'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

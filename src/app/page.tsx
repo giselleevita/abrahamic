@@ -4,7 +4,7 @@ import { ComparisonBlock } from '@/components/claims/ComparisonBlock'
 import { TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
 import type { ComparisonWithClaims } from '@/types'
-import type { ConceptCategory } from '@prisma/client'
+import type { ConceptCategory } from '@/generated/prisma/client'
 
 export const dynamic = 'force-dynamic'
 

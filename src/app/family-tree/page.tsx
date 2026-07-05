@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma'
 import { GenerationalTree } from '@/components/figures/GenerationalTree'
 import { CrossTraditionFigures } from '@/components/figures/CrossTraditionFigures'
-import type { Tradition } from '@prisma/client'
+import type { Tradition } from '@/generated/prisma/client'
 
 export const dynamic = 'force-dynamic'
 

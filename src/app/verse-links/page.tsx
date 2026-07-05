@@ -3,7 +3,7 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
-import type { VerseLinkType } from '@prisma/client'
+import type { VerseLinkType } from '@/generated/prisma/client'
 
 export const metadata: Metadata = { title: 'Cross-References' }
 export const dynamic = 'force-dynamic'

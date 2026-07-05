@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@/generated/prisma/client'
 import { REMOVED_TRANSLATION_NAMES, buildPublicDemoTranslations } from './translation-policy'
 
 type VerseData = {

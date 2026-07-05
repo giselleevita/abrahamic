@@ -1,6 +1,6 @@
 'use client'
 
-import type { Figure } from '@prisma/client'
+import type { Figure } from '@/generated/prisma/client'
 import Link from 'next/link'
 
 interface FigureWithRelations extends Figure {

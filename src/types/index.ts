@@ -11,7 +11,7 @@ import type {
   ComparisonClaim,
   VerseLink,
   InterpretationScope,
-} from '@prisma/client'
+} from '@/generated/prisma/client'
 
 export type { InterpretationScope }
 
