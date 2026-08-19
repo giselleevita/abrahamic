@@ -17,8 +17,11 @@ import {
   createWebBibleAdapter,
   TORAH_BOOKS,
   NT_BOOKS,
+  HEBREW_BIBLE_BOOKS,
+  REST_OF_NT_BOOKS,
   WEB_TORAH_SPEC,
   WEB_NT_SPEC,
+  WEB_HEBREW_BIBLE_SPEC,
 } from './adapters/web-bible'
 import { createQuranAdapter, QURAN_ARABIC_SPEC } from './adapters/quran'
 import type { ImportAdapter } from './types'
@@ -26,6 +29,8 @@ import type { ImportAdapter } from './types'
 const ADAPTERS: Record<string, () => ImportAdapter> = {
   'web-torah': () => createWebBibleAdapter(TORAH_BOOKS, WEB_TORAH_SPEC),
   'web-nt': () => createWebBibleAdapter(NT_BOOKS, WEB_NT_SPEC),
+  'web-hebrew-bible': () => createWebBibleAdapter(HEBREW_BIBLE_BOOKS, WEB_HEBREW_BIBLE_SPEC),
+  'web-nt-rest': () => createWebBibleAdapter(REST_OF_NT_BOOKS, WEB_NT_SPEC),
   'quran-arabic': () => createQuranAdapter(QURAN_ARABIC_SPEC, 'quran-uthmani'),
 }
 

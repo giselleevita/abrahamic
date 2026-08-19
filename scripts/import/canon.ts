@@ -202,9 +202,84 @@ export const QURAN_CANON: CanonBook[] = [
 
 export const QURAN_TOTAL = QURAN_CANON.reduce((n, s) => n + (s.verses ?? 0), 0)
 
+
+/**
+ * Nevi'im and Ketuvim — the Hebrew Bible beyond the Torah.
+ *
+ * Verse totals are deliberately absent: chapter counts are easy to state
+ * accurately, per-book verse totals for thirty-four books are not, and a wrong
+ * total makes the completeness check lie. Chapter coverage still catches the
+ * failure that actually happens, which is whole chapters lost to rate limits.
+ * Fill in `verses` per book once a complete import has been measured.
+ */
+export const NEVIIM_KETUVIM_CANON: CanonBook[] = [
+  { book: "Joshua", bookNumber: 6, chapters: 24 },
+  { book: "Judges", bookNumber: 7, chapters: 21 },
+  { book: "Ruth", bookNumber: 8, chapters: 4 },
+  { book: "1 Samuel", bookNumber: 9, chapters: 31 },
+  { book: "2 Samuel", bookNumber: 10, chapters: 24 },
+  { book: "1 Kings", bookNumber: 11, chapters: 22 },
+  { book: "2 Kings", bookNumber: 12, chapters: 25 },
+  { book: "1 Chronicles", bookNumber: 13, chapters: 29 },
+  { book: "2 Chronicles", bookNumber: 14, chapters: 36 },
+  { book: "Ezra", bookNumber: 15, chapters: 10 },
+  { book: "Nehemiah", bookNumber: 16, chapters: 13 },
+  { book: "Esther", bookNumber: 17, chapters: 10 },
+  { book: "Job", bookNumber: 18, chapters: 42 },
+  { book: "Psalms", bookNumber: 19, chapters: 150 },
+  { book: "Proverbs", bookNumber: 20, chapters: 31 },
+  { book: "Ecclesiastes", bookNumber: 21, chapters: 12 },
+  { book: "Song of Solomon", bookNumber: 22, chapters: 8 },
+  { book: "Isaiah", bookNumber: 23, chapters: 66 },
+  { book: "Jeremiah", bookNumber: 24, chapters: 52 },
+  { book: "Lamentations", bookNumber: 25, chapters: 5 },
+  { book: "Ezekiel", bookNumber: 26, chapters: 48 },
+  { book: "Daniel", bookNumber: 27, chapters: 12 },
+  { book: "Hosea", bookNumber: 28, chapters: 14 },
+  { book: "Joel", bookNumber: 29, chapters: 3 },
+  { book: "Amos", bookNumber: 30, chapters: 9 },
+  { book: "Obadiah", bookNumber: 31, chapters: 1 },
+  { book: "Jonah", bookNumber: 32, chapters: 4 },
+  { book: "Micah", bookNumber: 33, chapters: 7 },
+  { book: "Nahum", bookNumber: 34, chapters: 3 },
+  { book: "Habakkuk", bookNumber: 35, chapters: 3 },
+  { book: "Zephaniah", bookNumber: 36, chapters: 3 },
+  { book: "Haggai", bookNumber: 37, chapters: 2 },
+  { book: "Zechariah", bookNumber: 38, chapters: 14 },
+  { book: "Malachi", bookNumber: 39, chapters: 4 },
+]
+
+/** Acts through Revelation. Same reasoning on verse totals as above. */
+export const REST_OF_NT_CANON: CanonBook[] = [
+  { book: "Acts", bookNumber: 44, chapters: 28 },
+  { book: "Romans", bookNumber: 45, chapters: 16 },
+  { book: "1 Corinthians", bookNumber: 46, chapters: 16 },
+  { book: "2 Corinthians", bookNumber: 47, chapters: 13 },
+  { book: "Galatians", bookNumber: 48, chapters: 6 },
+  { book: "Ephesians", bookNumber: 49, chapters: 6 },
+  { book: "Philippians", bookNumber: 50, chapters: 4 },
+  { book: "Colossians", bookNumber: 51, chapters: 4 },
+  { book: "1 Thessalonians", bookNumber: 52, chapters: 5 },
+  { book: "2 Thessalonians", bookNumber: 53, chapters: 3 },
+  { book: "1 Timothy", bookNumber: 54, chapters: 6 },
+  { book: "2 Timothy", bookNumber: 55, chapters: 4 },
+  { book: "Titus", bookNumber: 56, chapters: 3 },
+  { book: "Philemon", bookNumber: 57, chapters: 1 },
+  { book: "Hebrews", bookNumber: 58, chapters: 13 },
+  { book: "James", bookNumber: 59, chapters: 5 },
+  { book: "1 Peter", bookNumber: 60, chapters: 5 },
+  { book: "2 Peter", bookNumber: 61, chapters: 3 },
+  { book: "1 John", bookNumber: 62, chapters: 5 },
+  { book: "2 John", bookNumber: 63, chapters: 1 },
+  { book: "3 John", bookNumber: 64, chapters: 1 },
+  { book: "Jude", bookNumber: 65, chapters: 1 },
+  { book: "Revelation", bookNumber: 66, chapters: 22 },
+]
+
 export const CANON_BY_SOURCE: Record<string, CanonBook[]> = {
   TORAH: TORAH_CANON,
-  NEW_TESTAMENT: GOSPEL_CANON,
+  NEW_TESTAMENT: [...GOSPEL_CANON, ...REST_OF_NT_CANON],
+  HEBREW_BIBLE: NEVIIM_KETUVIM_CANON,
   QURAN: QURAN_CANON,
 }
 

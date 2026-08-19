@@ -10,7 +10,10 @@
  * against someone else's free service.
  */
 import type { ImportAdapter, ImportedVerse, TranslationSpec } from '../types'
-import { TORAH_CANON, GOSPEL_CANON, type CanonBook } from '../canon'
+import {
+  TORAH_CANON, GOSPEL_CANON, NEVIIM_KETUVIM_CANON, REST_OF_NT_CANON,
+  type CanonBook,
+} from '../canon'
 
 const API = 'https://bible-api.com'
 
@@ -46,6 +49,8 @@ const toSpec = (b: CanonBook): BookSpec => ({
 
 export const TORAH_BOOKS: BookSpec[] = TORAH_CANON.map(toSpec)
 export const NT_BOOKS: BookSpec[] = GOSPEL_CANON.map(toSpec)
+export const HEBREW_BIBLE_BOOKS: BookSpec[] = NEVIIM_KETUVIM_CANON.map(toSpec)
+export const REST_OF_NT_BOOKS: BookSpec[] = REST_OF_NT_CANON.map(toSpec)
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
@@ -140,4 +145,9 @@ export const WEB_TORAH_SPEC: TranslationSpec = {
 export const WEB_NT_SPEC: TranslationSpec = {
   ...WEB_TORAH_SPEC,
   sourceKey: 'NEW_TESTAMENT',
+}
+
+export const WEB_HEBREW_BIBLE_SPEC: TranslationSpec = {
+  ...WEB_TORAH_SPEC,
+  sourceKey: 'HEBREW_BIBLE',
 }
