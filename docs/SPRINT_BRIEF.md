@@ -64,3 +64,21 @@ than estimating and presenting it as measured.
 
 Kids content, video features, multi-user admin, the global cascade-layer fix, mobile,
 interface i18n. All plausible later; none is between this and a usable product.
+
+
+---
+
+## Act I status
+
+| Step | State | Evidence |
+|---|---|---|
+| 1. Caching + 404 status | Done | 83 dynamic routes → 64ƒ/16○/4●; `x-nextjs-cache: HIT`; all missing pages 404 |
+| 2. Search | Done | GIN + trigram indexes; absent-term lookup 50.1ms → 0.05ms |
+| 3. RTL | Done | 46 RTL elements on /comparisons with computed `direction: rtl` |
+| 4. Ingestion | Done | Genesis complete at 1,533 verses; third run writes zero |
+
+Corpus: 94 → 1,617 verses. Tests: 126 → 172.
+
+Still open from the plan: the remaining Torah books and the New Testament
+(`npm run import web-torah`, `npm run import web-nt`), the harder licensing
+calls, and permitting translations by `licenseCode` rather than by name.
