@@ -171,6 +171,7 @@ model Figure {
   relationsFrom   FigureRelation[] @relation("RelationsFrom")
   relationsTo     FigureRelation[] @relation("RelationsTo")
   kidsStories     KidsStoryFigure[]
+  videos          VideoResourceFigure[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -218,6 +219,7 @@ model Theme {
   color       String?
 
   claims ClaimTheme[]
+  videos VideoResourceTheme[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -363,6 +365,7 @@ model Concept {
   isPublished Boolean         @default(false)
 
   traditions ConceptTradition[]
+  videos     VideoResourceConcept[]
   claims     ConceptClaim[]
 
   createdAt DateTime @default(now())
@@ -512,4 +515,74 @@ model KidsStoryFigure {
 
   @@id([storyId, figureId])
   @@map("kids_story_figures")
+}
+
+// ─── Video resources ─────────────────────────────────────────────────────────
+// Third-party explainer videos, added one at a time by an editor. There is no
+// search or channel-wide import: nothing renders that a person did not
+// individually approve.
+
+model VideoResource {
+  id          Int     @id @default(autoincrement())
+  /// The 11-character YouTube id. Validated by regex before storage — the
+  /// embed URL is built by interpolation, so an unchecked value is an
+  /// iframe-src injection.
+  youtubeId   String  @unique
+  title       String
+  channelName String
+  /// Required, and non-trivial: an editor must state in writing why this video
+  /// is here. Embedding an outside voice on a neutrality-critical platform
+  /// should never be a silent act.
+  editorNote  String  @db.Text
+  /// Whose reading this video represents, when it clearly represents one. Lets
+  /// an editor see at a glance when a topic's videos all come from one side.
+  perspectiveTradition Tradition?
+  durationSeconds Int?
+  isPublished Boolean @default(false)
+  /// Separate from isPublished on purpose: an adult-vetted lecture is not
+  /// automatically suitable for the kids section.
+  isKidsSafe  Boolean @default(false)
+
+  concepts VideoResourceConcept[]
+  figures  VideoResourceFigure[]
+  themes   VideoResourceTheme[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished])
+  @@map("video_resources")
+}
+
+model VideoResourceConcept {
+  videoId   Int
+  video     VideoResource @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  conceptId Int
+  concept   Concept       @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  position  Int           @default(0)
+
+  @@id([videoId, conceptId])
+  @@map("video_resource_concepts")
+}
+
+model VideoResourceFigure {
+  videoId  Int
+  video    VideoResource @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  figureId Int
+  figure   Figure        @relation(fields: [figureId], references: [id], onDelete: Cascade)
+  position Int           @default(0)
+
+  @@id([videoId, figureId])
+  @@map("video_resource_figures")
+}
+
+model VideoResourceTheme {
+  videoId  Int
+  video    VideoResource @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  themeId  Int
+  theme    Theme         @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  position Int           @default(0)
+
+  @@id([videoId, themeId])
+  @@map("video_resource_themes")
 }

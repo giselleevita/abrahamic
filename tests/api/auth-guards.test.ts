@@ -63,6 +63,8 @@ const MUTATING_ROUTES: { path: string; module: string; methods: Method[] }[] = [
   { path: '/api/ai/verse-link-candidates/[id]', module: '@/app/api/ai/verse-link-candidates/[id]/route', methods: ['PATCH'] },
   { path: '/api/ai/kids-stories', module: '@/app/api/ai/kids-stories/route', methods: ['POST'] },
   { path: '/api/ai/kids-stories/[id]', module: '@/app/api/ai/kids-stories/[id]/route', methods: ['PATCH', 'DELETE'] },
+  { path: '/api/videos', module: '@/app/api/videos/route', methods: ['POST'] },
+  { path: '/api/videos/[id]', module: '@/app/api/videos/[id]/route', methods: ['PATCH', 'DELETE'] },
 ]
 
 beforeEach(() => {
