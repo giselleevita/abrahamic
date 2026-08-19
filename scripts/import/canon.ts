@@ -16,7 +16,17 @@ export interface CanonBook {
   book: string
   bookNumber: number
   chapters: number
-  verses: number
+  /**
+   * Canonical verse total, where it has been verified.
+   *
+   * Optional on purpose. Chapter counts are easy to state accurately; verse
+   * totals for sixty-odd books are not, and a wrong total makes the
+   * completeness check lie in both directions — reporting phantom gaps, or
+   * declaring a short book complete. Where this is absent the check falls back
+   * to chapter coverage, which still catches the failure that actually happens:
+   * whole chapters lost to rate limits.
+   */
+  verses?: number
   /**
    * Verses counted in the canonical total that a critical text legitimately
    * omits, as `chapter:verse`.
@@ -26,6 +36,14 @@ export interface CanonBook {
    * and a check that always fails is one nobody reads.
    */
   knownOmissions?: string[]
+  /**
+   * The chapter numbers this book actually stores, when they are not 1..chapters.
+   *
+   * A surah is one "book" whose stored chapter value is its surah number, so
+   * Al-Masad holds chapter 111, not chapter 1. Without this the coverage check
+   * looks for chapter 1 and reports every surah as missing it.
+   */
+  chapterNumbers?: number[]
 }
 
 export const TORAH_CANON: CanonBook[] = [
@@ -49,10 +67,146 @@ export const GOSPEL_CANON: CanonBook[] = [
   { book: 'John',    bookNumber: 43, chapters: 21, verses: 879 },
 ]
 
+
+/**
+ * The 114 surahs, with their ayah counts.
+ *
+ * `chapters: 1` because a surah *is* the unit — the importer fetches a whole
+ * surah per request, unlike a biblical book which is fetched chapter by
+ * chapter. `bookNumber` is the surah number and is the real identity here.
+ *
+ * Names are pinned rather than taken from the upstream API, because the API's
+ * transliteration differs from the one already in this database for 11 of the
+ * 14 surahs that were seeded — "Al-Baqara" against "Al-Baqarah",
+ * "Aal-i-Imraan" against "Al-Imran". Importing on API names would have created
+ * duplicate books and orphaned the claims and verse links pointing at the
+ * seeded verses. Where a name was already in use it is kept verbatim; the rest
+ * follow the same transliteration style. Checked for collisions: there are none.
+ */
+export const QURAN_CANON: CanonBook[] = [
+  { book: "Al-Fatihah", bookNumber: 1, chapters: 1, verses: 7, chapterNumbers: [1] },  // name already in use by seeded verses
+  { book: "Al-Baqarah", bookNumber: 2, chapters: 1, verses: 286, chapterNumbers: [2] },  // name already in use by seeded verses
+  { book: "Al-Imran", bookNumber: 3, chapters: 1, verses: 200, chapterNumbers: [3] },  // name already in use by seeded verses
+  { book: "An-Nisa", bookNumber: 4, chapters: 1, verses: 176, chapterNumbers: [4] },  // name already in use by seeded verses
+  { book: "Al-Maidah", bookNumber: 5, chapters: 1, verses: 120, chapterNumbers: [5] },  // name already in use by seeded verses
+  { book: "Al-Anam", bookNumber: 6, chapters: 1, verses: 165, chapterNumbers: [6] },
+  { book: "Al-Araf", bookNumber: 7, chapters: 1, verses: 206, chapterNumbers: [7] },
+  { book: "Al-Anfal", bookNumber: 8, chapters: 1, verses: 75, chapterNumbers: [8] },
+  { book: "At-Tawbah", bookNumber: 9, chapters: 1, verses: 129, chapterNumbers: [9] },  // name already in use by seeded verses
+  { book: "Yunus", bookNumber: 10, chapters: 1, verses: 109, chapterNumbers: [10] },
+  { book: "Hud", bookNumber: 11, chapters: 1, verses: 123, chapterNumbers: [11] },  // name already in use by seeded verses
+  { book: "Yusuf", bookNumber: 12, chapters: 1, verses: 111, chapterNumbers: [12] },
+  { book: "Ar-Rad", bookNumber: 13, chapters: 1, verses: 43, chapterNumbers: [13] },
+  { book: "Ibrahim", bookNumber: 14, chapters: 1, verses: 52, chapterNumbers: [14] },
+  { book: "Al-Hijr", bookNumber: 15, chapters: 1, verses: 99, chapterNumbers: [15] },
+  { book: "An-Nahl", bookNumber: 16, chapters: 1, verses: 128, chapterNumbers: [16] },  // name already in use by seeded verses
+  { book: "Al-Isra", bookNumber: 17, chapters: 1, verses: 111, chapterNumbers: [17] },  // name already in use by seeded verses
+  { book: "Al-Kahf", bookNumber: 18, chapters: 1, verses: 110, chapterNumbers: [18] },
+  { book: "Maryam", bookNumber: 19, chapters: 1, verses: 98, chapterNumbers: [19] },  // name already in use by seeded verses
+  { book: "Ta-Ha", bookNumber: 20, chapters: 1, verses: 135, chapterNumbers: [20] },
+  { book: "Al-Anbiya", bookNumber: 21, chapters: 1, verses: 112, chapterNumbers: [21] },  // name already in use by seeded verses
+  { book: "Al-Hajj", bookNumber: 22, chapters: 1, verses: 78, chapterNumbers: [22] },
+  { book: "Al-Muminon", bookNumber: 23, chapters: 1, verses: 118, chapterNumbers: [23] },
+  { book: "An-Nor", bookNumber: 24, chapters: 1, verses: 64, chapterNumbers: [24] },
+  { book: "Al-Furqan", bookNumber: 25, chapters: 1, verses: 77, chapterNumbers: [25] },
+  { book: "Ash-Shuara", bookNumber: 26, chapters: 1, verses: 227, chapterNumbers: [26] },
+  { book: "An-Naml", bookNumber: 27, chapters: 1, verses: 93, chapterNumbers: [27] },
+  { book: "Al-Qasas", bookNumber: 28, chapters: 1, verses: 88, chapterNumbers: [28] },
+  { book: "Al-Ankabot", bookNumber: 29, chapters: 1, verses: 69, chapterNumbers: [29] },
+  { book: "Ar-Rom", bookNumber: 30, chapters: 1, verses: 60, chapterNumbers: [30] },
+  { book: "Luqman", bookNumber: 31, chapters: 1, verses: 34, chapterNumbers: [31] },
+  { book: "As-Sajda", bookNumber: 32, chapters: 1, verses: 30, chapterNumbers: [32] },
+  { book: "Al-Ahzab", bookNumber: 33, chapters: 1, verses: 73, chapterNumbers: [33] },  // name already in use by seeded verses
+  { book: "Saba", bookNumber: 34, chapters: 1, verses: 54, chapterNumbers: [34] },
+  { book: "Fatir", bookNumber: 35, chapters: 1, verses: 45, chapterNumbers: [35] },
+  { book: "Yasen", bookNumber: 36, chapters: 1, verses: 83, chapterNumbers: [36] },
+  { book: "As-Saffat", bookNumber: 37, chapters: 1, verses: 182, chapterNumbers: [37] },
+  { book: "Sad", bookNumber: 38, chapters: 1, verses: 88, chapterNumbers: [38] },
+  { book: "Az-Zumar", bookNumber: 39, chapters: 1, verses: 75, chapterNumbers: [39] },
+  { book: "Ghafir", bookNumber: 40, chapters: 1, verses: 85, chapterNumbers: [40] },
+  { book: "Fussilat", bookNumber: 41, chapters: 1, verses: 54, chapterNumbers: [41] },
+  { book: "Ash-Shura", bookNumber: 42, chapters: 1, verses: 53, chapterNumbers: [42] },
+  { book: "Az-Zukhruf", bookNumber: 43, chapters: 1, verses: 89, chapterNumbers: [43] },
+  { book: "Ad-Dukhan", bookNumber: 44, chapters: 1, verses: 59, chapterNumbers: [44] },
+  { book: "Al-Jathiya", bookNumber: 45, chapters: 1, verses: 37, chapterNumbers: [45] },
+  { book: "Al-Ahqaf", bookNumber: 46, chapters: 1, verses: 35, chapterNumbers: [46] },
+  { book: "Muhammad", bookNumber: 47, chapters: 1, verses: 38, chapterNumbers: [47] },
+  { book: "Al-Fath", bookNumber: 48, chapters: 1, verses: 29, chapterNumbers: [48] },
+  { book: "Al-Hujurat", bookNumber: 49, chapters: 1, verses: 18, chapterNumbers: [49] },
+  { book: "Qaf", bookNumber: 50, chapters: 1, verses: 45, chapterNumbers: [50] },
+  { book: "Adh-Dhariyat", bookNumber: 51, chapters: 1, verses: 60, chapterNumbers: [51] },
+  { book: "At-Tur", bookNumber: 52, chapters: 1, verses: 49, chapterNumbers: [52] },
+  { book: "An-Najm", bookNumber: 53, chapters: 1, verses: 62, chapterNumbers: [53] },
+  { book: "Al-Qamar", bookNumber: 54, chapters: 1, verses: 55, chapterNumbers: [54] },
+  { book: "Ar-Rahman", bookNumber: 55, chapters: 1, verses: 78, chapterNumbers: [55] },
+  { book: "Al-Waqia", bookNumber: 56, chapters: 1, verses: 96, chapterNumbers: [56] },
+  { book: "Al-Hadid", bookNumber: 57, chapters: 1, verses: 29, chapterNumbers: [57] },
+  { book: "Al-Mujadila", bookNumber: 58, chapters: 1, verses: 22, chapterNumbers: [58] },
+  { book: "Al-Hashr", bookNumber: 59, chapters: 1, verses: 24, chapterNumbers: [59] },
+  { book: "Al-Mumtahana", bookNumber: 60, chapters: 1, verses: 13, chapterNumbers: [60] },
+  { book: "As-Saff", bookNumber: 61, chapters: 1, verses: 14, chapterNumbers: [61] },
+  { book: "Al-Jumua", bookNumber: 62, chapters: 1, verses: 11, chapterNumbers: [62] },  // name already in use by seeded verses
+  { book: "Al-Munafiqon", bookNumber: 63, chapters: 1, verses: 11, chapterNumbers: [63] },
+  { book: "At-Taghabun", bookNumber: 64, chapters: 1, verses: 18, chapterNumbers: [64] },
+  { book: "At-Talaq", bookNumber: 65, chapters: 1, verses: 12, chapterNumbers: [65] },
+  { book: "At-Tahrim", bookNumber: 66, chapters: 1, verses: 12, chapterNumbers: [66] },
+  { book: "Al-Mulk", bookNumber: 67, chapters: 1, verses: 30, chapterNumbers: [67] },
+  { book: "Al-Qalam", bookNumber: 68, chapters: 1, verses: 52, chapterNumbers: [68] },
+  { book: "Al-Haqqa", bookNumber: 69, chapters: 1, verses: 52, chapterNumbers: [69] },
+  { book: "Al-Marij", bookNumber: 70, chapters: 1, verses: 44, chapterNumbers: [70] },
+  { book: "Noh", bookNumber: 71, chapters: 1, verses: 28, chapterNumbers: [71] },
+  { book: "Al-Jinn", bookNumber: 72, chapters: 1, verses: 28, chapterNumbers: [72] },
+  { book: "Al-Muzzammil", bookNumber: 73, chapters: 1, verses: 20, chapterNumbers: [73] },
+  { book: "Al-Muddaththir", bookNumber: 74, chapters: 1, verses: 56, chapterNumbers: [74] },
+  { book: "Al-Qiyama", bookNumber: 75, chapters: 1, verses: 40, chapterNumbers: [75] },
+  { book: "Al-Insan", bookNumber: 76, chapters: 1, verses: 31, chapterNumbers: [76] },
+  { book: "Al-Mursalat", bookNumber: 77, chapters: 1, verses: 50, chapterNumbers: [77] },
+  { book: "An-Naba", bookNumber: 78, chapters: 1, verses: 40, chapterNumbers: [78] },
+  { book: "An-Naziat", bookNumber: 79, chapters: 1, verses: 46, chapterNumbers: [79] },
+  { book: "Abasa", bookNumber: 80, chapters: 1, verses: 42, chapterNumbers: [80] },
+  { book: "At-Takwir", bookNumber: 81, chapters: 1, verses: 29, chapterNumbers: [81] },
+  { book: "Al-Infitar", bookNumber: 82, chapters: 1, verses: 19, chapterNumbers: [82] },
+  { book: "Al-Mutaffifin", bookNumber: 83, chapters: 1, verses: 36, chapterNumbers: [83] },
+  { book: "Al-Inshiqaq", bookNumber: 84, chapters: 1, verses: 25, chapterNumbers: [84] },
+  { book: "Al-Buroj", bookNumber: 85, chapters: 1, verses: 22, chapterNumbers: [85] },
+  { book: "At-Tariq", bookNumber: 86, chapters: 1, verses: 17, chapterNumbers: [86] },
+  { book: "Al-Ala", bookNumber: 87, chapters: 1, verses: 19, chapterNumbers: [87] },
+  { book: "Al-Ghashiya", bookNumber: 88, chapters: 1, verses: 26, chapterNumbers: [88] },
+  { book: "Al-Fajr", bookNumber: 89, chapters: 1, verses: 30, chapterNumbers: [89] },
+  { book: "Al-Balad", bookNumber: 90, chapters: 1, verses: 20, chapterNumbers: [90] },
+  { book: "Ash-Shams", bookNumber: 91, chapters: 1, verses: 15, chapterNumbers: [91] },
+  { book: "Al-Lail", bookNumber: 92, chapters: 1, verses: 21, chapterNumbers: [92] },
+  { book: "Ad-Dhuha", bookNumber: 93, chapters: 1, verses: 11, chapterNumbers: [93] },
+  { book: "Ash-Sharh", bookNumber: 94, chapters: 1, verses: 8, chapterNumbers: [94] },
+  { book: "At-Tin", bookNumber: 95, chapters: 1, verses: 8, chapterNumbers: [95] },
+  { book: "Al-Alaq", bookNumber: 96, chapters: 1, verses: 19, chapterNumbers: [96] },
+  { book: "Al-Qadr", bookNumber: 97, chapters: 1, verses: 5, chapterNumbers: [97] },
+  { book: "Al-Bayyina", bookNumber: 98, chapters: 1, verses: 8, chapterNumbers: [98] },
+  { book: "Az-Zalzala", bookNumber: 99, chapters: 1, verses: 8, chapterNumbers: [99] },
+  { book: "Al-Aadiyat", bookNumber: 100, chapters: 1, verses: 11, chapterNumbers: [100] },
+  { book: "Al-Qaria", bookNumber: 101, chapters: 1, verses: 11, chapterNumbers: [101] },
+  { book: "At-Takathur", bookNumber: 102, chapters: 1, verses: 8, chapterNumbers: [102] },
+  { book: "Al-Asr", bookNumber: 103, chapters: 1, verses: 3, chapterNumbers: [103] },
+  { book: "Al-Humaza", bookNumber: 104, chapters: 1, verses: 9, chapterNumbers: [104] },
+  { book: "Al-Fil", bookNumber: 105, chapters: 1, verses: 5, chapterNumbers: [105] },
+  { book: "Quraish", bookNumber: 106, chapters: 1, verses: 4, chapterNumbers: [106] },
+  { book: "Al-Maun", bookNumber: 107, chapters: 1, verses: 7, chapterNumbers: [107] },
+  { book: "Al-Kawthar", bookNumber: 108, chapters: 1, verses: 3, chapterNumbers: [108] },
+  { book: "Al-Kafiron", bookNumber: 109, chapters: 1, verses: 6, chapterNumbers: [109] },
+  { book: "An-Nasr", bookNumber: 110, chapters: 1, verses: 3, chapterNumbers: [110] },
+  { book: "Al-Masad", bookNumber: 111, chapters: 1, verses: 5, chapterNumbers: [111] },
+  { book: "Al-Ikhlas", bookNumber: 112, chapters: 1, verses: 4, chapterNumbers: [112] },  // name already in use by seeded verses
+  { book: "Al-Falaq", bookNumber: 113, chapters: 1, verses: 5, chapterNumbers: [113] },
+  { book: "An-Nas", bookNumber: 114, chapters: 1, verses: 6, chapterNumbers: [114] },
+]
+
+export const QURAN_TOTAL = QURAN_CANON.reduce((n, s) => n + (s.verses ?? 0), 0)
+
 export const CANON_BY_SOURCE: Record<string, CanonBook[]> = {
   TORAH: TORAH_CANON,
   NEW_TESTAMENT: GOSPEL_CANON,
+  QURAN: QURAN_CANON,
 }
 
-export const TORAH_TOTAL = TORAH_CANON.reduce((n, b) => n + b.verses, 0)
-export const GOSPEL_TOTAL = GOSPEL_CANON.reduce((n, b) => n + b.verses, 0)
+export const TORAH_TOTAL = TORAH_CANON.reduce((n, b) => n + (b.verses ?? 0), 0)
+export const GOSPEL_TOTAL = GOSPEL_CANON.reduce((n, b) => n + (b.verses ?? 0), 0)

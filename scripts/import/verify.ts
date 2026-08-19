@@ -19,7 +19,9 @@ interface Row {
   source: string
   book: string
   actual: number
-  expected: number
+  expected?: number
+  chapters: number
+  chaptersPresent: number
   omissions: number
   missingChapters: number[]
 }
@@ -39,8 +41,9 @@ async function checkBook(
   ])
 
   const seen = new Set(present.map((p) => p.chapter))
-  const missingChapters: number[] = []
-  for (let c = 1; c <= book.chapters; c += 1) if (!seen.has(c)) missingChapters.push(c)
+  const expectedChapters =
+    book.chapterNumbers ?? Array.from({ length: book.chapters }, (_, i) => i + 1)
+  const missingChapters = expectedChapters.filter((c) => !seen.has(c))
 
   // Known textual variants are not gaps, so they come off the expected total.
   const omissions = book.knownOmissions?.length ?? 0
@@ -49,7 +52,11 @@ async function checkBook(
     source: sourceKey,
     book: book.book,
     actual,
-    expected: book.verses - omissions,
+    // Undefined where the canonical total has not been verified; the check
+    // then falls back to chapter coverage.
+    expected: book.verses === undefined ? undefined : book.verses - omissions,
+    chapters: book.chapters,
+    chaptersPresent: (book.chapterNumbers?.length ?? book.chapters) - missingChapters.length,
     omissions,
     missingChapters,
   }
@@ -75,28 +82,43 @@ async function main() {
 
   let incomplete = 0
   for (const r of rows) {
-    const complete = r.actual >= r.expected
+    const complete =
+      r.expected === undefined
+        ? r.missingChapters.length === 0
+        : r.actual >= r.expected
     if (!complete) incomplete += 1
 
     const variantNote = r.omissions ? ` (${r.omissions} known variant)` : ''
-    const status = complete
-      ? `complete${variantNote}`
-      : `short ${r.expected - r.actual}` +
-        (r.missingChapters.length
-          ? ` (ch ${r.missingChapters.slice(0, 6).join(',')}${r.missingChapters.length > 6 ? '…' : ''})`
-          : ' (partial chapters)')
+    const gapNote = r.missingChapters.length
+      ? ` (ch ${r.missingChapters.slice(0, 6).join(',')}${r.missingChapters.length > 6 ? '…' : ''})`
+      : ''
 
+    let status: string
+    if (complete) {
+      status = r.expected === undefined
+        ? `all ${r.chapters} chapters present`
+        : `complete${variantNote}`
+    } else if (r.expected === undefined) {
+      status = `missing ${r.missingChapters.length} chapter(s)${gapNote}`
+    } else {
+      status = `short ${r.expected - r.actual}${gapNote || ' (partial chapters)'}`
+    }
+
+    const expectedCol = r.expected === undefined ? `${r.chaptersPresent}/${r.chapters} ch` : String(r.expected)
     console.log(
-      `  ${r.book.padEnd(16)} ${String(r.actual).padStart(6)}   ${String(r.expected).padStart(9)}   ${status}`,
+      `  ${r.book.padEnd(16)} ${String(r.actual).padStart(6)}   ${expectedCol.padStart(9)}   ${status}`,
     )
   }
 
-  const loaded = rows.reduce((n, r) => n + r.actual, 0)
-  const expected = rows.reduce((n, r) => n + r.expected, 0)
+  // Only books with a verified total contribute to the percentage; otherwise
+  // the figure would silently mean something different per book.
+  const counted = rows.filter((r) => r.expected !== undefined)
+  const loaded = counted.reduce((n, r) => n + r.actual, 0)
+  const expected = counted.reduce((n, r) => n + (r.expected ?? 0), 0)
   console.log('  ' + '─'.repeat(52))
   console.log(
     `  ${'total'.padEnd(16)} ${String(loaded).padStart(6)}   ${String(expected).padStart(9)}   ` +
-      `${Math.round((loaded / expected) * 1000) / 10}%`,
+      `${expected ? Math.round((loaded / expected) * 1000) / 10 : 0}% of verified books`,
   )
 
   if (incomplete > 0) {

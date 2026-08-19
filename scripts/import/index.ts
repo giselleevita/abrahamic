@@ -20,11 +20,13 @@ import {
   WEB_TORAH_SPEC,
   WEB_NT_SPEC,
 } from './adapters/web-bible'
+import { createQuranAdapter, QURAN_ARABIC_SPEC } from './adapters/quran'
 import type { ImportAdapter } from './types'
 
 const ADAPTERS: Record<string, () => ImportAdapter> = {
   'web-torah': () => createWebBibleAdapter(TORAH_BOOKS, WEB_TORAH_SPEC),
   'web-nt': () => createWebBibleAdapter(NT_BOOKS, WEB_NT_SPEC),
+  'quran-arabic': () => createQuranAdapter(QURAN_ARABIC_SPEC, 'quran-uthmani'),
 }
 
 function parseArgs(argv: string[]) {
