@@ -77,8 +77,22 @@ interface i18n. All plausible later; none is between this and a usable product.
 | 3. RTL | Done | 46 RTL elements on /comparisons with computed `direction: rtl` |
 | 4. Ingestion | Done | Genesis complete at 1,533 verses; third run writes zero |
 
-Corpus: 94 → 1,617 verses. Tests: 126 → 172.
+Corpus: 94 → **37,334 verses**. Tests: 126 → 181.
 
-Still open from the plan: the remaining Torah books and the New Testament
-(`npm run import web-torah`, `npm run import web-nt`), the harder licensing
-calls, and permitting translations by `licenseCode` rather than by name.
+| Source | Verses |
+|---|---|
+| Hebrew Bible (Nevi'im + Ketuvim) | 17,293 |
+| New Testament | 7,953 |
+| Quran | 6,236 |
+| Torah | 5,852 |
+
+All tracked books complete against canonical counts. Translations are permitted
+by `licenseCode` rather than by name, so a new public-domain text is a data
+decision.
+
+Still open: the Sirah and Hadith sources are still empty shells, the Masoretic
+Hebrew and a second Quran edition would give original-language coverage beyond
+the 56 seeded verses, and the harder licensing calls (JPS 1917, KJV, Quran
+translations) remain yours to verify. Act II — pgvector and the alignment
+pipeline — has not started; confirm pgvector support locally and in production
+before writing embedding code.
