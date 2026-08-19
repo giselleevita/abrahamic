@@ -18,7 +18,8 @@
     "db:studio": "prisma studio",
     "test": "vitest",
     "test:run": "vitest run",
-    "import": "tsx scripts/import/index.ts"
+    "import": "tsx scripts/import/index.ts",
+    "import:verify": "tsx scripts/import/verify.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",

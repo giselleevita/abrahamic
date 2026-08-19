@@ -10,6 +10,7 @@
  * against someone else's free service.
  */
 import type { ImportAdapter, ImportedVerse, TranslationSpec } from '../types'
+import { TORAH_CANON, GOSPEL_CANON, type CanonBook } from '../canon'
 
 const API = 'https://bible-api.com'
 
@@ -37,20 +38,14 @@ interface ApiResponse {
  */
 interface BookSpec { name: string; number: number; chapters: number }
 
-export const TORAH_BOOKS: BookSpec[] = [
-  { name: 'Genesis',     number: 1, chapters: 50 },
-  { name: 'Exodus',      number: 2, chapters: 40 },
-  { name: 'Leviticus',   number: 3, chapters: 27 },
-  { name: 'Numbers',     number: 4, chapters: 36 },
-  { name: 'Deuteronomy', number: 5, chapters: 34 },
-]
+// Derived from the shared canon so the importer and the completeness check can
+// never disagree about how many chapters a book has.
+const toSpec = (b: CanonBook): BookSpec => ({
+  name: b.book, number: b.bookNumber, chapters: b.chapters,
+})
 
-export const NT_BOOKS: BookSpec[] = [
-  { name: 'Matthew', number: 40, chapters: 28 },
-  { name: 'Mark',    number: 41, chapters: 16 },
-  { name: 'Luke',    number: 42, chapters: 24 },
-  { name: 'John',    number: 43, chapters: 21 },
-]
+export const TORAH_BOOKS: BookSpec[] = TORAH_CANON.map(toSpec)
+export const NT_BOOKS: BookSpec[] = GOSPEL_CANON.map(toSpec)
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
