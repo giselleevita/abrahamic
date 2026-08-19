@@ -6,6 +6,7 @@ import {
   filterPublicDemoTranslations,
   buildPublicDemoTranslations,
   readerNoteForVerse,
+  isPermittedTranslation,
   type DemoTranslation,
 } from '@/lib/public-demo-policy'
 
@@ -111,5 +112,52 @@ describe('default translation priority', () => {
   it('still falls back to the reader note when no original text exists', () => {
     const result = buildPublicDemoTranslations(VERSE, [])
     expect(result.find((t) => t.isDefault)?.name).toBe('Reader note (original)')
+  })
+})
+
+describe('licence-driven permission', () => {
+  it('admits an unknown translation name when its licence is permitted', () => {
+    // This is the point of the change: importing a new public-domain text is a
+    // data decision, not a code change.
+    expect(isPermittedTranslation({ name: 'Some New PD Text', licenseCode: 'PD' })).toBe(true)
+    expect(isPermittedTranslation({ name: 'Reader note v2', licenseCode: 'PROJECT' })).toBe(true)
+  })
+
+  it('denies an unknown name carrying a licence that is not permitted', () => {
+    expect(isPermittedTranslation({ name: 'Some Modern Text', licenseCode: 'CC-BY-NC' })).toBe(false)
+    expect(isPermittedTranslation({ name: 'Some Modern Text', licenseCode: 'ALL-RIGHTS-RESERVED' })).toBe(false)
+  })
+
+  it('denies an explicitly removed name even if the row claims a good licence', () => {
+    // A mislabelled row must not be able to talk its way past the policy.
+    for (const name of REMOVED_TRANSLATION_NAMES) {
+      expect(isPermittedTranslation({ name, licenseCode: 'PD' })).toBe(false)
+      expect(isPermittedTranslation({ name, licenseCode: 'PROJECT' })).toBe(false)
+    }
+  })
+
+  it('falls back to the name allowlist when no licence was selected', () => {
+    // Queries that omit the licence column still work, and fail closed.
+    expect(isPermittedTranslation({ name: 'Hebrew (MT)' })).toBe(true)
+    expect(isPermittedTranslation({ name: 'World English Bible' })).toBe(true)
+    expect(isPermittedTranslation({ name: 'Some New PD Text' })).toBe(false)
+  })
+
+  it('treats a null licence as absent rather than as permission', () => {
+    expect(isPermittedTranslation({ name: 'Arabic', licenseCode: null })).toBe(true)
+    expect(isPermittedTranslation({ name: 'Unknown Text', licenseCode: null })).toBe(false)
+  })
+
+  it('filters mixed rows by licence and by name together', () => {
+    const rows = [
+      { name: 'Hebrew (MT)' },
+      { name: 'Newly Imported', licenseCode: 'PD' },
+      { name: 'Paywalled Text', licenseCode: 'COMMERCIAL' },
+      { name: 'KJV', licenseCode: 'PD' },
+    ]
+    expect(filterPublicDemoTranslations(rows).map((r) => r.name)).toEqual([
+      'Hebrew (MT)',
+      'Newly Imported',
+    ])
   })
 })

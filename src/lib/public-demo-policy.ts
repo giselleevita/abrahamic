@@ -16,20 +16,24 @@ export const REMOVED_TRANSLATION_NAMES = [
 ] as const
 
 /**
- * Translations permitted on a public deployment.
+ * Licences whose text may be shown on a public deployment.
  *
- * This is an explicit allowlist, not a blocklist: an unknown translation name
- * is denied. That is the correct default when the failure mode is publishing
- * someone else's copyrighted text.
+ * This is the primary mechanism. Importing a new translation is a data
+ * decision — set a permitted `licenseCode` on the rows — rather than a code
+ * change, which is what the name allowlist below required.
  *
- * The World English Bible is admitted because it is explicitly dedicated to the
- * public domain by its publisher — the one modern English translation whose
- * status is not in question. Imported rows carry `licenseCode`, `sourceUrl` and
- * `attribution`, so the provenance of every line is recorded.
+ * `PD` is public domain. `PROJECT` is text authored by this project itself,
+ * such as the reader notes. Anything else is denied.
+ */
+export const PERMITTED_LICENSE_CODES = new Set(['PD', 'PROJECT'])
+
+/**
+ * Translations permitted by name.
  *
- * Next step for this list: permit by `licenseCode` rather than by name, so
- * adding a translation is a data decision rather than a code change. That needs
- * the guard to see the licence column, which it currently does not.
+ * Retained as a fallback for rows that carry no licence, and for queries that
+ * do not select the licence column. An unknown name is denied — an allowlist,
+ * not a blocklist, because the failure mode is publishing someone else's
+ * copyrighted text.
  */
 export const PUBLIC_DEMO_TRANSLATION_NAMES = new Set([
   'Hebrew (MT)',
@@ -38,11 +42,63 @@ export const PUBLIC_DEMO_TRANSLATION_NAMES = new Set([
   'World English Bible',
 ])
 
+/** A row as the guard sees it. `licenseCode` is absent unless selected. */
+export type TranslationPermissionInput = {
+  name: string
+  licenseCode?: string | null
+}
+
+/**
+ * Whether a translation row may be shown publicly.
+ *
+ * Order matters. An explicitly removed name is denied whatever its licence
+ * claims, because a mislabelled row must not be able to talk its way past the
+ * policy. Otherwise a permitted licence admits the row; failing that, the name
+ * allowlist does.
+ *
+ * Note the asymmetry when `licenseCode` is not selected by a query: the row
+ * falls back to name matching. That is deliberately the safe direction — it can
+ * only ever deny something the licence would have allowed, never the reverse.
+ * Queries that need licence-based permission must select the column;
+ * `PUBLIC_TRANSLATION_FIELDS` exists for that.
+ */
+export function isPermittedTranslation(row: TranslationPermissionInput): boolean {
+  if ((REMOVED_TRANSLATION_NAMES as readonly string[]).includes(row.name)) return false
+  if (row.licenseCode && PERMITTED_LICENSE_CODES.has(row.licenseCode)) return true
+  return PUBLIC_DEMO_TRANSLATION_NAMES.has(row.name)
+}
+
+/** Select these wherever licence-based permission should apply. */
+export const PUBLIC_TRANSLATION_FIELDS = {
+  name: true,
+  text: true,
+  label: true,
+  isDefault: true,
+  licenseCode: true,
+  attribution: true,
+} as const
+
 export type DemoTranslation = {
   label: 'ORIGINAL' | 'CLASSIC' | 'MODERN'
   name: string
   text: string
   isDefault?: boolean
+  /** Set by the policy so every seeded row carries provenance, like imports do. */
+  licenseCode?: string
+}
+
+/**
+ * Licence for each translation the policy itself produces.
+ *
+ * The Masoretic Hebrew and the Quranic Arabic are public-domain source texts;
+ * the reader notes are written by this project. Recording these means seeded
+ * rows and imported rows are governed by the same licence check rather than
+ * seeded rows relying on a name allowlist.
+ */
+const SEED_LICENSES: Record<string, string> = {
+  'Hebrew (MT)': 'PD',
+  'Arabic': 'PD',
+  'Reader note (original)': 'PROJECT',
 }
 
 /**
@@ -104,13 +160,28 @@ export function buildPublicDemoTranslations(
   return combined.map((t) => ({
     ...t,
     isDefault: t.name === preferred,
+    licenseCode: t.licenseCode ?? SEED_LICENSES[t.name],
   }))
 }
 
+/**
+ * Name-only permission check.
+ *
+ * Kept for callers that genuinely have nothing but a name. Prefer
+ * `isPermittedTranslation`, which also honours the licence.
+ */
 export function isPublicDemoTranslation(name: string): boolean {
-  return PUBLIC_DEMO_TRANSLATION_NAMES.has(name)
+  return isPermittedTranslation({ name })
 }
 
-export function filterPublicDemoTranslations<T extends { name: string }>(translations: T[]): T[] {
-  return translations.filter((t) => isPublicDemoTranslation(t.name))
+/**
+ * Filter a list of translation rows to those permitted publicly.
+ *
+ * Uses the licence when the row carries one, and the name otherwise, so the
+ * same helper serves both fully-selected rows and name-only ones.
+ */
+export function filterPublicDemoTranslations<
+  T extends { name: string; licenseCode?: string | null },
+>(translations: T[]): T[] {
+  return translations.filter((t) => isPermittedTranslation(t))
 }

@@ -15,7 +15,7 @@
  * Set `PUBLIC_DEMO_MODE=false` for a deployment that holds real translation
  * licences. It defaults to enabled so the safe path is the default path.
  */
-import { isPublicDemoTranslation } from '@/lib/public-demo-policy'
+import { isPermittedTranslation } from '@/lib/public-demo-policy'
 
 export function isPublicDemoMode(): boolean {
   return process.env.PUBLIC_DEMO_MODE !== 'false'
@@ -28,7 +28,9 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function isTranslationRow(value: unknown): value is { name: string } {
+function isTranslationRow(
+  value: unknown,
+): value is { name: string; licenseCode?: string | null } {
   return isPlainObject(value) && typeof value.name === 'string'
 }
 
@@ -59,7 +61,7 @@ export function stripLicensedTranslations<T>(value: T): T {
 
   for (const [key, child] of Object.entries(value)) {
     if (key === TRANSLATION_KEY && Array.isArray(child) && child.every(isTranslationRow)) {
-      const filtered = child.filter((t) => isPublicDemoTranslation(t.name))
+      const filtered = child.filter((t) => isPermittedTranslation(t))
       if (filtered.length !== child.length) changed = true
       next[key] = filtered
       continue

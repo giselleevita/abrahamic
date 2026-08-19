@@ -842,8 +842,11 @@ export async function seedVerses(prisma: PrismaClient) {
     for (const t of translations) {
       await prisma.verseTranslation.upsert({
         where: { verseId_label_name: { verseId: verse.id, label: t.label, name: t.name } },
-        update: { text: t.text, isDefault: t.isDefault ?? false },
-        create: { verseId: verse.id, label: t.label, name: t.name, text: t.text, isDefault: t.isDefault ?? false },
+        update: { text: t.text, isDefault: t.isDefault ?? false, licenseCode: t.licenseCode },
+        create: {
+          verseId: verse.id, label: t.label, name: t.name, text: t.text,
+          isDefault: t.isDefault ?? false, licenseCode: t.licenseCode,
+        },
       })
       translationCount++
     }
