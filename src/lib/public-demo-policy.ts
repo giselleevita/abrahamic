@@ -28,7 +28,17 @@ export type DemoTranslation = {
   isDefault?: boolean
 }
 
-const DEFAULT_PRIORITY = ['Reader note (original)', 'Hebrew (MT)', 'Arabic'] as const
+/**
+ * Original-language text wins over the reader note.
+ *
+ * The order used to be the other way round, so the reader note — which is
+ * boilerplate *about* the demo, not scripture — was the default on every verse
+ * that had one, i.e. all of them. 56 Hebrew and Arabic translations existed and
+ * none was ever displayed, while the README claimed original-language text was
+ * shown. The note is a fallback for verses with no original text, not a
+ * replacement for it.
+ */
+const DEFAULT_PRIORITY = ['Hebrew (MT)', 'Arabic', 'Reader note (original)'] as const
 
 export function readerNoteForVerse(input: {
   sourceKey: string

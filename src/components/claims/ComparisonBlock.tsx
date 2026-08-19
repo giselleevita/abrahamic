@@ -1,6 +1,7 @@
 import type { ComparisonWithClaims } from '@/types'
 import { COMPARISON_TAG_LABEL } from '@/lib/constants'
 import type { Tradition } from '@/generated/prisma/client'
+import { ScriptText } from '@/components/ui/ScriptText'
 
 interface Props {
   comparison: ComparisonWithClaims
@@ -80,9 +81,7 @@ export function ComparisonBlock({ comparison, showSummary = true }: Props) {
 
                 {primaryVerse && defaultTranslation && (
                   <blockquote className="mt-auto border-l-2 border-stone-300/60 pl-3">
-                    <p className="text-xs text-stone-500 italic leading-relaxed">
-                      "{defaultTranslation.text}"
-                    </p>
+                    <ScriptText text={defaultTranslation.text} quoted className="text-xs text-stone-500 italic leading-relaxed" />
                     <cite className={`mt-1 block text-xs font-semibold not-italic ${style.cite}`}>
                       {primaryVerse.book} {primaryVerse.chapter}:{primaryVerse.verse}
                     </cite>

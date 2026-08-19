@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { Verse, VerseTranslation, VerseLink, Source } from '@/generated/prisma/client'
 import { Badge } from '@/components/ui/Badge'
 import { TRADITION_BG } from '@/lib/constants'
+import { ScriptText } from '@/components/ui/ScriptText'
 
 type LinkedVerse = Verse & {
   source: Source
@@ -134,19 +135,22 @@ export function VerseReader({ verses }: Props) {
                             <span className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                               {LABEL_DISPLAY[label]} — {t.name}
                             </span>
-                            <p className="text-sm leading-relaxed text-stone-800">{t.text}</p>
+                            <ScriptText text={t.text} className="text-sm leading-relaxed text-stone-800" />
                           </div>
                         )
                       })}
                     </div>
                   ) : (
-                    <p className="text-sm leading-relaxed text-stone-800">
-                      {(
-                        verse.translations.find((t) => t.name === selectedTranslation) ??
-                        verse.translations.find((t) => t.isDefault) ??
-                        verse.translations[0]
-                      )?.text ?? ''}
-                    </p>
+                    <ScriptText
+                      text={
+                        (
+                          verse.translations.find((t) => t.name === selectedTranslation) ??
+                          verse.translations.find((t) => t.isDefault) ??
+                          verse.translations[0]
+                        )?.text ?? ''
+                      }
+                      className="text-sm leading-relaxed text-stone-800"
+                    />
                   )}
 
                   {allLinks.length > 0 && (
@@ -179,9 +183,11 @@ export function VerseReader({ verses }: Props) {
                               </span>
                             </div>
                             {linkedDefault && (
-                              <p className="mt-1 text-xs italic text-stone-500">
-                                "{linkedDefault.text}"
-                              </p>
+                              <ScriptText
+                                text={linkedDefault.text}
+                                quoted
+                                className="mt-1 text-xs italic text-stone-500"
+                              />
                             )}
                             {link.notes && (
                               <p className="mt-0.5 text-xs text-stone-400">{link.notes}</p>

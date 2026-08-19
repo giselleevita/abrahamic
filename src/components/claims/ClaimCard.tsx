@@ -1,5 +1,6 @@
 import type { ClaimWithRelations } from '@/types'
 import type { Tradition } from '@/generated/prisma/client'
+import { ScriptText } from '@/components/ui/ScriptText'
 
 interface Props {
   claim: ClaimWithRelations
@@ -34,9 +35,11 @@ export function ClaimCard({ claim, showSource = true }: Props) {
 
       {primaryVerse && defaultTranslation && (
         <blockquote className={`rounded-md ${style.citeBg} px-3 py-2`}>
-          <p className="text-xs text-stone-600 italic leading-relaxed">
-            "{defaultTranslation.text}"
-          </p>
+          <ScriptText
+            text={defaultTranslation.text}
+            quoted
+            className="text-xs text-stone-600 italic leading-relaxed"
+          />
           <cite className="mt-1 block text-xs font-semibold text-stone-500 not-italic">
             {primaryVerse.book} {primaryVerse.chapter}:{primaryVerse.verse}
           </cite>

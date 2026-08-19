@@ -87,3 +87,29 @@ describe('readerNoteForVerse', () => {
       .toContain('Genesis 3:15')
   })
 })
+
+describe('default translation priority', () => {
+  const withOriginal: DemoTranslation[] = [
+    { label: 'ORIGINAL', name: 'Hebrew (MT)', text: 'בְּרֵאשִׁית' },
+  ]
+
+  it('prefers original-language text over the reader note', () => {
+    // The reader note is boilerplate about the demo. When real scripture exists
+    // for a verse, that is what a reader should see.
+    const result = buildPublicDemoTranslations(VERSE, withOriginal)
+    expect(result.find((t) => t.isDefault)?.name).toBe('Hebrew (MT)')
+  })
+
+  it('prefers Arabic over the reader note for Quranic verses', () => {
+    const result = buildPublicDemoTranslations(
+      { ...VERSE, sourceKey: 'QURAN' },
+      [{ label: 'ORIGINAL', name: 'Arabic', text: 'بِسْمِ اللَّهِ' }],
+    )
+    expect(result.find((t) => t.isDefault)?.name).toBe('Arabic')
+  })
+
+  it('still falls back to the reader note when no original text exists', () => {
+    const result = buildPublicDemoTranslations(VERSE, [])
+    expect(result.find((t) => t.isDefault)?.name).toBe('Reader note (original)')
+  })
+})
