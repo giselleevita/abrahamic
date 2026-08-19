@@ -151,7 +151,21 @@ model VerseTranslation {
   text      String           @db.Text
   isDefault Boolean          @default(false)
 
+  /// Provenance. Recorded per row so "where did this text come from, and under
+  /// what licence" stays answerable after the importer has moved on, and so a
+  /// deployment can permit text by licence rather than by a list of names.
+  licenseCode String?   /// e.g. "PD", "CC-BY-SA-4.0"
+  sourceUrl   String?
+  attribution String?   /// Required credit line, where the licence demands one.
+  retrievedAt DateTime?
+
+  /// Generated tsvector maintained by Postgres. Declared so Prisma does not
+  /// report drift; Unsupported keeps it out of the generated client, which is
+  /// correct — a generated column must never be written.
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
   @@unique([verseId, label, name])
+  @@index([licenseCode])
   @@map("verse_translations")
 }
 

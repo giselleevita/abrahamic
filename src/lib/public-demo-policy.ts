@@ -15,10 +15,27 @@ export const REMOVED_TRANSLATION_NAMES = [
   'KJV',
 ] as const
 
+/**
+ * Translations permitted on a public deployment.
+ *
+ * This is an explicit allowlist, not a blocklist: an unknown translation name
+ * is denied. That is the correct default when the failure mode is publishing
+ * someone else's copyrighted text.
+ *
+ * The World English Bible is admitted because it is explicitly dedicated to the
+ * public domain by its publisher — the one modern English translation whose
+ * status is not in question. Imported rows carry `licenseCode`, `sourceUrl` and
+ * `attribution`, so the provenance of every line is recorded.
+ *
+ * Next step for this list: permit by `licenseCode` rather than by name, so
+ * adding a translation is a data decision rather than a code change. That needs
+ * the guard to see the licence column, which it currently does not.
+ */
 export const PUBLIC_DEMO_TRANSLATION_NAMES = new Set([
   'Hebrew (MT)',
   'Arabic',
   'Reader note (original)',
+  'World English Bible',
 ])
 
 export type DemoTranslation = {
