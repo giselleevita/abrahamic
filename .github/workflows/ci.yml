@@ -53,6 +53,15 @@ jobs:
       - name: Lint
         run: npm run lint -- --max-warnings 0
 
+      # Tests mock Prisma and never reach the database, but importing
+      # `@/lib/prisma` constructs the PrismaPg adapter at module load, so the
+      # connection string still has to be present.
+      - name: Unit tests
+        run: npm run test:run
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          NEXTAUTH_SECRET: "ci-secret-not-for-production-use"
+
       - name: Build
         run: npx next build
         env:

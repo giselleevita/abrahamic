@@ -5,18 +5,42 @@ import prisma from '@/lib/prisma'
 import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { hasSession } from '@/lib/api-auth'
+import { sourceKeySchema, type SourceKeyInput } from '@/lib/schemas/enums'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
-  const sourceKey = searchParams.get('sourceKey')
+  const rawSourceKey = searchParams.get('sourceKey')
   const figureSlug = searchParams.get('figure')
   const themeSlug = searchParams.get('theme')
   const published = searchParams.get('published')
 
+  let sourceKey: SourceKeyInput | null = null
+  if (rawSourceKey) {
+    const parsed = sourceKeySchema.safeParse(rawSourceKey)
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid sourceKey', issues: parsed.error.flatten() },
+        { status: 400 },
+      )
+    }
+    sourceKey = parsed.data
+  }
+
+  // Unpublished claims are editorial drafts. Only an authenticated admin may
+  // widen the filter; for anyone else the param is ignored rather than
+  // rejected, so the public contract stays stable.
+  const publishedFilter =
+    published !== null && (await hasSession())
+      ? published === 'all'
+        ? {}
+        : { isPublished: published === 'true' }
+      : { isPublished: true }
+
   const claims = await prisma.claim.findMany({
     where: {
-      ...(published !== null ? { isPublished: published === 'true' } : {}),
-      ...(sourceKey ? { source: { key: sourceKey as 'TORAH' | 'HEBREW_BIBLE' | 'NEW_TESTAMENT' | 'QURAN' } } : {}),
+      ...publishedFilter,
+      ...(sourceKey ? { source: { key: sourceKey } } : {}),
       ...(figureSlug ? { figures: { some: { figure: { slug: figureSlug } } } } : {}),
       ...(themeSlug ? { themes: { some: { theme: { slug: themeSlug } } } } : {}),
     },

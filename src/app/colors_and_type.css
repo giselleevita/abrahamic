@@ -4,8 +4,8 @@
    src/app/globals.css from the giselleevita/abrahamic repo.
    ───────────────────────────────────────────────────────────────────────── */
 
-/* Webfonts — Google Fonts (already used in repo's globals.css) */
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+/* Webfonts are imported from globals.css instead of here: @import must precede
+   all other rules, and Tailwind's output is inlined ahead of this file. */
 
 :root {
   /* ── PRIMARY · warm neutrals ─────────────────────────────────────────── */

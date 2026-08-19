@@ -164,21 +164,10 @@ Propose 0–2 link types as a JSON array:`,
     .slice(0, 2) as LinkProposal[]
 }
 
-// ─── 4. Semantic Search ───────────────────────────────────────────────────────
-// Computes dot-product similarity between a query embedding and stored claim embeddings.
-// Called only as a fallback when keyword search returns <5 results.
-
-export async function getEmbedding(text: string): Promise<number[]> {
-  // Use a concise summary passage to get a representative embedding via the messages API
-  // We use the model to score relevance rather than a native embedding endpoint
-  // for MVP compatibility. Returns a pseudo-embedding via structured scoring.
-  //
-  // For production, replace with a proper embeddings API call.
-  // This lightweight version asks the model to score relevance 0-100 and uses
-  // that as a single-dimensional "embedding" for ranking purposes.
-  void text
-  throw new Error('Use semanticRankClaims instead of getEmbedding directly')
-}
+// ─── 4. Semantic ranking ──────────────────────────────────────────────────────
+// Model-scored relevance ranking over candidate claims. There is no embedding
+// store: an earlier `getEmbedding()` stub only ever threw, and the matching
+// `Claim.embedding` column was never populated.
 
 export async function semanticRankClaims(
   query: string,
