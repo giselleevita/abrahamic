@@ -44,6 +44,16 @@ export interface CanonBook {
    * looks for chapter 1 and reports every surah as missing it.
    */
   chapterNumbers?: number[]
+  /**
+   * Verse count for a single-chapter book.
+   *
+   * These need special handling upstream: for a one-chapter book,
+   * "Philemon 1" is read as *verse* 1, not chapter 1, so a plain chapter
+   * request returns a single verse and the book looks complete because its one
+   * chapter exists. An explicit range is required, and the range must be within
+   * bounds — "1:1-200" returns 404 rather than clamping.
+   */
+  singleChapterVerses?: number
 }
 
 export const TORAH_CANON: CanonBook[] = [
@@ -238,7 +248,7 @@ export const NEVIIM_KETUVIM_CANON: CanonBook[] = [
   { book: "Hosea", bookNumber: 28, chapters: 14 },
   { book: "Joel", bookNumber: 29, chapters: 3 },
   { book: "Amos", bookNumber: 30, chapters: 9 },
-  { book: "Obadiah", bookNumber: 31, chapters: 1 },
+  { singleChapterVerses: 21, book: "Obadiah", bookNumber: 31, chapters: 1 },
   { book: "Jonah", bookNumber: 32, chapters: 4 },
   { book: "Micah", bookNumber: 33, chapters: 7 },
   { book: "Nahum", bookNumber: 34, chapters: 3 },
@@ -264,15 +274,15 @@ export const REST_OF_NT_CANON: CanonBook[] = [
   { book: "1 Timothy", bookNumber: 54, chapters: 6 },
   { book: "2 Timothy", bookNumber: 55, chapters: 4 },
   { book: "Titus", bookNumber: 56, chapters: 3 },
-  { book: "Philemon", bookNumber: 57, chapters: 1 },
+  { singleChapterVerses: 25, book: "Philemon", bookNumber: 57, chapters: 1 },
   { book: "Hebrews", bookNumber: 58, chapters: 13 },
   { book: "James", bookNumber: 59, chapters: 5 },
   { book: "1 Peter", bookNumber: 60, chapters: 5 },
   { book: "2 Peter", bookNumber: 61, chapters: 3 },
   { book: "1 John", bookNumber: 62, chapters: 5 },
-  { book: "2 John", bookNumber: 63, chapters: 1 },
-  { book: "3 John", bookNumber: 64, chapters: 1 },
-  { book: "Jude", bookNumber: 65, chapters: 1 },
+  { singleChapterVerses: 13, book: "2 John", bookNumber: 63, chapters: 1 },
+  { singleChapterVerses: 14, book: "3 John", bookNumber: 64, chapters: 1 },
+  { singleChapterVerses: 25, book: "Jude", bookNumber: 65, chapters: 1 },
   { book: "Revelation", bookNumber: 66, chapters: 22 },
 ]
 

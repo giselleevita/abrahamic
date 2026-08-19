@@ -134,3 +134,54 @@ describe('WEB adapter — fetching', () => {
     expect(calls).toBe(2)
   })
 })
+
+describe('single-chapter books', () => {
+  it('requests an explicit verse range so the chapter is not read as a verse', async () => {
+    // "Philemon 1" means *verse* 1 upstream, not chapter 1. Without a range the
+    // book imports one verse of twenty-five and still passes a chapter-coverage
+    // check, because its single chapter exists.
+    const urls: string[] = []
+    globalThis.fetch = vi.fn(async (url: string) => {
+      urls.push(String(url))
+      return jsonResponse(chapter(25))
+    }) as unknown as typeof fetch
+
+    await collect(
+      createWebBibleAdapter(
+        [{ name: 'Philemon', number: 57, chapters: 1, singleChapterVerses: 25 }],
+        WEB_TORAH_SPEC,
+      ),
+    )
+
+    expect(urls[0]).toContain('Philemon+1:1-25')
+  })
+
+  it('leaves multi-chapter books on a plain chapter reference', async () => {
+    const urls: string[] = []
+    globalThis.fetch = vi.fn(async (url: string) => {
+      urls.push(String(url))
+      return jsonResponse(chapter(31))
+    }) as unknown as typeof fetch
+
+    await collect(
+      createWebBibleAdapter([{ name: 'Genesis', number: 1, chapters: 1 }], WEB_TORAH_SPEC),
+    )
+
+    expect(urls[0]).toContain('Genesis+1')
+    expect(urls[0]).not.toContain(':1-')
+  })
+
+  it('every single-chapter book in the canon declares its verse count', async () => {
+    const { TORAH_CANON, GOSPEL_CANON, NEVIIM_KETUVIM_CANON, REST_OF_NT_CANON } =
+      await import('../../scripts/import/canon')
+
+    const oneChapterBooks = [
+      ...TORAH_CANON, ...GOSPEL_CANON, ...NEVIIM_KETUVIM_CANON, ...REST_OF_NT_CANON,
+    ].filter((b) => b.chapters === 1)
+
+    expect(oneChapterBooks.length).toBeGreaterThan(0)
+    for (const b of oneChapterBooks) {
+      expect(b.singleChapterVerses, `${b.book} would import a single verse`).toBeGreaterThan(1)
+    }
+  })
+})
