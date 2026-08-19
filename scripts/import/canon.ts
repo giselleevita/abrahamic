@@ -17,6 +17,15 @@ export interface CanonBook {
   bookNumber: number
   chapters: number
   verses: number
+  /**
+   * Verses counted in the canonical total that a critical text legitimately
+   * omits, as `chapter:verse`.
+   *
+   * These are textual variants, not import failures. Recording them keeps the
+   * completeness check honest: without this it reports a permanent shortfall,
+   * and a check that always fails is one nobody reads.
+   */
+  knownOmissions?: string[]
 }
 
 export const TORAH_CANON: CanonBook[] = [
@@ -30,7 +39,13 @@ export const TORAH_CANON: CanonBook[] = [
 export const GOSPEL_CANON: CanonBook[] = [
   { book: 'Matthew', bookNumber: 40, chapters: 28, verses: 1071 },
   { book: 'Mark',    bookNumber: 41, chapters: 16, verses: 678 },
-  { book: 'Luke',    bookNumber: 42, chapters: 24, verses: 1151 },
+  {
+    book: 'Luke', bookNumber: 42, chapters: 24, verses: 1151,
+    // Present in the Textus Receptus and the KJV, absent from the critical
+    // texts most modern translations follow. The World English Bible emits the
+    // verse number with empty text, which the importer skips.
+    knownOmissions: ['17:36'],
+  },
   { book: 'John',    bookNumber: 43, chapters: 21, verses: 879 },
 ]
 

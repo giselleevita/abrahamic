@@ -13,20 +13,21 @@
  */
 import 'dotenv/config'
 import prisma from '../../src/lib/prisma'
-import { CANON_BY_SOURCE } from './canon'
+import { CANON_BY_SOURCE, type CanonBook } from './canon'
 
 interface Row {
   source: string
   book: string
   actual: number
   expected: number
+  omissions: number
   missingChapters: number[]
 }
 
 async function checkBook(
   sourceKey: string,
   sourceId: number,
-  book: { book: string; chapters: number; verses: number },
+  book: CanonBook,
 ): Promise<Row> {
   const [actual, present] = await Promise.all([
     prisma.verse.count({ where: { sourceId, book: book.book } }),
@@ -41,7 +42,17 @@ async function checkBook(
   const missingChapters: number[] = []
   for (let c = 1; c <= book.chapters; c += 1) if (!seen.has(c)) missingChapters.push(c)
 
-  return { source: sourceKey, book: book.book, actual, expected: book.verses, missingChapters }
+  // Known textual variants are not gaps, so they come off the expected total.
+  const omissions = book.knownOmissions?.length ?? 0
+
+  return {
+    source: sourceKey,
+    book: book.book,
+    actual,
+    expected: book.verses - omissions,
+    omissions,
+    missingChapters,
+  }
 }
 
 async function main() {
@@ -67,8 +78,9 @@ async function main() {
     const complete = r.actual >= r.expected
     if (!complete) incomplete += 1
 
+    const variantNote = r.omissions ? ` (${r.omissions} known variant)` : ''
     const status = complete
-      ? 'complete'
+      ? `complete${variantNote}`
       : `short ${r.expected - r.actual}` +
         (r.missingChapters.length
           ? ` (ch ${r.missingChapters.slice(0, 6).join(',')}${r.missingChapters.length > 6 ? '…' : ''})`
