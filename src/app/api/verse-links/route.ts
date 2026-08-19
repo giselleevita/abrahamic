@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(req: NextRequest) {
   const verseId = req.nextUrl.searchParams.get('verseId')
@@ -17,6 +18,7 @@ export async function GET(req: NextRequest) {
     },
   })
 
+  revalidateEntity('verseLink', { tags: ['verse-links'] })
   return NextResponse.json(links)
 }
 
@@ -43,5 +45,6 @@ export async function POST(req: Request) {
     },
   })
 
+  revalidateEntity('verseLink', { tags: ['verse-links'] })
   return NextResponse.json(link, { status: 201 })
 }

@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(
   _req: Request,
@@ -55,6 +56,8 @@ export async function PATCH(
     include: { _count: { select: { claims: true } } },
   })
 
+  revalidateEntity('theme', { tags: ['themes'] })
+  revalidateEntity('theme', { slug, tags: ['themes'] })
   return NextResponse.json(theme)
 }
 
@@ -67,5 +70,6 @@ export async function DELETE(
 
   const { slug } = await params
   await prisma.theme.delete({ where: { slug } })
+  revalidateEntity('theme', { slug, tags: ['themes'] })
   return NextResponse.json({ ok: true })
 }

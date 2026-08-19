@@ -6,7 +6,9 @@ import { COMPARISON_TAG_LABEL } from '@/lib/constants'
 import type { ComparisonWithClaims } from '@/types'
 
 export const metadata: Metadata = { title: 'Comparisons' }
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export default async function ComparisonsPage({
   searchParams,

@@ -4,7 +4,9 @@ import type { TimelineEra, TraditionPresence } from '@/generated/prisma/client'
 import VisualTimeline from '@/components/timeline/VisualTimeline'
 
 export const metadata: Metadata = { title: 'Timeline' }
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 const ERA_ORDER: TimelineEra[] = [
   'PRIMORDIAL', 'PATRIARCHAL', 'EXODUS', 'KINGDOM', 'GOSPEL', 'EARLY_ISLAM',

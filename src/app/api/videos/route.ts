@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { requireSession, hasSession } from '@/lib/api-auth'
 import { createVideoSchema, extractYoutubeId } from '@/lib/schemas/video'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(req: NextRequest) {
   const kidsSafeOnly = req.nextUrl.searchParams.get('kidsSafe') === 'true'
@@ -68,6 +68,6 @@ export async function POST(req: NextRequest) {
     },
   })
 
-  revalidatePath('/videos')
+  revalidateEntity('video', { tags: ['videos'] })
   return NextResponse.json(video, { status: 201 })
 }

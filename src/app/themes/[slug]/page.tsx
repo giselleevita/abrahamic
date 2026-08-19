@@ -4,7 +4,9 @@ import prisma from '@/lib/prisma'
 import { ClaimCard } from '@/components/claims/ClaimCard'
 import type { ClaimWithRelations } from '@/types'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export async function generateStaticParams() {
   try {

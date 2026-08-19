@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET() {
   const figures = await prisma.figure.findMany({
@@ -12,6 +13,7 @@ export async function GET() {
     },
     orderBy: { canonicalName: 'asc' },
   })
+  revalidateEntity('figure', { tags: ['figures'] })
   return NextResponse.json(figures)
 }
 
@@ -47,5 +49,6 @@ export async function POST(req: Request) {
     include: { aliases: true, _count: { select: { claims: true } } },
   })
 
+  revalidateEntity('figure', { tags: ['figures'] })
   return NextResponse.json(figure, { status: 201 })
 }

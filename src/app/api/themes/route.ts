@@ -3,12 +3,14 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET() {
   const themes = await prisma.theme.findMany({
     include: { _count: { select: { claims: true } } },
     orderBy: { name: 'asc' },
   })
+  revalidateEntity('theme', { tags: ['themes'] })
   return NextResponse.json(themes)
 }
 
@@ -32,5 +34,6 @@ export async function POST(req: Request) {
     include: { _count: { select: { claims: true } } },
   })
 
+  revalidateEntity('theme', { tags: ['themes'] })
   return NextResponse.json(theme, { status: 201 })
 }

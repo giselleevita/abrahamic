@@ -3,7 +3,9 @@ import { hasDatabaseUrl } from '@/lib/db-ready'
 import prisma from '@/lib/prisma'
 import { getSiteUrl } from '@/lib/site-url'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getSiteUrl()

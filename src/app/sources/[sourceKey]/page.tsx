@@ -5,7 +5,9 @@ import prisma from '@/lib/prisma'
 import { TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export async function generateStaticParams() {
   try {

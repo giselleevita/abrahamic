@@ -11,10 +11,10 @@ import { WhoTellsItGame } from '@/components/kids/games/WhoTellsItGame'
 import { TimelineSorterGame } from '@/components/kids/games/TimelineSorterGame'
 import { FamilyChainGame } from '@/components/kids/games/FamilyChainGame'
 
-// Game data is read from the database per request, so this route is dynamic.
-// `generateStaticParams` is deliberately absent: it cannot prerender anything
-// under force-dynamic, and it was costing a params pass on every request.
-export const dynamic = 'force-dynamic'
+// Game boards are built from published content, so they cache like any other
+// page. Randomisation is deliberately absent from the data layer — the shuffles
+// are deterministic — so a cached board is a correct board.
+export const revalidate = 3600
 
 const GAMES = ['name-match', 'who-tells-it', 'timeline-sorter', 'family-chain'] as const
 type GameSlug = (typeof GAMES)[number]

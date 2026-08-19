@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { requireSession } from '@/lib/api-auth'
 import { updateVideoSchema, extractYoutubeId } from '@/lib/schemas/video'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const denied = await requireSession()
@@ -67,7 +67,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     },
   })
 
-  revalidatePath('/videos')
+  revalidateEntity('video', { tags: ['videos'] })
   return NextResponse.json(video)
 }
 
@@ -82,6 +82,6 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   }
 
   await prisma.videoResource.delete({ where: { id: videoId } })
-  revalidatePath('/videos')
+  revalidateEntity('video', { tags: ['videos'] })
   return NextResponse.json({ ok: true })
 }

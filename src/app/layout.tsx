@@ -33,8 +33,15 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export const dynamic = 'force-dynamic'
-
+/**
+ * Deliberately NOT `force-dynamic`.
+ *
+ * The root layout previously forced every route in the app to render per
+ * request — 83 of 84 — because the nav ran an uncached Prisma query. That
+ * query is now cached (`HorizontalFamilyTree`), so pages are free to declare
+ * their own caching, and `notFound()` can set a real 404 status instead of
+ * losing it to an already-streaming response.
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full antialiased">

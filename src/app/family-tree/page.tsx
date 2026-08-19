@@ -3,7 +3,9 @@ import { GenerationalTree } from '@/components/figures/GenerationalTree'
 import { CrossTraditionFigures } from '@/components/figures/CrossTraditionFigures'
 import type { Tradition } from '@/generated/prisma/client'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 const TRADITIONS: Tradition[] = ['JEWISH', 'CHRISTIAN', 'ISLAMIC']
 

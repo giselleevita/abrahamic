@@ -17,7 +17,9 @@ import { Callout } from '@/components/ui/Callout'
 import { HeroVideo } from '@/components/layout/HeroVideo'
 import type { ComparisonWithClaims } from '@/types'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export default async function HomePage() {
   const [

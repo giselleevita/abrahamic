@@ -4,7 +4,9 @@ import prisma from '@/lib/prisma'
 import { VerseReader } from '@/components/sources/VerseReader'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export async function generateMetadata({
   params,

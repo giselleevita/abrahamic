@@ -2,7 +2,9 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { AGE_BAND_RULES } from '@/lib/kids/readability'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export default async function KidsStoriesPage() {
   // Both flags are required: `isPublished` is the release switch and

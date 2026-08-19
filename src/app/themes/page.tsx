@@ -3,7 +3,9 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 
 export const metadata: Metadata = { title: 'Themes' }
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export default async function ThemesPage() {
   const themes = await prisma.theme.findMany({

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { requireSession } from '@/lib/api-auth'
 import { reviewKidsStorySchema } from '@/lib/schemas/kids'
 import { guardKidsStory } from '@/lib/kids/content-guard'
+import { revalidateEntity } from '@/lib/cache'
 
 /**
  * Review or publish a drafted story.
@@ -69,7 +69,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     },
   })
 
-  revalidatePath('/kids', 'layout')
+  revalidateEntity('kidsStory', { tags: ['kids-stories'] })
   return NextResponse.json(updated)
 }
 
@@ -84,6 +84,6 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   }
 
   await prisma.kidsStory.delete({ where: { id: storyId } })
-  revalidatePath('/kids', 'layout')
+  revalidateEntity('kidsStory', { tags: ['kids-stories'] })
   return NextResponse.json({ ok: true })
 }

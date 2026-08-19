@@ -3,7 +3,9 @@ import prisma from '@/lib/prisma'
 import { ConceptFilter } from '@/components/claims/ConceptFilter'
 
 export const metadata: Metadata = { title: 'Concepts' }
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export default async function ConceptsPage() {
   const concepts = await prisma.concept.findMany({

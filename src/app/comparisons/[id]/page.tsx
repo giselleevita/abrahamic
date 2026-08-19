@@ -6,7 +6,9 @@ import { ControversialBanner } from '@/components/claims/ControversialBanner'
 import type { ComparisonWithClaims } from '@/types'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params

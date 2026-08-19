@@ -4,7 +4,9 @@ import { YouTubeFacade } from '@/components/video/YouTubeFacade'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { Callout } from '@/components/ui/Callout'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export const metadata = {
   title: 'Videos · Abrahamic Texts',

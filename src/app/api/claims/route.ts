@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { hasSession } from '@/lib/api-auth'
 import { sourceKeySchema, type SourceKeyInput } from '@/lib/schemas/enums'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
@@ -109,6 +109,6 @@ export async function POST(req: Request) {
     },
   })
 
-  revalidatePath('/comparisons', 'layout')
+  revalidateEntity('claim', { tags: ['claims'] })
   return NextResponse.json(claim, { status: 201 })
 }

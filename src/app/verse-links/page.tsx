@@ -6,7 +6,9 @@ import { Badge } from '@/components/ui/Badge'
 import type { VerseLinkType } from '@/generated/prisma/client'
 
 export const metadata: Metadata = { title: 'Cross-References' }
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 const LINK_TYPE_LABEL: Record<VerseLinkType, string> = {
   PARALLEL: 'Parallel',

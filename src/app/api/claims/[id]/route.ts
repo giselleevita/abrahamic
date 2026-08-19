@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(
   _req: Request,
@@ -95,7 +95,7 @@ export async function PUT(
     },
   })
 
-  revalidatePath('/comparisons', 'layout')
+  revalidateEntity('claim', { tags: ['claims'] })
   return NextResponse.json(claim)
 }
 
@@ -108,6 +108,6 @@ export async function DELETE(
 
   const { id } = await params
   await prisma.claim.delete({ where: { id: parseInt(id) } })
-  revalidatePath('/comparisons', 'layout')
+  revalidateEntity('claim', { tags: ['claims'] })
   return NextResponse.json({ ok: true })
 }
