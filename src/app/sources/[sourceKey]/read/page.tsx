@@ -19,7 +19,7 @@ export async function generateMetadata({
   const { book, chapter } = await searchParams
   const source = await prisma.source.findUnique({ where: { slug: sourceKey }, select: { title: true } })
   if (!source) return {}
-  return { title: book ? `${book} ${chapter} — ${source.title}` : source.title }
+  return { title: book ? `${book} ${chapter ?? 1} — ${source.title}` : source.title }
 }
 
 export default async function VerseReaderPage({
@@ -35,12 +35,22 @@ export default async function VerseReaderPage({
   const source = await prisma.source.findUnique({ where: { slug: sourceKey } })
   if (!source) notFound()
 
+  // A book request with no chapter used to load the *entire* book — 1,533
+  // verses for Genesis, each with its translations and verse links, against 31
+  // for a single chapter. Harmless when the corpus was 94 verses; a 49x payload
+  // now. Defaulting to chapter 1 is also the better reading experience: opening
+  // a book should land you at its beginning, not dump it in one page.
+  const requestedChapter = chapter ? Number.parseInt(chapter, 10) : 1
+  const activeChapter = Number.isFinite(requestedChapter) && requestedChapter > 0
+    ? requestedChapter
+    : 1
+
   const verses = book
     ? await prisma.verse.findMany({
         where: {
           sourceId: source.id,
           book,
-          ...(chapter ? { chapter: parseInt(chapter) } : {}),
+          chapter: activeChapter,
         },
         include: {
           translations: true,
@@ -70,7 +80,9 @@ export default async function VerseReaderPage({
     : []
 
   // Navigation: prev/next chapter
-  const chapterNum = chapter ? parseInt(chapter) : null
+  // Always a real chapter now, so prev/next navigation works on a bare book
+  // link too — previously it silently disappeared without a ?chapter param.
+  const chapterNum = activeChapter
   const allChapters = book
     ? await prisma.verse.groupBy({
         by: ['chapter'],
@@ -88,7 +100,7 @@ export default async function VerseReaderPage({
         {book && (
           <>
             <span>/</span>
-            <span className="text-stone-900">{book} {chapter}</span>
+            <span className="text-stone-900">{book} {activeChapter}</span>
           </>
         )}
       </nav>
@@ -98,7 +110,7 @@ export default async function VerseReaderPage({
       ) : (
         <>
           <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-stone-900">{book} {chapter}</h1>
+            <h1 className="text-2xl font-bold text-stone-900">{book} {activeChapter}</h1>
             <div className="flex gap-2 text-xs">
               {chapterNum && chapterNum > (allChapters[0]?.chapter ?? 1) && (
                 <Link
