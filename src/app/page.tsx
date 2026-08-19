@@ -1,41 +1,23 @@
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { ComparisonBlock } from '@/components/claims/ComparisonBlock'
-import { TRADITION_BG } from '@/lib/constants'
+import {
+  TRADITION_BG,
+  CONCEPT_CATEGORY_LABEL,
+  ERA_ORDER,
+  ERA_LABEL,
+  ERA_GRADIENT,
+  ERA_TEXT,
+} from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
+import { Surface } from '@/components/ui/Surface'
+import { SectionHeader } from '@/components/ui/SectionHeader'
+import { TraditionStripe } from '@/components/ui/TraditionStripe'
+import { Callout } from '@/components/ui/Callout'
+import { HeroVideo } from '@/components/layout/HeroVideo'
 import type { ComparisonWithClaims } from '@/types'
-import type { ConceptCategory } from '@/generated/prisma/client'
 
 export const dynamic = 'force-dynamic'
-
-const CATEGORY_LABEL: Record<ConceptCategory, string> = {
-  THEOLOGY: 'Theology', SOTERIOLOGY: 'Soteriology', ESCHATOLOGY: 'Eschatology',
-  PROPHETHOOD: 'Prophethood', PRACTICE: 'Practice', LAW: 'Law & Covenant', COSMOLOGY: 'Cosmology',
-}
-
-const ERA_ORDER = ['PRIMORDIAL', 'PATRIARCHAL', 'EXODUS', 'KINGDOM', 'GOSPEL', 'EARLY_ISLAM'] as const
-const ERA_LABEL: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL: 'Primordial', PATRIARCHAL: 'Patriarchal', EXODUS: 'Exodus',
-  KINGDOM: 'Kingdom', GOSPEL: 'Gospel', EARLY_ISLAM: 'Early Islam',
-}
-const ERA_BG: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL:  'from-jewish-700 to-jewish-600',
-  PATRIARCHAL: 'from-gold-700 to-gold-600',
-  EXODUS:      'from-christian-700 to-christian-600',
-  KINGDOM:     'from-jewish-700 to-jewish-600',
-  GOSPEL:      'from-christian-700 to-christian-600',
-  EARLY_ISLAM: 'from-islamic-700 to-islamic-600',
-}
-const ERA_ACCENT: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL:  'text-white',
-  PATRIARCHAL: 'text-primary-950',
-  EXODUS:      'text-white',
-  KINGDOM:     'text-white',
-  GOSPEL:      'text-white',
-  EARLY_ISLAM: 'text-white',
-}
-
-const HERO_VIDEO_SRC = '/hero-creation-banner.mp4'
 
 export default async function HomePage() {
   const [
@@ -97,17 +79,7 @@ export default async function HomePage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative mb-12 min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary-800 bg-primary-950 px-6 py-8 shadow-[0_24px_80px_rgba(26,22,19,0.5)] sm:px-10 sm:py-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,165,116,0.15),transparent_34%),radial-gradient(circle_at_80%_18%,rgba(15,76,127,0.12),transparent_28%),linear-gradient(135deg,#1a1613_0%,#231d19_42%,#1a1613_100%)]" />
-        <video
-          className="absolute inset-0 h-full w-full object-cover opacity-40"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-        >
-          <source src={HERO_VIDEO_SRC} type="video/mp4" />
-        </video>
+        <HeroVideo src="/hero-creation-banner.mp4" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(26,22,19,0.85)_0%,rgba(26,22,19,0.65)_42%,rgba(26,22,19,0.35)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-950 via-primary-950/55 to-transparent" />
 
@@ -120,11 +92,7 @@ export default async function HomePage() {
               </span>
             </div>
 
-            <div className="mb-6 flex gap-1.5">
-              <div className="h-1.5 w-20 rounded-full bg-jewish-500" />
-              <div className="h-1.5 w-20 rounded-full bg-christian-500" />
-              <div className="h-1.5 w-20 rounded-full bg-islamic-500" />
-            </div>
+            <TraditionStripe variant="segments" className="mb-6" />
 
             <h1 className="font-serif max-w-4xl text-5xl font-bold leading-[0.92] tracking-tight text-primary-50 sm:text-7xl">
               Three traditions. One question. What did they actually say?
@@ -192,56 +160,55 @@ export default async function HomePage() {
       </section>
 
       {/* ── Stats bar ────────────────────────────────────────────────────── */}
-      <section className="mb-14 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <section className="stagger mb-14 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { label: 'Figures', value: figureCount, href: '/figures' },
           { label: 'Comparisons', value: compCount, href: '/comparisons' },
           { label: 'Concepts', value: conceptCount, href: '/concepts' },
           { label: 'Timeline events', value: timelineCount, href: '/timeline' },
         ].map((stat) => (
-          <Link
-            key={stat.label}
-            href={stat.href}
-            className="group rounded-xl border border-stone-200 bg-white px-5 py-5 hover:border-stone-400 hover:shadow-sm transition-all"
-          >
-            <p className="text-4xl font-black text-stone-900 group-hover:text-stone-700">{stat.value}</p>
-            <p className="text-xs font-medium text-stone-500 mt-1">{stat.label}</p>
-          </Link>
+          <Surface key={stat.label} href={stat.href} className="px-5 py-5">
+            <p className="text-4xl font-black text-stone-900 transition-colors group-hover:text-stone-700">
+              {stat.value}
+            </p>
+            <p className="mt-1 text-xs font-medium text-stone-500">{stat.label}</p>
+          </Surface>
         ))}
       </section>
 
       {/* ── Key Figures ──────────────────────────────────────────────────── */}
       <section className="mb-14">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-stone-900">Key Figures</h2>
-          <Link href="/figures" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <SectionHeader title="Key Figures" href="/figures" />
+        <div className="stagger grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {figures.slice(0, 8).map((figure) => (
-            <Link
+            <Surface
               key={figure.slug}
               href={`/figures/${figure.slug}`}
-              className="group flex flex-col items-center gap-2 rounded-lg border border-stone-200 bg-white p-4 hover:border-stone-400 hover:shadow-sm transition-all"
+              className="flex flex-col items-center gap-2 p-4"
             >
-              <div className="flex gap-1.5">
+              <span className="font-serif text-sm font-semibold text-stone-900">
+                {figure.canonicalName}
+              </span>
+              <div className="flex flex-wrap justify-center gap-1.5">
                 {figure.aliases.slice(0, 3).map((a) => (
                   <Badge key={a.id} className={`${TRADITION_BG[a.tradition]} text-[10px]`}>
                     {a.name}
                   </Badge>
                 ))}
               </div>
-              <span className="text-xs text-stone-500 text-center mt-1">{figure.aliases.length > 0 ? `${figure.aliases.length} tradition${figure.aliases.length !== 1 ? 's' : ''}` : 'Figure'}</span>
-            </Link>
+              <span className="mt-1 text-center text-xs text-stone-500">
+                {figure.aliases.length > 0
+                  ? `${figure.aliases.length} tradition${figure.aliases.length !== 1 ? 's' : ''}`
+                  : 'Figure'}
+              </span>
+            </Surface>
           ))}
         </div>
       </section>
 
       {/* ── Themes ───────────────────────────────────────────────────────── */}
       <section className="mb-14">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-stone-900">Themes</h2>
-          <Link href="/themes" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
-        </div>
+        <SectionHeader title="Themes" href="/themes" />
         <div className="flex flex-wrap gap-2">
           {themes.map((theme) => (
             <Link
@@ -259,38 +226,31 @@ export default async function HomePage() {
       {/* ── Concepts teaser ───────────────────────────────────────────────── */}
       {featuredConcepts.length > 0 && (
         <section className="mb-14">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-stone-900">Theological Concepts</h2>
-            <Link href="/concepts" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
-          </div>
-          <p className="mb-5 text-sm text-stone-500 max-w-2xl">
-            Key theological and philosophical ideas — and how Judaism, Christianity, and Islam each understand them.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <SectionHeader
+            title="Theological Concepts"
+            href="/concepts"
+            description="Key theological and philosophical ideas — and how Judaism, Christianity, and Islam each understand them."
+          />
+          <div className="stagger grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {featuredConcepts.map((concept) => (
-              <Link
+              <Surface
                 key={concept.slug}
                 href={`/concepts/${concept.slug}`}
-                className="overflow-hidden rounded-xl border border-stone-200 bg-white hover:border-stone-400 hover:shadow-sm transition-all"
+                className="overflow-hidden"
               >
-                {/* Gradient top bar with 3 tradition colors */}
-                <div className="h-1 flex gap-0">
-                  <div className="flex-1 bg-blue-400" />
-                  <div className="flex-1 bg-red-400" />
-                  <div className="flex-1 bg-green-400" />
-                </div>
+                <TraditionStripe />
                 <div className="p-4">
                   <div className="mb-2 inline-block rounded-full border border-stone-100 px-2 py-0.5 text-[10px] text-stone-400">
-                    {CATEGORY_LABEL[concept.category]}
+                    {CONCEPT_CATEGORY_LABEL[concept.category]}
                   </div>
                   <p className="font-semibold text-stone-900">{concept.name}</p>
                   {concept.summary && (
-                    <p className="mt-1 text-xs text-stone-500 leading-relaxed line-clamp-2">
+                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-stone-500">
                       {concept.summary}
                     </p>
                   )}
                 </div>
-              </Link>
+              </Surface>
             ))}
           </div>
         </section>
@@ -299,14 +259,13 @@ export default async function HomePage() {
       {/* ── Timeline teaser ───────────────────────────────────────────────── */}
       {timelineCount > 0 && (
         <section className="mb-14">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-stone-900">Timeline of Humanity</h2>
-            <Link href="/timeline" className="text-sm font-medium text-stone-600 hover:text-stone-900">View full timeline →</Link>
-          </div>
-          <p className="mb-5 text-sm text-stone-500 max-w-2xl">
-            Key events from creation to the founding of Islam — and how each tradition records, modifies, or disputes them.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <SectionHeader
+            title="Timeline of Humanity"
+            href="/timeline"
+            linkLabel="View full timeline"
+            description="Key events from creation to the founding of Islam — and how each tradition records, modifies, or disputes them."
+          />
+          <div className="stagger grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {ERA_ORDER.map((era) => {
               const count = eraCountMap[era] ?? 0
               if (count === 0) return null
@@ -314,10 +273,14 @@ export default async function HomePage() {
                 <Link
                   key={era}
                   href="/timeline"
-                  className={`rounded-xl bg-gradient-to-r ${ERA_BG[era]} border border-stone-100 p-5 hover:border-stone-300 hover:shadow-sm transition-all`}
+                  className={`rounded-xl bg-gradient-to-r ${ERA_GRADIENT[era]} border border-stone-100 p-5 transition-all hover:border-stone-300 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600`}
                 >
-                  <p className={`text-base font-bold ${ERA_ACCENT[era]}`}>{ERA_LABEL[era]}</p>
-                  <p className={`mt-1 text-sm ${era === 'PATRIARCHAL' ? 'text-primary-800' : 'text-white/80'}`}>{count} event{count !== 1 ? 's' : ''}</p>
+                  <p className={`text-base font-bold ${ERA_TEXT[era]}`}>{ERA_LABEL[era]}</p>
+                  <p
+                    className={`mt-1 text-sm ${era === 'PATRIARCHAL' ? 'text-primary-800' : 'text-white/80'}`}
+                  >
+                    {count} event{count !== 1 ? 's' : ''}
+                  </p>
                 </Link>
               )
             })}
@@ -328,37 +291,32 @@ export default async function HomePage() {
       {/* ── Featured Comparisons ─────────────────────────────────────────── */}
       {featuredComparisons.length > 0 && (
         <section className="mb-14">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-stone-900">Featured Comparisons</h2>
-            <Link href="/comparisons" className="text-sm font-medium text-stone-600 hover:text-stone-900">
-              View all →
-            </Link>
-          </div>
+          <SectionHeader title="Featured Comparisons" href="/comparisons" />
           <div className="space-y-10">
             {featuredComparisons.map((comp) => (
-              <div key={comp.id} className="rounded-xl border border-stone-200 bg-white p-6 ring-1 ring-stone-100 hover:ring-stone-200 transition-all">
+              <Surface key={comp.id} interactive className="p-6">
                 <ComparisonBlock comparison={comp as unknown as ComparisonWithClaims} />
                 <div className="mt-4">
-                  <Link href={`/comparisons/${comp.id}`} className="text-xs text-stone-400 hover:text-stone-600">
-                    Full comparison →
+                  <Link
+                    href={`/comparisons/${comp.id}`}
+                    className="text-xs text-stone-400 transition-colors hover:text-stone-600"
+                  >
+                    Full comparison <span aria-hidden="true">→</span>
                   </Link>
                 </div>
-              </div>
+              </Surface>
             ))}
           </div>
         </section>
       )}
 
       {/* ── Methodology note ─────────────────────────────────────────────── */}
-      <section className="rounded-xl border border-amber-200 bg-amber-50 p-6">
-        <h2 className="text-sm font-semibold text-amber-900">Editorial approach</h2>
-        <p className="mt-2 text-sm text-amber-800 leading-relaxed">
-          All comparisons on this platform are authored by editors and peer-reviewed before
-          publishing. Tags (Shared / Similar-Different / Contradiction) are editorial judgments,
-          never computed automatically. Every claim cites at least one verse. No claim uses
-          evaluative language. The platform presents what texts say — not what they mean.
-        </p>
-      </section>
+      <Callout tone="editorial" title="Editorial approach">
+        All comparisons on this platform are authored by editors and peer-reviewed before
+        publishing. Tags (Shared / Similar-Different / Contradiction) are editorial judgments,
+        never computed automatically. Every claim cites at least one verse. No claim uses
+        evaluative language. The platform presents what texts say — not what they mean.
+      </Callout>
     </div>
   )
 }

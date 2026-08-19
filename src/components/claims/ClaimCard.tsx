@@ -6,11 +6,13 @@ interface Props {
   showSource?: boolean
 }
 
+// Derived from the shared tradition palette rather than raw blue/red/green, so
+// a tradition renders identically here, in VisualTimeline, and in badges.
 const TRADITION_STYLE: Record<Tradition, { border: string; sourceDot: string; sourceText: string; citeBg: string }> = {
-  JEWISH:    { border: 'border-l-blue-500',   sourceDot: 'bg-blue-500',   sourceText: 'text-blue-700',  citeBg: 'bg-blue-50'   },
-  CHRISTIAN: { border: 'border-l-red-600',    sourceDot: 'bg-red-600',    sourceText: 'text-red-700',   citeBg: 'bg-red-50'    },
-  ISLAMIC:   { border: 'border-l-green-600',  sourceDot: 'bg-green-600',  sourceText: 'text-green-700', citeBg: 'bg-green-50'  },
-  SHARED:    { border: 'border-l-violet-500', sourceDot: 'bg-violet-500', sourceText: 'text-violet-700',citeBg: 'bg-violet-50' },
+  JEWISH:    { border: 'border-l-jewish-600',    sourceDot: 'bg-jewish-600',    sourceText: 'text-jewish-700',    citeBg: 'bg-jewish-50'    },
+  CHRISTIAN: { border: 'border-l-christian-600', sourceDot: 'bg-christian-600', sourceText: 'text-christian-700', citeBg: 'bg-christian-50' },
+  ISLAMIC:   { border: 'border-l-islamic-600',   sourceDot: 'bg-islamic-600',   sourceText: 'text-islamic-700',   citeBg: 'bg-islamic-50'   },
+  SHARED:    { border: 'border-l-gold-600',      sourceDot: 'bg-gold-600',      sourceText: 'text-gold-700',      citeBg: 'bg-gold-50'      },
 }
 
 export function ClaimCard({ claim, showSource = true }: Props) {

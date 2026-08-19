@@ -233,3 +233,55 @@ a:hover { color: var(--link-hover); }
 ::-webkit-scrollbar-track { background: var(--primary-900); }
 ::-webkit-scrollbar-thumb { background: var(--primary-600); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--primary-500); }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Motion
+   CSS-only: no animation library ships to the client. Scroll-reveal uses
+   scroll-driven animations where supported and degrades to fully-visible
+   content everywhere else.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-rise-in { animation: rise-in var(--t-med) var(--ease-std) both; }
+.animate-fade-in { animation: fade-in var(--t-med) var(--ease-std) both; }
+
+/* Staggered entrance for grids. Depth is capped at 8 so a long list does not
+   leave later cards invisible for an uncomfortable stretch. */
+.stagger > * { animation: rise-in var(--t-med) var(--ease-std) both; }
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 40ms; }
+.stagger > *:nth-child(3) { animation-delay: 80ms; }
+.stagger > *:nth-child(4) { animation-delay: 120ms; }
+.stagger > *:nth-child(5) { animation-delay: 160ms; }
+.stagger > *:nth-child(6) { animation-delay: 200ms; }
+.stagger > *:nth-child(7) { animation-delay: 240ms; }
+.stagger > *:nth-child(n+8) { animation-delay: 280ms; }
+
+/* Reveal on scroll, only where scroll-driven animations are supported. */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: rise-in var(--t-med) var(--ease-std) both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+}
+
+/* Respect the OS setting. This must stay last so it overrides the above. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
