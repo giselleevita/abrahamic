@@ -244,6 +244,11 @@ model Claim {
 
   verses        ClaimVerse[]
   figures       ClaimFigure[]
+  /// Generated tsvector maintained by Postgres. Declared so Prisma does not
+  /// report schema drift; Unsupported keeps it out of the generated client,
+  /// which is correct — a generated column must never be written.
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
   themes        ClaimTheme[]
   comparisons   ComparisonClaim[]
   conceptClaims ConceptClaim[]
@@ -364,6 +369,11 @@ model Concept {
   summary     String?         @db.Text
   isPublished Boolean         @default(false)
 
+  /// Generated tsvector maintained by Postgres. Declared so Prisma does not
+  /// report schema drift; Unsupported keeps it out of the generated client,
+  /// which is correct — a generated column must never be written.
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
   traditions ConceptTradition[]
   videos     VideoResourceConcept[]
   claims     ConceptClaim[]
@@ -409,6 +419,11 @@ model TimelineEvent {
   position    Int
   summary     String?     @db.Text
   isPublished Boolean     @default(false)
+
+  /// Generated tsvector maintained by Postgres. Declared so Prisma does not
+  /// report schema drift; Unsupported keeps it out of the generated client,
+  /// which is correct — a generated column must never be written.
+  searchVector Unsupported("tsvector")? @map("search_vector")
 
   traditions TimelineEventTradition[]
   verses     TimelineEventVerse[]
