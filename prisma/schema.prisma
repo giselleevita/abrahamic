@@ -170,6 +170,7 @@ model Figure {
   timelineEvents  TimelineEventFigure[]
   relationsFrom   FigureRelation[] @relation("RelationsFrom")
   relationsTo     FigureRelation[] @relation("RelationsTo")
+  kidsStories     KidsStoryFigure[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -244,6 +245,7 @@ model Claim {
   themes        ClaimTheme[]
   comparisons   ComparisonClaim[]
   conceptClaims ConceptClaim[]
+  kidsStories   KidsStoryClaim[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -447,4 +449,67 @@ model TimelineEventFigure {
 
   @@id([eventId, figureId])
   @@map("timeline_event_figures")
+}
+
+// ─── Kids section ────────────────────────────────────────────────────────────
+// Child-facing retellings drafted from already-published claims and released
+// only by explicit admin approval. Reuses CandidateStatus so the review flow
+// matches VerseLinkCandidate.
+
+enum KidsAgeBand {
+  AGE_6_8
+  AGE_9_12
+}
+
+model KidsStory {
+  id          Int             @id @default(autoincrement())
+  slug        String          @unique
+  title       String
+  ageBand     KidsAgeBand
+  body        String          @db.Text
+  /// [{ term, plainDefinition }] — editor-editable plain-language glossary.
+  glossary    Json?
+  /// Provenance: the model that drafted this, or "hand-authored" for seeds.
+  aiModel     String
+  aiRationale String          @db.Text
+  status      CandidateStatus @default(PENDING)
+  reviewedAt  DateTime?
+  reviewNotes String?         @db.Text
+  /// Approval and publication are deliberately separate steps for child-facing
+  /// content. A DB CHECK constraint forbids isPublished on an unapproved row.
+  isPublished Boolean         @default(false)
+
+  claims  KidsStoryClaim[]
+  figures KidsStoryFigure[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([isPublished, ageBand])
+  @@map("kids_stories")
+}
+
+/// Provenance chain: a story may only be drafted from published claims, and the
+/// public page cites them, keeping kids content inside the "every claim is
+/// sourced" editorial principle.
+model KidsStoryClaim {
+  storyId  Int
+  story    KidsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  claimId  Int
+  claim    Claim     @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  position Int       @default(0)
+
+  @@id([storyId, claimId])
+  @@map("kids_story_claims")
+}
+
+model KidsStoryFigure {
+  storyId  Int
+  story    KidsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  figureId Int
+  figure   Figure    @relation(fields: [figureId], references: [id], onDelete: Cascade)
+
+  @@id([storyId, figureId])
+  @@map("kids_story_figures")
 }

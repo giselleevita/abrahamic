@@ -20,6 +20,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/verse-links`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
     { url: `${base}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/licensing`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${base}/kids`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${base}/kids/stories`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${base}/kids/games`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
   ]
 
   if (!hasDatabaseUrl()) {

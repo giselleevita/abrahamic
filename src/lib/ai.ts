@@ -201,3 +201,126 @@ export async function semanticRankClaims(
     return []
   }
 }
+
+// ─── 5. Kids story drafts ─────────────────────────────────────────────────────
+// Drafts an age-banded retelling from already-published claims, for admin
+// review. Never auto-published: the caller stores the result as PENDING, and a
+// database CHECK constraint forbids publishing an unapproved row.
+//
+// SAFETY: this function accepts claim statements and verse *references* only.
+// `ClaimForSummary` carries no verse text, so licensed translation text cannot
+// reach a kids story even if a caller passes the wrong query result.
+
+export type KidsStoryProposal = {
+  title: string
+  body: string
+  glossary: { term: string; plainDefinition: string }[]
+  rationale: string
+}
+
+/** Returned when the source claims cannot yield a safe, age-appropriate story. */
+export type KidsStoryInsufficient = { insufficient: true; reason: string }
+
+export const KIDS_STORY_MODEL = 'claude-sonnet-4-6'
+
+const KIDS_BAND_GUIDANCE: Record<'AGE_6_8' | 'AGE_9_12', string> = {
+  AGE_6_8: `Audience: children aged 6-8, reading with an adult.
+- At most 12 words per sentence, and at most 180 words in total.
+- Everyday vocabulary. Define any word longer than two syllables in the glossary.
+- Introduce at most two names per paragraph.`,
+  AGE_9_12: `Audience: children aged 9-12, reading independently.
+- At most 18 words per sentence, and at most 350 words in total.
+- You may compare the traditions explicitly, as long as you never rank them.`,
+}
+
+export async function proposeKidsStory(
+  ageBand: 'AGE_6_8' | 'AGE_9_12',
+  claims: ClaimForSummary[],
+): Promise<KidsStoryProposal | KidsStoryInsufficient> {
+  const claimsBlock = claims
+    .map(
+      (c, i) =>
+        `Claim ${i + 1} [${c.sourceTitle}] (verses: ${c.verseRefs.join(', ')}):\n"${c.statement}"`,
+    )
+    .join('\n\n')
+
+  const response = await client.messages.create({
+    model: KIDS_STORY_MODEL,
+    max_tokens: 1200,
+    system: `You write short, factual, neutral retellings for children about what the Jewish, Christian, and Islamic scriptures say. Your work is reviewed by an editor before any child sees it.
+
+ATTRIBUTION — every statement about content must be attributed to a text:
+- Write "The Torah tells this story as...", "The Quran describes...", "These books tell this part differently."
+- Never narrate religious events as plain fact. Never write "God said X" as narration; write "The Torah says that God said X".
+
+NEUTRALITY — you describe, you never adjudicate:
+- Where the texts differ, say so plainly and warmly: "These books tell this part differently."
+- Never say one text is right, older, better, corrected, fulfilled, or superseded by another.
+- Never use: truly, actually, correctly, the real, proves, obviously, merely.
+- No second-person religious instruction. Never write "you should pray/believe", "we believe", "our faith".
+
+SAFETY:
+- No violence, killing, blood, punishment, hell, or frightening detail. If the claims are mainly about such things, decline (see below).
+- Do not describe the physical appearance of Muhammad or any prophet; use names only.
+- Never quote scripture. Refer to passages by reference only (e.g. "Genesis 21:2").
+- Use only what the provided claims state. Do not add any fact that is not in them.
+
+${KIDS_BAND_GUIDANCE[ageBand]}
+
+OUTPUT — strict JSON, no prose outside it, no markdown fence:
+{"title": "...", "body": "...", "glossary": [{"term": "...", "plainDefinition": "..."}], "rationale": "why this is faithful to the claims and safe for this age"}
+
+If the claims cannot produce a safe, age-appropriate, neutral story, output instead:
+{"insufficient": true, "reason": "..."}`,
+    messages: [
+      {
+        role: 'user',
+        content: `Write one short story for this age band, based only on these published claims:\n\n${claimsBlock}`,
+      },
+    ],
+  })
+
+  const block = response.content[0]
+  const raw = block?.type === 'text' ? block.text.trim() : ''
+  // Tolerate a stray markdown fence even though the prompt forbids one.
+  const json = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(json)
+  } catch {
+    return { insufficient: true, reason: 'Model did not return valid JSON.' }
+  }
+
+  if (typeof parsed !== 'object' || parsed === null) {
+    return { insufficient: true, reason: 'Model returned an unexpected shape.' }
+  }
+
+  const obj = parsed as Record<string, unknown>
+  if (obj.insufficient === true) {
+    return {
+      insufficient: true,
+      reason: typeof obj.reason === 'string' ? obj.reason : 'Claims were unsuitable.',
+    }
+  }
+
+  if (typeof obj.title !== 'string' || typeof obj.body !== 'string') {
+    return { insufficient: true, reason: 'Model response was missing a title or body.' }
+  }
+
+  const glossary = Array.isArray(obj.glossary)
+    ? obj.glossary.flatMap((g) => {
+        const entry = g as Record<string, unknown>
+        return typeof entry?.term === 'string' && typeof entry?.plainDefinition === 'string'
+          ? [{ term: entry.term, plainDefinition: entry.plainDefinition }]
+          : []
+      })
+    : []
+
+  return {
+    title: obj.title,
+    body: obj.body,
+    glossary,
+    rationale: typeof obj.rationale === 'string' ? obj.rationale : '',
+  }
+}

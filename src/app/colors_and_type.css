@@ -285,3 +285,43 @@ a:hover { color: var(--link-hover); }
     scroll-behavior: auto !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Kids section — light theme scope
+
+   The rest of the app is dark-on-dark, and the element rules above set
+   heading and body colour globally. Because this stylesheet is unlayered, it
+   defeats every Tailwind `text-*` utility regardless of specificity — layered
+   CSS always loses to unlayered CSS. The kids section is the one light-themed
+   area, so it needs an explicit scope that competes in the same unlayered
+   context and wins on specificity.
+
+   (The underlying cascade problem is app-wide: `text-stone-900` on a heading
+   is silently ignored everywhere. Fixing that properly means moving this file
+   into @layer base and re-checking every page's contrast, which is its own
+   piece of work.)
+   ───────────────────────────────────────────────────────────────────────── */
+
+.kids-theme { color: var(--primary-900); }
+
+.kids-theme h1,
+.kids-theme h2,
+.kids-theme h3,
+.kids-theme h4 { color: var(--primary-950); }
+
+.kids-theme p,
+.kids-theme li,
+.kids-theme dd,
+.kids-theme span,
+.kids-theme label,
+.kids-theme summary { color: inherit; }
+
+.kids-theme a { color: var(--primary-800); }
+.kids-theme a:hover { color: var(--primary-950); }
+
+/* Blockquote and code inherit the dark palette above; reset them for light. */
+.kids-theme code {
+  background-color: var(--primary-100);
+  color: var(--primary-900);
+  border-color: var(--primary-200);
+}

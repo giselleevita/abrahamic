@@ -20,19 +20,23 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className="mb-4">
+      {/* Section headers sit on the dark page canvas, not inside a Surface, so
+          they take light text. Page code previously wrote `text-stone-900`
+          here and was rescued only by a stylesheet that overrode every text
+          utility in the app. */}
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-xl font-semibold text-stone-900">{title}</h2>
+        <h2 className="text-xl font-semibold text-primary-50">{title}</h2>
         {href && (
           <Link
             href={href}
-            className="shrink-0 text-sm font-medium text-stone-600 transition-colors hover:text-stone-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
+            className="shrink-0 text-sm font-medium text-primary-300 transition-colors hover:text-gold-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
           >
             {linkLabel} <span aria-hidden="true">→</span>
           </Link>
         )}
       </div>
       {description && (
-        <p className="mt-2 max-w-2xl text-sm text-stone-500">{description}</p>
+        <p className="mt-2 max-w-2xl text-sm text-primary-300">{description}</p>
       )}
     </div>
   )

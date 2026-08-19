@@ -12,6 +12,7 @@ const LINKS = [
   { href: '/concepts',    label: 'Concepts' },
   { href: '/timeline',    label: 'Timeline' },
   { href: '/glossary',    label: 'Glossary' },
+  { href: '/kids',        label: 'For Kids' },
 ]
 
 export function NavLinks() {

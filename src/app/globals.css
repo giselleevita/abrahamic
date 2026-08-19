@@ -2,4 +2,80 @@
    Tailwind's generated output is inlined at the point of its own @import. */
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Design tokens for Tailwind v4.
+
+   This project still carries a v3-style tailwind.config.ts, which v4 does not
+   read. Every custom colour utility in the app — bg-jewish-600, text-gold-200,
+   bg-primary-950 and the rest — was therefore generating no CSS at all and
+   silently doing nothing. Registering the palette here in @theme is how v4
+   expects it, and it makes those utilities real.
+
+   Values mirror tailwind.config.ts and colors_and_type.css exactly.
+   ───────────────────────────────────────────────────────────────────────── */
+@theme {
+  --font-serif: 'Crimson Text', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-primary-50:  #f8f6f3;
+  --color-primary-100: #f1ede7;
+  --color-primary-200: #e3ddd3;
+  --color-primary-300: #d4cfc5;
+  --color-primary-400: #a89d91;
+  --color-primary-500: #8b7d71;
+  --color-primary-600: #6e6259;
+  --color-primary-700: #534841;
+  --color-primary-800: #3a322d;
+  --color-primary-900: #231d19;
+  --color-primary-950: #1a1613;
+
+  --color-jewish-50:  #f0f5ff;
+  --color-jewish-100: #e6edff;
+  --color-jewish-200: #ccdaff;
+  --color-jewish-300: #99b3ff;
+  --color-jewish-400: #668cff;
+  --color-jewish-500: #3366ff;
+  --color-jewish-600: #0f4c7f;
+  --color-jewish-700: #0a3666;
+  --color-jewish-800: #062452;
+  --color-jewish-900: #031838;
+
+  --color-christian-50:  #fff5f5;
+  --color-christian-100: #ffe8e8;
+  --color-christian-200: #ffd4d4;
+  --color-christian-300: #ffadad;
+  --color-christian-400: #ff8686;
+  --color-christian-500: #ff5f5f;
+  --color-christian-600: #7c2d3e;
+  --color-christian-700: #612533;
+  --color-christian-800: #461c28;
+  --color-christian-900: #2b131d;
+
+  --color-islamic-50:  #faf5ff;
+  --color-islamic-100: #f5ecff;
+  --color-islamic-200: #ecd9ff;
+  --color-islamic-300: #dab3ff;
+  --color-islamic-400: #b580ff;
+  --color-islamic-500: #9055ff;
+  --color-islamic-600: #3d2a5c;
+  --color-islamic-700: #322150;
+  --color-islamic-800: #251844;
+  --color-islamic-900: #1a1038;
+
+  --color-gold-50:  #fffbf0;
+  --color-gold-100: #fff6e0;
+  --color-gold-200: #ffecc0;
+  --color-gold-300: #ffe0a0;
+  --color-gold-400: #ffd480;
+  --color-gold-500: #d4a574;
+  --color-gold-600: #c29560;
+  --color-gold-700: #8b6f47;
+  --color-gold-800: #6b572f;
+  --color-gold-900: #4a3d1f;
+}
+
+/* NOTE: deliberately unlayered, matching the rest of the app. See the
+   `.kids-theme` block in this file for why the kids section needs an
+   explicit scope rather than relying on Tailwind text utilities. */
 @import "./colors_and_type.css";
