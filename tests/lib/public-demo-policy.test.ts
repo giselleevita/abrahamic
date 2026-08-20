@@ -7,6 +7,7 @@ import {
   buildPublicDemoTranslations,
   readerNoteForVerse,
   isPermittedTranslation,
+  DEFAULT_PRIORITY,
   type DemoTranslation,
 } from '@/lib/public-demo-policy'
 
@@ -159,5 +160,29 @@ describe('licence-driven permission', () => {
       'Hebrew (MT)',
       'Newly Imported',
     ])
+  })
+})
+
+describe('default priority ordering', () => {
+  it('ranks original language above English, and English above the placeholder', () => {
+    // The reader note is boilerplate about the demo. Ranking it above real
+    // scripture was a live bug once; this pins the ordering so it cannot
+    // return when a new translation is added to the list.
+    const order = [...DEFAULT_PRIORITY]
+    expect(order.indexOf('Hebrew (MT)')).toBeLessThan(order.indexOf('World English Bible'))
+    expect(order.indexOf('Arabic')).toBeLessThan(order.indexOf('World English Bible'))
+    expect(order.indexOf('World English Bible')).toBeLessThan(
+      order.indexOf('Reader note (original)'),
+    )
+  })
+
+  it('puts the reader note last', () => {
+    expect([...DEFAULT_PRIORITY].at(-1)).toBe('Reader note (original)')
+  })
+
+  it('every prioritised name is one the policy actually permits', () => {
+    for (const name of DEFAULT_PRIORITY) {
+      expect(isPermittedTranslation({ name }), `${name} is prioritised but denied`).toBe(true)
+    }
   })
 })

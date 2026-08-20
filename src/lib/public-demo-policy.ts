@@ -111,7 +111,16 @@ const SEED_LICENSES: Record<string, string> = {
  * shown. The note is a fallback for verses with no original text, not a
  * replacement for it.
  */
-const DEFAULT_PRIORITY = ['Hebrew (MT)', 'Arabic', 'Reader note (original)'] as const
+export const DEFAULT_PRIORITY = [
+  // Original-language source text first, per the platform's stated policy.
+  'Hebrew (MT)',
+  'Arabic',
+  // Then real English. The reader note ranks below this: it is boilerplate
+  // *about* the demo, and showing it in preference to actual scripture was a
+  // bug once already.
+  'World English Bible',
+  'Reader note (original)',
+] as const
 
 export function readerNoteForVerse(input: {
   sourceKey: string
