@@ -185,3 +185,48 @@ describe('single-chapter books', () => {
     }
   })
 })
+
+describe('import policy guard', () => {
+  it('refuses to import a translation the content policy would hide', async () => {
+    const { runImport } = await import('../../scripts/import/runner')
+    const { JPS_TORAH_SPEC } = await import('../../scripts/import/adapters/sefaria')
+
+    // JPS 1917 is on REMOVED_TRANSLATION_NAMES. Importing it would write rows
+    // that every page then filters out — an hour of work producing nothing
+    // visible, which reads as a broken importer rather than a policy decision.
+    await expect(
+      runImport(
+        { spec: JPS_TORAH_SPEC, async *fetchVerses() {} },
+        { dryRun: true },
+      ),
+    ).rejects.toThrow(/REMOVED_TRANSLATION_NAMES/)
+  })
+
+  it('refuses a licence that is not permitted', async () => {
+    const { runImport } = await import('../../scripts/import/runner')
+
+    await expect(
+      runImport(
+        {
+          spec: {
+            name: 'Some Commercial Text', label: 'MODERN', sourceKey: 'TORAH',
+            licenseCode: 'ALL-RIGHTS-RESERVED',
+            sourceUrl: 'https://example.com', attribution: 'x',
+          },
+          async *fetchVerses() {},
+        },
+        { dryRun: true },
+      ),
+    ).rejects.toThrow(/PERMITTED_LICENSE_CODES/)
+  })
+
+  it('allows a permitted licence through the guard', async () => {
+    const { runImport } = await import('../../scripts/import/runner')
+    const { HEBREW_TORAH_SPEC } = await import('../../scripts/import/adapters/sefaria')
+
+    // Reaches the source lookup rather than being rejected by policy.
+    await expect(
+      runImport({ spec: HEBREW_TORAH_SPEC, async *fetchVerses() {} }, { dryRun: true }),
+    ).rejects.not.toThrow(/REMOVED_TRANSLATION_NAMES|PERMITTED_LICENSE_CODES/)
+  })
+})

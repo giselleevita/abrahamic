@@ -17,6 +17,10 @@
  *    index until they are refreshed. This was observed, not assumed.
  */
 import prisma from '../../src/lib/prisma'
+import {
+  REMOVED_TRANSLATION_NAMES,
+  PERMITTED_LICENSE_CODES,
+} from '../../src/lib/public-demo-policy'
 import type { ImportAdapter, ImportStats, ImportedVerse } from './types'
 
 const BATCH_LOG_EVERY = 500
@@ -80,6 +84,29 @@ export async function runImport(
   }
 
   const { spec } = adapter
+
+  // Refuse to import text the content policy will then refuse to display.
+  // Without this an import can spend an hour writing rows that every page
+  // silently filters out, which reads as a broken importer rather than a
+  // deliberate policy decision.
+  if ((REMOVED_TRANSLATION_NAMES as readonly string[]).includes(spec.name)) {
+    throw new Error(
+      `"${spec.name}" is on REMOVED_TRANSLATION_NAMES, so the content policy ` +
+        `would hide every row this import writes.\n` +
+        `  If its licence has been verified for your deployment, remove it from ` +
+        `that list in src/lib/public-demo-policy.ts first — that is a licensing ` +
+        `decision, not an import one.`,
+    )
+  }
+
+  if (!PERMITTED_LICENSE_CODES.has(spec.licenseCode)) {
+    throw new Error(
+      `Licence "${spec.licenseCode}" is not in PERMITTED_LICENSE_CODES, so this ` +
+        `text would be imported and then hidden. Add the licence deliberately or ` +
+        `pick a different edition.`,
+    )
+  }
+
   const sourceId = await resolveSourceId(spec.sourceKey)
   const retrievedAt = new Date()
 

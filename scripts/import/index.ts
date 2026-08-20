@@ -24,6 +24,13 @@ import {
   WEB_HEBREW_BIBLE_SPEC,
 } from './adapters/web-bible'
 import { createQuranAdapter, QURAN_ARABIC_SPEC } from './adapters/quran'
+import {
+  createSefariaAdapter,
+  HEBREW_TORAH_SPEC, HEBREW_TANAKH_SPEC,
+  JPS_TORAH_SPEC, JPS_TANAKH_SPEC,
+  HEBREW_VERSION_QUERY, JPS_VERSION_QUERY,
+} from './adapters/sefaria'
+import { TORAH_CANON, NEVIIM_KETUVIM_CANON } from './canon'
 import type { ImportAdapter } from './types'
 
 const ADAPTERS: Record<string, () => ImportAdapter> = {
@@ -32,6 +39,11 @@ const ADAPTERS: Record<string, () => ImportAdapter> = {
   'web-hebrew-bible': () => createWebBibleAdapter(HEBREW_BIBLE_BOOKS, WEB_HEBREW_BIBLE_SPEC),
   'web-nt-rest': () => createWebBibleAdapter(REST_OF_NT_BOOKS, WEB_NT_SPEC),
   'quran-arabic': () => createQuranAdapter(QURAN_ARABIC_SPEC, 'quran-uthmani'),
+  'hebrew-torah': () => createSefariaAdapter(TORAH_CANON, HEBREW_TORAH_SPEC, HEBREW_VERSION_QUERY),
+  'hebrew-tanakh': () => createSefariaAdapter(NEVIIM_KETUVIM_CANON, HEBREW_TANAKH_SPEC, HEBREW_VERSION_QUERY),
+  // Both refuse to run while "JPS 1917" is on REMOVED_TRANSLATION_NAMES.
+  'jps-torah': () => createSefariaAdapter(TORAH_CANON, JPS_TORAH_SPEC, JPS_VERSION_QUERY),
+  'jps-tanakh': () => createSefariaAdapter(NEVIIM_KETUVIM_CANON, JPS_TANAKH_SPEC, JPS_VERSION_QUERY),
 }
 
 function parseArgs(argv: string[]) {
