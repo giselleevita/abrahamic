@@ -20,7 +20,8 @@
     "test:run": "vitest run",
     "import": "tsx scripts/import/index.ts",
     "import:verify": "tsx scripts/import/verify.ts",
-    "import:defaults": "tsx scripts/import/set-defaults.ts"
+    "import:defaults": "tsx scripts/import/set-defaults.ts",
+    "import:versification": "tsx scripts/import/check-versification.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",
