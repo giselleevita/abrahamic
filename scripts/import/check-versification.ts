@@ -48,6 +48,10 @@ async function findDivergentChapters(): Promise<Divergent[]> {
     JOIN sources s ON s.id = v."sourceId"
     JOIN verse_translations t ON t."verseId" = v.id
     WHERE s.key IN ('TORAH', 'HEBREW_BIBLE')
+      -- Only rows sharing a scheme can falsely claim to be the same verse.
+      -- Masoretic-numbered Hebrew lives on its own rows by design and is not a
+      -- divergence to report.
+      AND v.versification = 'CHRISTIAN'
     GROUP BY v.book, v.chapter
     HAVING MAX(v.verse) FILTER (WHERE t.name = ANY(${ORIGINAL_LANGUAGE})) IS NOT NULL
        AND MAX(v.verse) FILTER (WHERE t.name = ${REFERENCE}) IS NOT NULL

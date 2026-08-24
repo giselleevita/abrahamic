@@ -83,6 +83,21 @@ enum TimelineEra {
   EARLY_ISLAM
 }
 
+/// Verse-division scheme.
+///
+/// The Masoretic text and Christian translations divide verses differently —
+/// Hebrew counts a psalm's superscription as verse 1, so Psalm 51:1 in Hebrew
+/// is Psalm 51:3 in English. Storing both under one numbering made the reader
+/// display text side by side that did not correspond.
+///
+/// CHRISTIAN is the default and is what every existing verse, claim and verse
+/// link uses. MASORETIC rows exist only for chapters where the two genuinely
+/// diverge, so the common case is untouched.
+enum Versification {
+  CHRISTIAN
+  MASORETIC
+}
+
 enum FigureRelationType {
   PARENT
   CHILD
@@ -125,6 +140,9 @@ model Verse {
   verse        Int
   referenceKey String @unique
 
+  /// Which verse-division scheme this row's numbering follows.
+  versification Versification @default(CHRISTIAN)
+
   translations      VerseTranslation[]
   claimVerses       ClaimVerse[]
   linksAsA          VerseLink[]            @relation("VerseLinkA")
@@ -137,8 +155,9 @@ model Verse {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([sourceId, book, chapter, verse])
+  @@unique([sourceId, book, chapter, verse, versification])
   @@index([sourceId, book, chapter])
+  @@index([sourceId, book, chapter, versification])
   @@map("verses")
 }
 

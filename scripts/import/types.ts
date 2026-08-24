@@ -5,7 +5,11 @@
  * idempotency, provenance and statistics lives in the runner. Adding a new
  * translation should mean writing a `fetch` function, not another script.
  */
-import type { SourceKey, TranslationLabel } from '../../src/generated/prisma/client'
+import type {
+  SourceKey,
+  TranslationLabel,
+  Versification,
+} from '../../src/generated/prisma/client'
 
 export interface ImportedVerse {
   book: string
@@ -26,6 +30,14 @@ export interface TranslationSpec {
   sourceUrl: string
   /** Credit line, where the licence requires one. */
   attribution: string
+  /**
+   * Verse-division scheme this text numbers by.
+   *
+   * Defaults to CHRISTIAN. Only set MASORETIC for a text that genuinely uses
+   * Hebrew numbering, or its verses will collide with Christian-numbered ones
+   * and the two will be shown as corresponding when they do not.
+   */
+  versification?: Versification
 }
 
 export interface ImportAdapter {

@@ -21,6 +21,7 @@ import {
   REMOVED_TRANSLATION_NAMES,
   PERMITTED_LICENSE_CODES,
 } from '../../src/lib/public-demo-policy'
+import type { Versification } from '../../src/generated/prisma/client'
 import type { ImportAdapter, ImportStats, ImportedVerse } from './types'
 
 const BATCH_LOG_EVERY = 500
@@ -42,16 +43,23 @@ async function upsertVerse(
   sourceId: number,
   v: ImportedVerse,
   stats: ImportStats,
+  versification: Versification = 'CHRISTIAN',
 ): Promise<number> {
-  const referenceKey = `${v.book}.${v.chapter}.${v.verse}`
+  // The scheme is part of the reference key so Masoretic and Christian rows for
+  // the same citation stay distinct rather than colliding on the unique index.
+  const referenceKey =
+    versification === 'CHRISTIAN'
+      ? `${v.book}.${v.chapter}.${v.verse}`
+      : `${v.book}.${v.chapter}.${v.verse}.${versification}`
 
   const existing = await prisma.verse.findUnique({
     where: {
-      sourceId_book_chapter_verse: {
+      sourceId_book_chapter_verse_versification: {
         sourceId,
         book: v.book,
         chapter: v.chapter,
         verse: v.verse,
+        versification,
       },
     },
     select: { id: true },
@@ -67,6 +75,7 @@ async function upsertVerse(
       chapter: v.chapter,
       verse: v.verse,
       referenceKey,
+      versification,
     },
     select: { id: true },
   })
@@ -125,7 +134,7 @@ export async function runImport(
       if (options.dryRun) continue
 
       try {
-        const verseId = await upsertVerse(sourceId, v, stats)
+        const verseId = await upsertVerse(sourceId, v, stats, spec.versification ?? 'CHRISTIAN')
 
         // The unique key is (verseId, label, name), so re-running refreshes the
         // text of an existing row rather than creating a second copy.

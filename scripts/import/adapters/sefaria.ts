@@ -106,10 +106,19 @@ async function fetchChapter(
   return { verses: [] }
 }
 
+/**
+ * `onlyChapters` restricts the run to specific "Book chapter" references.
+ *
+ * Used to import Hebrew under MASORETIC numbering for exactly the chapters
+ * where it diverges from the Christian division, leaving the ~790 chapters
+ * where the two coincide on shared rows so the side-by-side reader keeps
+ * working there.
+ */
 export function createSefariaAdapter(
   books: CanonBook[],
   spec: TranslationSpec,
   versionQuery: string,
+  options: { onlyChapters?: Set<string> } = {},
 ): ImportAdapter {
   return {
     spec,
@@ -119,6 +128,9 @@ export function createSefariaAdapter(
 
       for (const book of selected) {
         for (let chapter = 1; chapter <= book.chapters; chapter += 1) {
+          if (options.onlyChapters && !options.onlyChapters.has(`${book.book} ${chapter}`)) {
+            continue
+          }
           try {
             const { verses, license } = await fetchChapter(book.book, chapter, versionQuery)
 
@@ -197,6 +209,23 @@ export const JPS_TORAH_SPEC: TranslationSpec = {
 export const JPS_TANAKH_SPEC: TranslationSpec = {
   ...JPS_TORAH_SPEC,
   sourceKey: 'HEBREW_BIBLE',
+}
+
+/**
+ * Hebrew under its own numbering, for chapters where the schemes diverge.
+ *
+ * Same text and licence as HEBREW_*_SPEC; what differs is that these rows are
+ * stored as MASORETIC so they never claim to be the same verse as the
+ * Christian-numbered English beside them.
+ */
+export const HEBREW_TORAH_MASORETIC_SPEC: TranslationSpec = {
+  ...HEBREW_TORAH_SPEC,
+  versification: 'MASORETIC',
+}
+
+export const HEBREW_TANAKH_MASORETIC_SPEC: TranslationSpec = {
+  ...HEBREW_TANAKH_SPEC,
+  versification: 'MASORETIC',
 }
 
 export const HEBREW_VERSION_QUERY = 'hebrew|Tanach with Nikkud'

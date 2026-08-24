@@ -57,3 +57,32 @@ describe('streaming boundaries vs notFound()', () => {
     },
   )
 })
+
+/**
+ * Versification.
+ *
+ * A verse row carries the scheme its numbering follows. Masoretic-numbered
+ * Hebrew and Christian-numbered English are the same passage counted
+ * differently — Psalm 51:1 in Hebrew is the superscription, Psalm 51:1 in
+ * English is Hebrew verse 3 — so any query that renders verses in a list must
+ * pin a scheme. Mixing them puts two "verse 1"s in one list and implies a
+ * correspondence that does not exist.
+ */
+describe('versification is pinned where verses are listed', () => {
+  const readerPage = join(APP_DIR, 'sources', '[sourceKey]', 'read', 'page.tsx')
+
+  it('the reader queries an explicit scheme', () => {
+    const src = readFileSync(readerPage, 'utf8')
+    const queries = src.match(/prisma\.verse\.(findMany|groupBy)\(/g) ?? []
+    expect(queries.length).toBeGreaterThan(0)
+    // Every verse query in the reader names a scheme.
+    expect(src.match(/versification:\s*'(CHRISTIAN|MASORETIC)'/g)?.length ?? 0)
+      .toBeGreaterThanOrEqual(queries.length)
+  })
+
+  it('separates the two schemes rather than interleaving them', () => {
+    const src = readFileSync(readerPage, 'utf8')
+    expect(src).toMatch(/versification:\s*'CHRISTIAN'/)
+    expect(src).toMatch(/versification:\s*'MASORETIC'/)
+  })
+})

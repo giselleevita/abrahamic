@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { VerseReader } from '@/components/sources/VerseReader'
+import { ScriptText } from '@/components/ui/ScriptText'
 import Link from 'next/link'
 
 // Cached content. Editors' changes appear immediately: mutating routes
@@ -45,12 +46,18 @@ export default async function VerseReaderPage({
     ? requestedChapter
     : 1
 
+  // The reader shows one scheme at a time. Christian numbering is the primary
+  // view — it is what every claim, verse link and citation on the site uses.
+  // Masoretic-numbered Hebrew, where a chapter's divisions differ, is shown
+  // separately below rather than interleaved: the two number the same passage
+  // differently, so mixing them would put two "verse 1"s in one list.
   const verses = book
     ? await prisma.verse.findMany({
         where: {
           sourceId: source.id,
           book,
           chapter: activeChapter,
+          versification: 'CHRISTIAN',
         },
         include: {
           translations: true,
@@ -79,6 +86,19 @@ export default async function VerseReaderPage({
       })
     : []
 
+  const masoretic = book
+    ? await prisma.verse.findMany({
+        where: {
+          sourceId: source.id,
+          book,
+          chapter: activeChapter,
+          versification: 'MASORETIC',
+        },
+        include: { translations: true },
+        orderBy: { verse: 'asc' },
+      })
+    : []
+
   // Navigation: prev/next chapter
   // Always a real chapter now, so prev/next navigation works on a bare book
   // link too — previously it silently disappeared without a ?chapter param.
@@ -86,7 +106,7 @@ export default async function VerseReaderPage({
   const allChapters = book
     ? await prisma.verse.groupBy({
         by: ['chapter'],
-        where: { sourceId: source.id, book },
+        where: { sourceId: source.id, book, versification: 'CHRISTIAN' },
         orderBy: { chapter: 'asc' },
       })
     : []
@@ -132,6 +152,35 @@ export default async function VerseReaderPage({
           </div>
 
           <VerseReader verses={verses as any} />
+
+          {masoretic.length > 0 && (
+            <section className="mt-10 rounded-xl border border-jewish-200 bg-jewish-50 p-5">
+              <h2 className="font-semibold text-stone-900">
+                Hebrew text — Masoretic numbering
+              </h2>
+              <p className="mt-1 text-sm leading-relaxed text-stone-700">
+                This chapter is divided differently in the Hebrew. The Masoretic text
+                counts verses that the English translation numbers otherwise, so the verse
+                numbers below do not line up with those above — they are shown separately
+                rather than paired, because pairing them would assert a correspondence
+                that does not hold.
+              </p>
+              <ol className="mt-4 space-y-2">
+                {masoretic.map((v) => {
+                  const text = v.translations[0]?.text
+                  if (!text) return null
+                  return (
+                    <li key={v.id} className="flex gap-3">
+                      <span className="w-8 shrink-0 pt-0.5 text-right font-mono text-xs text-stone-500">
+                        {v.verse}
+                      </span>
+                      <ScriptText text={text} className="flex-1 leading-relaxed text-stone-800" />
+                    </li>
+                  )
+                })}
+              </ol>
+            </section>
+          )}
         </>
       )}
     </div>
