@@ -27,6 +27,43 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 
 Enforced in `src/lib/public-demo-policy.ts` at seed and API time. See [`docs/LICENSING.md`](docs/LICENSING.md).
 
+## Screenshots
+
+The live demo is the fastest way to see the app — a home page, side-by-side comparison view, timeline, and family tree. See it at [abrahamic.vercel.app](https://abrahamic.vercel.app), or the [`docs/REVIEWER_GUIDE.md`](docs/REVIEWER_GUIDE.md) for a guided tour.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph Client
+        UI[Next.js App Router\nReact Server Components]
+    end
+
+    subgraph Server["Vercel / Next.js server"]
+        MW[middleware.ts\nroute gating]
+        API[API routes\nsrc/app/api/**]
+        Auth[NextAuth\nsrc/lib/auth.ts]
+        Policy[Public-demo policy\nsrc/lib/public-demo-policy.ts]
+        AI[Anthropic client\nsrc/lib/ai.ts]
+        RL[Rate limiter\nsrc/lib/rate-limit.ts]
+    end
+
+    DB[(PostgreSQL\nvia Prisma)]
+    Claude[[Anthropic API]]
+
+    UI --> MW --> API
+    API --> Auth
+    API --> Policy
+    API --> RL
+    API --> Prisma[Prisma Client] --> DB
+    API -.optional.-> AI --> Claude
+    Policy -. filters .-> Prisma
+```
+
+- **Data model**: Figures, sources, verses, translations, claims, comparisons, themes, and timeline events, all Prisma-modeled with checked-in migrations (`prisma/migrations`).
+- **Public-demo boundary**: `src/lib/public-demo-policy.ts` filters every translation the API returns so the public deployment never serves licensed English text — enforced in code and covered by tests, not just documentation.
+- **AI layer is optional and additive**: search ranking and comparison summaries call the Anthropic API only when `ANTHROPIC_API_KEY` is set; the app works without it.
+
 ## Engineering Scope
 
 - Next.js App Router frontend with responsive comparison and editorial workflows
@@ -95,6 +132,6 @@ vercel env run --environment production -- npm run db:seed
 
 ## License
 
-Source code is proprietary and provided for technical review. The **public demo** uses original-language text and **original reader notes** only — no licensed translations. See [`docs/LICENSING.md`](docs/LICENSING.md).
+Project source code is [MIT licensed](LICENSE). The **public demo** uses original-language text and **original reader notes** only — no licensed translations, and the MIT license does not extend to any third-party scripture translation text. See [`docs/LICENSING.md`](docs/LICENSING.md).
 
 **15-minute review:** [`docs/REVIEWER_GUIDE.md`](docs/REVIEWER_GUIDE.md) · **Live demo:** [abrahamic.vercel.app](https://abrahamic.vercel.app)
