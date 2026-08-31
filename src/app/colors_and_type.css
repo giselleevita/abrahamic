@@ -4,9 +4,6 @@
    src/app/globals.css from the giselleevita/abrahamic repo.
    ───────────────────────────────────────────────────────────────────────── */
 
-/* Webfonts — Google Fonts (already used in repo's globals.css) */
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
-
 :root {
   /* ── PRIMARY · warm neutrals ─────────────────────────────────────────── */
   --primary-50:  #f8f6f3;
