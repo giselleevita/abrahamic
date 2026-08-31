@@ -21,9 +21,9 @@ export function SearchBar() {
         type="search"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Search figures, themes, verses…"
-        className="w-full rounded-md border border-stone-300 bg-stone-50 px-3 py-1.5 text-sm placeholder-stone-400 focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-500"
-        aria-label="Search"
+        placeholder="Search people, beliefs, or verses"
+        className="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-950 placeholder:text-slate-500 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
+        aria-label="Search the whole site"
       />
     </form>
   )

@@ -1,364 +1,81 @@
 import Link from 'next/link'
+import { ArrowRight, BookOpen, Clock3, GitCompareArrows, Search, Users } from 'lucide-react'
 import prisma from '@/lib/prisma'
-import { ComparisonBlock } from '@/components/claims/ComparisonBlock'
-import { TRADITION_BG } from '@/lib/constants'
-import { Badge } from '@/components/ui/Badge'
-import type { ComparisonWithClaims } from '@/types'
-import type { ConceptCategory } from '@/generated/prisma/client'
 
 export const dynamic = 'force-dynamic'
 
-const CATEGORY_LABEL: Record<ConceptCategory, string> = {
-  THEOLOGY: 'Theology', SOTERIOLOGY: 'Soteriology', ESCHATOLOGY: 'Eschatology',
-  PROPHETHOOD: 'Prophethood', PRACTICE: 'Practice', LAW: 'Law & Covenant', COSMOLOGY: 'Cosmology',
-}
-
-const ERA_ORDER = ['PRIMORDIAL', 'PATRIARCHAL', 'EXODUS', 'KINGDOM', 'GOSPEL', 'EARLY_ISLAM'] as const
-const ERA_LABEL: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL: 'Primordial', PATRIARCHAL: 'Patriarchal', EXODUS: 'Exodus',
-  KINGDOM: 'Kingdom', GOSPEL: 'Gospel', EARLY_ISLAM: 'Early Islam',
-}
-const ERA_BG: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL:  'from-jewish-700 to-jewish-600',
-  PATRIARCHAL: 'from-gold-700 to-gold-600',
-  EXODUS:      'from-christian-700 to-christian-600',
-  KINGDOM:     'from-jewish-700 to-jewish-600',
-  GOSPEL:      'from-christian-700 to-christian-600',
-  EARLY_ISLAM: 'from-islamic-700 to-islamic-600',
-}
-const ERA_ACCENT: Record<typeof ERA_ORDER[number], string> = {
-  PRIMORDIAL:  'text-white',
-  PATRIARCHAL: 'text-primary-950',
-  EXODUS:      'text-white',
-  KINGDOM:     'text-white',
-  GOSPEL:      'text-white',
-  EARLY_ISLAM: 'text-white',
-}
-
-const HERO_VIDEO_SRC = '/hero-creation-banner.mp4'
+const START_HERE = [
+  { href: '/figures', title: 'Explore people', description: 'Find Abraham, Moses, Jesus, Muhammad, and other key figures across the three traditions.', action: 'Browse people', icon: Users, accent: 'bg-blue-50 text-blue-800 border-blue-100' },
+  { href: '/comparisons', title: 'Compare beliefs', description: 'See similarities and differences side by side, with sources clearly attached.', action: 'View comparisons', icon: GitCompareArrows, accent: 'bg-violet-50 text-violet-800 border-violet-100' },
+  { href: '/sources', title: 'Read the sources', description: 'Go directly to the Torah, Hebrew Bible, New Testament, Quran, and related texts.', action: 'Choose a source', icon: BookOpen, accent: 'bg-emerald-50 text-emerald-800 border-emerald-100' },
+  { href: '/timeline', title: 'Follow the story', description: 'Move through major people and events in chronological order, from creation onward.', action: 'Open timeline', icon: Clock3, accent: 'bg-amber-50 text-amber-900 border-amber-100' },
+]
 
 export default async function HomePage() {
-  const [
-    figures, themes, featuredComparisons, featuredConcepts,
-    figureCount, compCount, conceptCount, timelineCount,
-    timelineEraGroups,
-  ] = await Promise.all([
-    prisma.figure.findMany({
-      include: { aliases: true },
-      orderBy: { canonicalName: 'asc' },
-    }),
-    prisma.theme.findMany({ orderBy: { name: 'asc' } }),
-    prisma.comparison.findMany({
-      where: { isPublished: true },
-      include: {
-        claims: {
-          orderBy: { position: 'asc' },
-          include: {
-            claim: {
-              include: {
-                source: true,
-                verses: {
-                  where: { isPrimary: true },
-                  include: {
-                    verse: { include: { translations: { where: { isDefault: true } } } },
-                  },
-                },
-                figures: { include: { figure: true } },
-                themes: { include: { theme: true } },
-              },
-            },
-          },
-        },
-      },
-      take: 2,
-      orderBy: { createdAt: 'asc' },
-    }),
-    prisma.concept.findMany({
-      where: { isPublished: true },
-      select: { slug: true, name: true, category: true, summary: true },
-      take: 6,
-      orderBy: { name: 'asc' },
-    }),
+  const [figures, themes, comparisons, figureCount, comparisonCount, conceptCount, timelineCount] = await Promise.all([
+    prisma.figure.findMany({ orderBy: { canonicalName: 'asc' }, take: 8 }),
+    prisma.theme.findMany({ orderBy: { name: 'asc' }, take: 10 }),
+    prisma.comparison.findMany({ where: { isPublished: true }, select: { id: true, title: true, summary: true }, orderBy: { createdAt: 'asc' }, take: 3 }),
     prisma.figure.count(),
     prisma.comparison.count({ where: { isPublished: true } }),
     prisma.concept.count({ where: { isPublished: true } }),
     prisma.timelineEvent.count({ where: { isPublished: true } }),
-    prisma.timelineEvent.groupBy({
-      by: ['era'],
-      where: { isPublished: true },
-      _count: { id: true },
-    }),
   ])
 
-  const eraCountMap = Object.fromEntries(timelineEraGroups.map((g) => [g.era, g._count.id]))
-
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative mb-12 min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary-800 bg-primary-950 px-6 py-8 shadow-[0_24px_80px_rgba(26,22,19,0.5)] sm:px-10 sm:py-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,165,116,0.15),transparent_34%),radial-gradient(circle_at_80%_18%,rgba(15,76,127,0.12),transparent_28%),linear-gradient(135deg,#1a1613_0%,#231d19_42%,#1a1613_100%)]" />
-        <video
-          className="absolute inset-0 h-full w-full object-cover opacity-40"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-        >
-          <source src={HERO_VIDEO_SRC} type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(26,22,19,0.85)_0%,rgba(26,22,19,0.65)_42%,rgba(26,22,19,0.35)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-950 via-primary-950/55 to-transparent" />
-
-        <div className="relative z-10 flex min-h-[30rem] flex-col justify-between gap-10">
-          <div className="max-w-3xl">
-            <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-gold-500/25 bg-gold-600/10 px-4 py-2 backdrop-blur-sm">
-              <span className="h-2 w-2 rounded-full bg-gold-400" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gold-200">
-                In The Beginning
-              </span>
-            </div>
-
-            <div className="mb-6 flex gap-1.5">
-              <div className="h-1.5 w-20 rounded-full bg-jewish-500" />
-              <div className="h-1.5 w-20 rounded-full bg-christian-500" />
-              <div className="h-1.5 w-20 rounded-full bg-islamic-500" />
-            </div>
-
-            <h1 className="font-serif max-w-4xl text-5xl font-bold leading-[0.92] tracking-tight text-primary-50 sm:text-7xl">
-              Three traditions. One question. What did they actually say?
-            </h1>
-
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-primary-300 sm:text-lg">
-              From Genesis to the Quran, creation opens the story. Explore sourced comparisons across traditions in a clear, neutral reference built for study.
-            </p>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              <span className="rounded-full border border-jewish-500/40 bg-jewish-600/15 px-3 py-1 font-mono text-xs text-jewish-200 backdrop-blur-sm">
-                Genesis 1:1
-              </span>
-              <span className="rounded-full border border-christian-500/40 bg-christian-600/15 px-3 py-1 font-mono text-xs text-christian-200 backdrop-blur-sm">
-                John 1:1
-              </span>
-              <span className="rounded-full border border-islamic-500/40 bg-islamic-600/15 px-3 py-1 font-mono text-xs text-islamic-200 backdrop-blur-sm">
-                Quran 21:30
-              </span>
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/comparisons" className="rounded-lg bg-gold-600 px-5 py-2.5 text-sm font-semibold text-primary-950 hover:bg-gold-500 transition-colors">
-                Browse Comparisons
-              </Link>
-              <Link href="/concepts" className="rounded-lg border border-gold-500/30 bg-gold-600/20 px-5 py-2.5 text-sm font-semibold text-gold-200 hover:border-gold-400/50 hover:bg-gold-600/30 transition-colors">
-                Explore Concepts
-              </Link>
-              <Link href="/timeline" className="rounded-lg border border-primary-700 bg-primary-800/40 px-5 py-2.5 text-sm font-semibold text-primary-200 hover:border-primary-600 hover:bg-primary-800/60 transition-colors">
-                View Timeline
-              </Link>
-              <Link href="/sources" className="rounded-lg border border-primary-700 bg-primary-800/40 px-5 py-2.5 text-sm font-semibold text-primary-200 hover:border-primary-600 hover:bg-primary-800/60 transition-colors">
-                Read Sources
-              </Link>
-            </div>
+    <div className="bg-slate-50">
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+          <div>
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-blue-700">A clear guide to three traditions</p>
+            <h1 className="max-w-4xl text-4xl font-bold leading-tight text-slate-950 sm:text-5xl lg:text-6xl">Understand Judaism, Christianity, and Islam—side by side.</h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">Find a person, belief, event, or scripture passage. We organise the evidence so you can learn without already knowing specialist terms.</p>
+            <form action="/search" role="search" className="mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
+              <label htmlFor="home-search" className="sr-only">Search the whole site</label>
+              <div className="relative flex-1">
+                <Search aria-hidden="true" className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <input id="home-search" name="q" type="search" minLength={2} placeholder="Try “Abraham”, “prayer”, or “creation”" className="h-14 w-full rounded-xl border border-slate-300 bg-white pl-12 pr-4 text-base text-slate-950 shadow-sm outline-none placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100" />
+              </div>
+              <button type="submit" className="h-14 rounded-xl bg-blue-700 px-7 text-base font-bold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200">Search</button>
+            </form>
+            <p className="mt-3 text-sm text-slate-500">No account needed. Every comparison links back to its source.</p>
           </div>
-
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
-            <div className="flex flex-wrap gap-4 border-t border-white/12 pt-6">
+          <aside className="rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8" aria-labelledby="how-it-works">
+            <h2 id="how-it-works" className="text-2xl font-bold text-slate-950">New here? Start in 3 steps</h2>
+            <ol className="mt-6 space-y-5">
               {[
-                { label: 'Judaism', dot: 'bg-blue-400' },
-                { label: 'Christianity', dot: 'bg-red-400' },
-                { label: 'Islam', dot: 'bg-green-400' },
-              ].map(({ label, dot }) => (
-                <div key={label} className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 backdrop-blur-sm">
-                  <span className={`h-2 w-2 rounded-full ${dot}`} />
-                  <span className="text-xs font-medium text-stone-200">{label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="rounded-2xl border border-white/12 bg-black/30 p-4 backdrop-blur-md">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">
-                Editorial Principle
-              </p>
-              <p className="mt-2 text-sm font-semibold text-white">
-                Compare what each text says, not what any tradition is expected to say.
-              </p>
-              <p className="mt-2 text-xs leading-relaxed text-stone-300">
-                Every claim is sourced, every comparison is authored, and differences are presented clearly without advocacy.
-              </p>
-            </div>
-          </div>
+                ['1', 'Choose what interests you', 'A person, topic, scripture, or point in history.'],
+                ['2', 'See each tradition clearly', 'Views are labelled and placed next to one another.'],
+                ['3', 'Check the evidence', 'Follow citations to the original source and reader notes.'],
+              ].map(([number, title, text]) => <li key={number} className="flex gap-4"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-700 text-sm font-bold text-white">{number}</span><div><p className="font-bold text-slate-900">{title}</p><p className="mt-1 text-sm leading-6 text-slate-600">{text}</p></div></li>)}
+            </ol>
+          </aside>
         </div>
       </section>
 
-      {/* ── Stats bar ────────────────────────────────────────────────────── */}
-      <section className="mb-14 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[
-          { label: 'Figures', value: figureCount, href: '/figures' },
-          { label: 'Comparisons', value: compCount, href: '/comparisons' },
-          { label: 'Concepts', value: conceptCount, href: '/concepts' },
-          { label: 'Timeline events', value: timelineCount, href: '/timeline' },
-        ].map((stat) => (
-          <Link
-            key={stat.label}
-            href={stat.href}
-            className="group rounded-xl border border-stone-200 bg-white px-5 py-5 hover:border-stone-400 hover:shadow-sm transition-all"
-          >
-            <p className="text-4xl font-black text-stone-900 group-hover:text-stone-700">{stat.value}</p>
-            <p className="text-xs font-medium text-stone-500 mt-1">{stat.label}</p>
-          </Link>
-        ))}
-      </section>
-
-      {/* ── Key Figures ──────────────────────────────────────────────────── */}
-      <section className="mb-14">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-stone-900">Key Figures</h2>
-          <Link href="/figures" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {figures.slice(0, 8).map((figure) => (
-            <Link
-              key={figure.slug}
-              href={`/figures/${figure.slug}`}
-              className="group flex flex-col items-center gap-2 rounded-lg border border-stone-200 bg-white p-4 hover:border-stone-400 hover:shadow-sm transition-all"
-            >
-              <div className="flex gap-1.5">
-                {figure.aliases.slice(0, 3).map((a) => (
-                  <Badge key={a.id} className={`${TRADITION_BG[a.tradition]} text-[10px]`}>
-                    {a.name}
-                  </Badge>
-                ))}
-              </div>
-              <span className="text-xs text-stone-500 text-center mt-1">{figure.aliases.length > 0 ? `${figure.aliases.length} tradition${figure.aliases.length !== 1 ? 's' : ''}` : 'Figure'}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Themes ───────────────────────────────────────────────────────── */}
-      <section className="mb-14">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-stone-900">Themes</h2>
-          <Link href="/themes" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {themes.map((theme) => (
-            <Link
-              key={theme.slug}
-              href={`/themes/${theme.slug}`}
-              className="rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium hover:border-stone-400 hover:shadow-sm transition-all"
-              style={{ borderLeftColor: theme.color ?? undefined, borderLeftWidth: 3 }}
-            >
-              {theme.name}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Concepts teaser ───────────────────────────────────────────────── */}
-      {featuredConcepts.length > 0 && (
-        <section className="mb-14">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-stone-900">Theological Concepts</h2>
-            <Link href="/concepts" className="text-sm font-medium text-stone-600 hover:text-stone-900">View all →</Link>
-          </div>
-          <p className="mb-5 text-sm text-stone-500 max-w-2xl">
-            Key theological and philosophical ideas — and how Judaism, Christianity, and Islam each understand them.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredConcepts.map((concept) => (
-              <Link
-                key={concept.slug}
-                href={`/concepts/${concept.slug}`}
-                className="overflow-hidden rounded-xl border border-stone-200 bg-white hover:border-stone-400 hover:shadow-sm transition-all"
-              >
-                {/* Gradient top bar with 3 tradition colors */}
-                <div className="h-1 flex gap-0">
-                  <div className="flex-1 bg-blue-400" />
-                  <div className="flex-1 bg-red-400" />
-                  <div className="flex-1 bg-green-400" />
-                </div>
-                <div className="p-4">
-                  <div className="mb-2 inline-block rounded-full border border-stone-100 px-2 py-0.5 text-[10px] text-stone-400">
-                    {CATEGORY_LABEL[concept.category]}
-                  </div>
-                  <p className="font-semibold text-stone-900">{concept.name}</p>
-                  {concept.summary && (
-                    <p className="mt-1 text-xs text-stone-500 leading-relaxed line-clamp-2">
-                      {concept.summary}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            ))}
+      <main className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+        <section aria-labelledby="start-heading">
+          <p className="text-sm font-bold text-blue-700">START HERE</p>
+          <h2 id="start-heading" className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">What would you like to do?</h2>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {START_HERE.map(({ href, title, description, action, icon: Icon, accent }) => <Link key={href} href={href} className="group flex min-h-64 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-100"><span className={`flex h-12 w-12 items-center justify-center rounded-xl border ${accent}`}><Icon className="h-6 w-6" aria-hidden="true" /></span><h3 className="mt-5 text-xl font-bold text-slate-950">{title}</h3><p className="mt-3 flex-1 text-base leading-7 text-slate-600">{description}</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-blue-700">{action}<ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" /></span></Link>)}
           </div>
         </section>
-      )}
 
-      {/* ── Timeline teaser ───────────────────────────────────────────────── */}
-      {timelineCount > 0 && (
-        <section className="mb-14">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-stone-900">Timeline of Humanity</h2>
-            <Link href="/timeline" className="text-sm font-medium text-stone-600 hover:text-stone-900">View full timeline →</Link>
-          </div>
-          <p className="mb-5 text-sm text-stone-500 max-w-2xl">
-            Key events from creation to the founding of Islam — and how each tradition records, modifies, or disputes them.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {ERA_ORDER.map((era) => {
-              const count = eraCountMap[era] ?? 0
-              if (count === 0) return null
-              return (
-                <Link
-                  key={era}
-                  href="/timeline"
-                  className={`rounded-xl bg-gradient-to-r ${ERA_BG[era]} border border-stone-100 p-5 hover:border-stone-300 hover:shadow-sm transition-all`}
-                >
-                  <p className={`text-base font-bold ${ERA_ACCENT[era]}`}>{ERA_LABEL[era]}</p>
-                  <p className={`mt-1 text-sm ${era === 'PATRIARCHAL' ? 'text-primary-800' : 'text-white/80'}`}>{count} event{count !== 1 ? 's' : ''}</p>
-                </Link>
-              )
-            })}
-          </div>
+        <section className="mt-16 grid gap-8 rounded-3xl bg-slate-900 p-7 text-white sm:p-10 lg:grid-cols-[0.65fr_1.35fr]" aria-labelledby="library-heading">
+          <div><p className="text-sm font-bold text-blue-300">THE LIBRARY</p><h2 id="library-heading" className="mt-2 text-3xl font-bold text-white">A lot to explore, clearly organised.</h2><p className="mt-4 leading-7 text-slate-300">Use the guided routes above or jump straight into the full collection.</p></div>
+          <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[[figureCount, 'people', '/figures'], [comparisonCount, 'comparisons', '/comparisons'], [conceptCount, 'beliefs & concepts', '/concepts'], [timelineCount, 'timeline events', '/timeline']].map(([value, label, href]) => <Link key={label} href={href as string} className="rounded-2xl border border-slate-700 bg-slate-800 p-5 transition hover:border-blue-400 hover:bg-slate-700"><dt className="text-sm leading-5 text-slate-300">{label}</dt><dd className="mt-2 text-3xl font-bold text-white">{value}</dd></Link>)}
+          </dl>
         </section>
-      )}
 
-      {/* ── Featured Comparisons ─────────────────────────────────────────── */}
-      {featuredComparisons.length > 0 && (
-        <section className="mb-14">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-stone-900">Featured Comparisons</h2>
-            <Link href="/comparisons" className="text-sm font-medium text-stone-600 hover:text-stone-900">
-              View all →
-            </Link>
-          </div>
-          <div className="space-y-10">
-            {featuredComparisons.map((comp) => (
-              <div key={comp.id} className="rounded-xl border border-stone-200 bg-white p-6 ring-1 ring-stone-100 hover:ring-stone-200 transition-all">
-                <ComparisonBlock comparison={comp as unknown as ComparisonWithClaims} />
-                <div className="mt-4">
-                  <Link href={`/comparisons/${comp.id}`} className="text-xs text-stone-400 hover:text-stone-600">
-                    Full comparison →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
+        <section className="mt-16 grid gap-12 lg:grid-cols-2">
+          <div aria-labelledby="people-heading"><div className="flex items-end justify-between gap-4"><div><p className="text-sm font-bold text-blue-700">PEOPLE</p><h2 id="people-heading" className="mt-2 text-3xl font-bold text-slate-950">Popular figures</h2></div><Link href="/figures" className="font-bold text-blue-700 hover:text-blue-900">View all</Link></div><div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">{figures.map((figure) => <Link key={figure.slug} href={`/figures/${figure.slug}`} className="rounded-xl border border-slate-200 bg-white p-4 text-center font-bold text-slate-900 shadow-sm hover:border-blue-300 hover:text-blue-800">{figure.canonicalName}</Link>)}</div></div>
+          <div aria-labelledby="topics-heading"><div className="flex items-end justify-between gap-4"><div><p className="text-sm font-bold text-blue-700">TOPICS</p><h2 id="topics-heading" className="mt-2 text-3xl font-bold text-slate-950">Browse by theme</h2></div><Link href="/themes" className="font-bold text-blue-700 hover:text-blue-900">View all</Link></div><div className="mt-6 flex flex-wrap gap-3">{themes.map((theme) => <Link key={theme.slug} href={`/themes/${theme.slug}`} className="rounded-full border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-800 shadow-sm hover:border-blue-400 hover:bg-blue-50 hover:text-blue-900">{theme.name}</Link>)}</div></div>
         </section>
-      )}
 
-      {/* ── Methodology note ─────────────────────────────────────────────── */}
-      <section className="rounded-xl border border-amber-200 bg-amber-50 p-6">
-        <h2 className="text-sm font-semibold text-amber-900">Editorial approach</h2>
-        <p className="mt-2 text-sm text-amber-800 leading-relaxed">
-          All comparisons on this platform are authored by editors and peer-reviewed before
-          publishing. Tags (Shared / Similar-Different / Contradiction) are editorial judgments,
-          never computed automatically. Every claim cites at least one verse. No claim uses
-          evaluative language. The platform presents what texts say — not what they mean.
-        </p>
-      </section>
+        {comparisons.length > 0 && <section className="mt-16" aria-labelledby="comparison-heading"><div className="flex items-end justify-between gap-4"><div><p className="text-sm font-bold text-blue-700">SIDE BY SIDE</p><h2 id="comparison-heading" className="mt-2 text-3xl font-bold text-slate-950">Featured comparisons</h2></div><Link href="/comparisons" className="font-bold text-blue-700 hover:text-blue-900">View all</Link></div><div className="mt-6 grid gap-5 md:grid-cols-3">{comparisons.map((comparison) => <Link key={comparison.id} href={`/comparisons/${comparison.id}`} className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:border-blue-300 hover:shadow-md"><span className="text-xs font-bold uppercase tracking-wider text-blue-700">Comparison</span><h3 className="mt-3 text-xl font-bold text-slate-950 group-hover:text-blue-800">{comparison.title}</h3>{comparison.summary && <p className="mt-3 line-clamp-3 leading-7 text-slate-600">{comparison.summary}</p>}<span className="mt-5 inline-flex items-center gap-2 font-bold text-blue-700">Open comparison <ArrowRight className="h-4 w-4" /></span></Link>)}</div></section>}
+      </main>
     </div>
   )
 }

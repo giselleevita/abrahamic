@@ -2,37 +2,25 @@ import Link from 'next/link'
 import { SearchBar } from '@/components/layout/SearchBar'
 import { MobileMenu } from '@/components/layout/MobileMenu'
 import { NavLinks } from '@/components/layout/NavLinks'
-import { HorizontalFamilyTree } from '@/components/layout/HorizontalFamilyTree'
 
 export function Nav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-primary-800 bg-primary-950/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2.5 sm:px-6">
-        <Link href="/" className="flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="font-serif text-xl font-semibold text-primary-50 tracking-tight">Abrahamic</span>
-            <div className="inline-flex gap-1">
-              <span className="h-2.5 w-2.5 rounded-full bg-jewish-500" title="Jewish" />
-              <span className="h-2.5 w-2.5 rounded-full bg-christian-500" title="Christian" />
-              <span className="h-2.5 w-2.5 rounded-full bg-islamic-500" title="Islamic" />
-            </div>
-          </div>
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+      <div className="mx-auto flex h-20 max-w-7xl items-center gap-5 px-5 sm:px-8">
+        <Link href="/" className="flex flex-shrink-0 items-center gap-3 text-slate-950">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-blue-700 font-serif text-xl font-bold text-white">A</span>
+          <span className="hidden sm:block"><span className="block font-serif text-xl font-bold leading-5">Abrahamic Texts</span><span className="block text-xs font-medium text-slate-500">Compare. Read. Understand.</span></span>
         </Link>
 
         <NavLinks />
 
-        <div className="ml-auto w-full max-w-xs">
+        <div className="ml-auto hidden w-full max-w-xs lg:block">
           <SearchBar />
         </div>
 
         <MobileMenu />
       </div>
 
-      <div className="border-t border-primary-800 bg-primary-900/50 hidden sm:block">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <HorizontalFamilyTree />
-        </div>
-      </div>
     </header>
   )
 }
