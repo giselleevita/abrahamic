@@ -212,7 +212,7 @@ function EraBanner({ era, label, gradient, imageSrc, imageAlt, eventCount }: Era
       <Image src={imageSrc} alt={imageAlt} fill sizes="(max-width: 768px) 100vw, 1100px" className="object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-7">
-        <div><span className="text-2xl" aria-hidden>{ERA_EMOJI[era]}</span><h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">{label}</h2></div>
+        <div><span className="text-2xl" aria-hidden>{ERA_EMOJI[era]}</span><h2 style={{ color: '#ffffff', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }} className="mt-2 text-2xl font-bold sm:text-3xl">{label}</h2></div>
         <span className="shrink-0 rounded-full border border-white/30 bg-white/90 px-3 py-1.5 text-sm font-bold text-slate-900">{eventCount} events</span>
       </div>
     </div>
