@@ -102,8 +102,8 @@ model Source {
   description String?   @db.Text
   slug        String    @unique
 
-  verses Verse[]
-  claims Claim[]
+  verses          Verse[]
+  claims          Claim[]
   figureRelations FigureRelation[]
 
   createdAt DateTime @default(now())
@@ -127,12 +127,13 @@ model Verse {
 
   translations      VerseTranslation[]
   claimVerses       ClaimVerse[]
-  linksAsA          VerseLink[]            @relation("VerseLinkA")
-  linksAsB          VerseLink[]            @relation("VerseLinkB")
-  linkCandidatesAsA VerseLinkCandidate[]   @relation("CandidateA")
-  linkCandidatesAsB VerseLinkCandidate[]   @relation("CandidateB")
+  linksAsA          VerseLink[]          @relation("VerseLinkA")
+  linksAsB          VerseLink[]          @relation("VerseLinkB")
+  linkCandidatesAsA VerseLinkCandidate[] @relation("CandidateA")
+  linkCandidatesAsB VerseLinkCandidate[] @relation("CandidateB")
   timelineVerses    TimelineEventVerse[]
   figureRelations   FigureRelation[]
+  questionVerses    QuestionVerse[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -165,11 +166,13 @@ model Figure {
   imageUrl      String?
   legacy        String? @db.Text
 
-  aliases         FigureAlias[]
-  claims          ClaimFigure[]
-  timelineEvents  TimelineEventFigure[]
-  relationsFrom   FigureRelation[] @relation("RelationsFrom")
-  relationsTo     FigureRelation[] @relation("RelationsTo")
+  aliases        FigureAlias[]
+  claims         ClaimFigure[]
+  timelineEvents TimelineEventFigure[]
+  relationsFrom  FigureRelation[]      @relation("RelationsFrom")
+  relationsTo    FigureRelation[]      @relation("RelationsTo")
+
+  chapterItems ChapterItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -191,17 +194,17 @@ model FigureAlias {
 }
 
 model FigureRelation {
-  id            Int               @id @default(autoincrement())
-  fromFigureId  Int
-  fromFigure    Figure            @relation("RelationsFrom", fields: [fromFigureId], references: [id], onDelete: Cascade)
-  toFigureId    Int
-  toFigure      Figure            @relation("RelationsTo", fields: [toFigureId], references: [id], onDelete: Cascade)
-  relationType  FigureRelationType
-  notes         String?           @db.Text
-  sourceId      Int?
-  source        Source?           @relation(fields: [sourceId], references: [id])
-  verseId       Int?
-  verse         Verse?            @relation(fields: [verseId], references: [id])
+  id           Int                @id @default(autoincrement())
+  fromFigureId Int
+  fromFigure   Figure             @relation("RelationsFrom", fields: [fromFigureId], references: [id], onDelete: Cascade)
+  toFigureId   Int
+  toFigure     Figure             @relation("RelationsTo", fields: [toFigureId], references: [id], onDelete: Cascade)
+  relationType FigureRelationType
+  notes        String?            @db.Text
+  sourceId     Int?
+  source       Source?            @relation(fields: [sourceId], references: [id])
+  verseId      Int?
+  verse        Verse?             @relation(fields: [verseId], references: [id])
 
   @@unique([fromFigureId, toFigureId, relationType])
   @@map("figure_relations")
@@ -217,6 +220,8 @@ model Theme {
   color       String?
 
   claims ClaimTheme[]
+
+  chapterItems ChapterItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -244,6 +249,9 @@ model Claim {
   themes        ClaimTheme[]
   comparisons   ComparisonClaim[]
   conceptClaims ConceptClaim[]
+
+  questions          Question[]
+  questionCandidates QuestionCandidate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -299,6 +307,10 @@ model Comparison {
 
   claims ComparisonClaim[]
 
+  chapterItems       ChapterItem[]
+  questions          Question[]
+  questionCandidates QuestionCandidate[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -333,16 +345,16 @@ model VerseLink {
 }
 
 model VerseLinkCandidate {
-  id           Int             @id @default(autoincrement())
-  verseAId     Int
-  verseA       Verse           @relation("CandidateA", fields: [verseAId], references: [id])
-  verseBId     Int
-  verseB       Verse           @relation("CandidateB", fields: [verseBId], references: [id])
-  linkType     VerseLinkType
-  aiRationale  String          @db.Text
-  status       CandidateStatus @default(PENDING)
-  reviewedAt   DateTime?
-  reviewNotes  String?         @db.Text
+  id          Int             @id @default(autoincrement())
+  verseAId    Int
+  verseA      Verse           @relation("CandidateA", fields: [verseAId], references: [id])
+  verseBId    Int
+  verseB      Verse           @relation("CandidateB", fields: [verseBId], references: [id])
+  linkType    VerseLinkType
+  aiRationale String          @db.Text
+  status      CandidateStatus @default(PENDING)
+  reviewedAt  DateTime?
+  reviewNotes String?         @db.Text
 
   createdAt DateTime @default(now())
 
@@ -362,6 +374,10 @@ model Concept {
 
   traditions ConceptTradition[]
   claims     ConceptClaim[]
+
+  chapterItems       ChapterItem[]
+  questions          Question[]
+  questionCandidates QuestionCandidate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -409,6 +425,10 @@ model TimelineEvent {
   verses     TimelineEventVerse[]
   figures    TimelineEventFigure[]
 
+  chapterItems       ChapterItem[]
+  questions          Question[]
+  questionCandidates QuestionCandidate[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -447,4 +467,274 @@ model TimelineEventFigure {
 
   @@id([eventId, figureId])
   @@map("timeline_event_figures")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEARN — courses, chapters and quizzes
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum ChapterItemType {
+  CONCEPT
+  COMPARISON
+  FIGURE
+  TIMELINE_EVENT
+  THEME
+}
+
+/// Every kind is ATTRIBUTIVE by construction: the correct answer is a fact
+/// about what a named tradition teaches, what a named text says, or where the
+/// traditions differ. There is deliberately NO kind whose correct answer is an
+/// unattributed truth claim — that absence is the neutrality guarantee.
+enum QuestionKind {
+  /// "What does <tradition> teach about X?" — requires subjectTradition.
+  TRADITION_TEACHING
+  /// "In Islamic tradition, who is Isa?" — requires subjectTradition.
+  FIGURE_IDENTITY
+  /// "According to <source>, what happens?" — requires a verse citation.
+  SOURCE_TEXT
+  /// "Which traditions affirm X?" — one option per tradition, none scored wrong.
+  DIVERGENCE_MAP
+  /// Ordering within a named tradition's narrative.
+  TIMELINE_ORDER
+  /// Definitional; provenance is a Concept.
+  TERMINOLOGY
+}
+
+enum QuestionFormat {
+  SINGLE_CHOICE
+  MULTI_SELECT
+  /// Never a bare true/false — the stem must attribute ("Islam teaches that…").
+  TRUE_FALSE_ATTRIBUTED
+  ORDERING
+}
+
+enum QuestionSourceType {
+  CLAIM
+  CONCEPT
+  COMPARISON
+  TIMELINE_EVENT
+}
+
+enum QuestionDifficulty {
+  INTRO
+  CORE
+  DEEP
+}
+
+model Course {
+  id          Int     @id @default(autoincrement())
+  slug        String  @unique
+  title       String
+  subtitle    String?
+  description String? @db.Text
+  position    Int     @default(0)
+  isPublished Boolean @default(false)
+
+  chapters Chapter[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished, position])
+  @@map("courses")
+}
+
+model Chapter {
+  id       Int    @id @default(autoincrement())
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  slug        String  @unique
+  title       String
+  summary     String? @db.Text
+  position    Int     @default(0)
+  isPublished Boolean @default(false)
+
+  /// Human sign-off that this chapter's quiz is attributive. Required to
+  /// publish — the automated lint is a speed bump, this is the real gate.
+  neutralityReviewedAt DateTime?
+  neutralityReviewNote String?   @db.Text
+
+  quizQuestionCount Int @default(5)
+  quizPassPercent   Int @default(70)
+
+  items      ChapterItem[]
+  questions  Question[]
+  candidates QuestionCandidate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, position])
+  @@index([courseId, position])
+  @@index([isPublished])
+  @@map("chapters")
+}
+
+/// One ordered playlist entry pointing at an existing entity.
+///
+/// Polymorphism is a discriminator + nullable typed FKs rather than a loose
+/// entityId, so referential integrity survives. "Exactly one FK set, and it
+/// matches itemType" is enforced by CHECK constraints in the migration SQL.
+/// onDelete: Restrict — deleting a cited entity must fail loudly rather than
+/// silently gutting a curated chapter.
+model ChapterItem {
+  id        Int     @id @default(autoincrement())
+  chapterId Int
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  itemType ChapterItemType
+  position Int             @default(0)
+  /// Editorial framing shown above the embedded entity.
+  note     String?         @db.Text
+
+  conceptId       Int?
+  concept         Concept?       @relation(fields: [conceptId], references: [id], onDelete: Restrict)
+  comparisonId    Int?
+  comparison      Comparison?    @relation(fields: [comparisonId], references: [id], onDelete: Restrict)
+  figureId        Int?
+  figure          Figure?        @relation(fields: [figureId], references: [id], onDelete: Restrict)
+  timelineEventId Int?
+  timelineEvent   TimelineEvent? @relation(fields: [timelineEventId], references: [id], onDelete: Restrict)
+  themeId         Int?
+  theme           Theme?         @relation(fields: [themeId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chapterId, position])
+  @@index([itemType])
+  @@map("chapter_items")
+}
+
+model Question {
+  id        Int     @id @default(autoincrement())
+  chapterId Int
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  kind       QuestionKind
+  format     QuestionFormat     @default(SINGLE_CHOICE)
+  difficulty QuestionDifficulty @default(CORE)
+  position   Int                @default(0)
+
+  prompt           String     @db.Text
+  /// Whose teaching the question is about. Required for TRADITION_TEACHING and
+  /// FIGURE_IDENTITY (CHECKed); null for kinds whose citation carries the
+  /// attribution instead.
+  subjectTradition Tradition?
+  /// Required. A question cannot ship without stating why the answer is the
+  /// answer; rendered with the provenance citation after answering.
+  explanation      String     @db.Text
+
+  isPublished Boolean @default(false)
+
+  // ── provenance: exactly one, CHECKed ──────────────────────────────────
+  sourceType      QuestionSourceType
+  claimId         Int?
+  claim           Claim?             @relation(fields: [claimId], references: [id], onDelete: Restrict)
+  conceptId       Int?
+  concept         Concept?           @relation(fields: [conceptId], references: [id], onDelete: Restrict)
+  comparisonId    Int?
+  comparison      Comparison?        @relation(fields: [comparisonId], references: [id], onDelete: Restrict)
+  timelineEventId Int?
+  timelineEvent   TimelineEvent?     @relation(fields: [timelineEventId], references: [id], onDelete: Restrict)
+
+  /// Denormalised at author time from Comparison.isControversial or
+  /// tag = CONTRADICTION. Narrows the allowed kinds and forces every option to
+  /// name whose position it is.
+  isContested Boolean @default(false)
+
+  originCandidateId    Int?      @unique
+  neutralityReviewedAt DateTime?
+  neutralityReviewNote String?   @db.Text
+
+  options QuestionAnswerOption[]
+  verses  QuestionVerse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chapterId, position])
+  @@index([isPublished])
+  @@index([kind])
+  @@map("questions")
+}
+
+model QuestionAnswerOption {
+  id         Int      @id @default(autoincrement())
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  text      String  @db.Text
+  isCorrect Boolean @default(false)
+  position  Int     @default(0)
+
+  /// DIVERGENCE_MAP: which tradition this option represents and the presence
+  /// it asserts, reusing the existing vocabulary so the answer key is
+  /// checkable against real ConceptTradition / TimelineEventTradition rows.
+  optionTradition Tradition?
+  presence        TraditionPresence?
+
+  /// Why this option is not that tradition's teaching. Required on contested
+  /// questions so no distractor reads as "this tradition is simply mistaken".
+  rationale String? @db.Text
+
+  @@index([questionId, position])
+  @@map("question_answer_options")
+}
+
+model QuestionVerse {
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  verseId    Int
+  verse      Verse    @relation(fields: [verseId], references: [id], onDelete: Restrict)
+  position   Int      @default(0)
+
+  @@id([questionId, verseId])
+  @@map("question_verses")
+}
+
+/// AI-drafted question awaiting editorial review. Mirrors VerseLinkCandidate.
+model QuestionCandidate {
+  id        Int     @id @default(autoincrement())
+  chapterId Int
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  kind             QuestionKind
+  format           QuestionFormat @default(SINGLE_CHOICE)
+  prompt           String         @db.Text
+  subjectTradition Tradition?
+  explanation      String         @db.Text
+
+  sourceType      QuestionSourceType
+  claimId         Int?
+  claim           Claim?             @relation(fields: [claimId], references: [id])
+  conceptId       Int?
+  concept         Concept?           @relation(fields: [conceptId], references: [id])
+  comparisonId    Int?
+  comparison      Comparison?        @relation(fields: [comparisonId], references: [id])
+  timelineEventId Int?
+  timelineEvent   TimelineEvent?     @relation(fields: [timelineEventId], references: [id])
+
+  /// Draft options as JSON while PENDING: review is a single-row write and a
+  /// rejection leaves no orphan rows. Validated by zod on write and on promote.
+  /// Shape: { text, isCorrect, optionTradition?, presence?, rationale? }[]
+  proposedOptions Json
+
+  aiRationale String  @db.Text
+  aiModel     String?
+  /// Dedupes re-generation, mirroring Claim.contentHash.
+  contentHash String  @unique
+
+  status          CandidateStatus @default(PENDING)
+  reviewedAt      DateTime?
+  reviewNotes     String?         @db.Text
+  /// Result of the automated neutrality lint. A BLOCK flag disables Approve.
+  neutralityFlags Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([chapterId, status])
+  @@index([status])
+  @@map("question_candidates")
 }

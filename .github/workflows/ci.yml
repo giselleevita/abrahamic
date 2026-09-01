@@ -55,6 +55,11 @@ jobs:
 
       - name: Test
         run: npm test
+        env:
+          # The Learn migration's CHECK constraints are verified against a real
+          # database; without this the DB-backed tests skip themselves silently.
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
 
       - name: Build
         run: npx next build
