@@ -212,3 +212,128 @@ export async function semanticRankClaims(
     return []
   }
 }
+
+// ─── 5. Quiz Question Candidates ──────────────────────────────────────────────
+// Drafts quiz questions for editorial review. Output is ALWAYS a candidate that
+// a human approves or rejects — nothing here writes a published question.
+//
+// The neutrality rule this prompt has to respect: the correct answer must be a
+// fact about what a NAMED tradition teaches or what a NAMED text says, never an
+// unattributed truth claim. Drafts are additionally run through
+// src/lib/learn/neutrality.ts, which blocks on violations, so a bad generation
+// is caught even if the prompt is ignored.
+
+export type QuestionSourceContext = {
+  sourceType: 'CONCEPT' | 'COMPARISON'
+  title: string
+  summary: string | null
+  /** Per-tradition positions, when the source has them. */
+  traditions: { tradition: string; text: string }[]
+  /** True for a controversial or CONTRADICTION-tagged comparison. */
+  isContested: boolean
+}
+
+export type QuestionProposal = {
+  kind: 'TRADITION_TEACHING' | 'FIGURE_IDENTITY' | 'SOURCE_TEXT' | 'DIVERGENCE_MAP' | 'TERMINOLOGY'
+  prompt: string
+  explanation: string
+  subjectTradition: 'JEWISH' | 'CHRISTIAN' | 'ISLAMIC' | null
+  options: {
+    text: string
+    isCorrect: boolean
+    optionTradition: 'JEWISH' | 'CHRISTIAN' | 'ISLAMIC' | null
+    rationale: string | null
+  }[]
+  aiRationale: string
+}
+
+const QUESTION_SYSTEM = `You draft multiple-choice questions for an educational site comparing Judaism, Christianity and Islam.
+
+THE ONE RULE THAT MATTERS: a question's correct answer must be a fact about what a NAMED tradition teaches, or what a NAMED text says. Never write a question whose correct answer asserts a theological truth.
+
+Write:   "What does Islam teach about the crucifixion?"
+Never:   "What really happened at the crucifixion?"
+Never:   "Which tradition is correct about X?"
+
+Question kinds:
+- TRADITION_TEACHING — "What does <tradition> teach about X?" You MUST set subjectTradition, and the prompt text must name that tradition.
+- FIGURE_IDENTITY — "In <tradition>, who is X?" You MUST set subjectTradition.
+- TERMINOLOGY — "What does the term X refer to?" Definitional only. subjectTradition is null.
+- DIVERGENCE_MAP — "What position does each tradition take on X?" Provide exactly one option per tradition (JEWISH, CHRISTIAN, ISLAMIC), each with optionTradition set and isCorrect true, each stating that tradition's actual position. subjectTradition is null.
+
+For contested topics use DIVERGENCE_MAP or TRADITION_TEACHING only. On contested topics EVERY option must either set optionTradition or carry a rationale explaining why it is not that tradition's teaching — never leave a bare wrong answer that implies a tradition is simply mistaken.
+
+Distractors must be plausible and respectful: prefer another tradition's actual position (with optionTradition set) over invented nonsense. Never mock a belief.
+
+"explanation" states why the answer is the answer, in two sentences at most, reporting rather than endorsing.
+"aiRationale" is one sentence for the human reviewer on why this question is worth asking.
+
+Respond with a JSON array of 1-3 question objects and nothing else.`
+
+export async function proposeQuestionCandidates(
+  context: QuestionSourceContext,
+  count = 2,
+): Promise<QuestionProposal[]> {
+  const traditionLines = context.traditions
+    .map((t) => `- ${t.tradition}: ${t.text}`)
+    .join('\n')
+
+  const response = await client.messages.create({
+    model: 'claude-opus-5',
+    max_tokens: 4000,
+    system: QUESTION_SYSTEM,
+    messages: [
+      {
+        role: 'user',
+        content: `Source (${context.sourceType}): ${context.title}
+${context.summary ? `\nSummary: ${context.summary}` : ''}
+${traditionLines ? `\nPositions by tradition:\n${traditionLines}` : ''}
+
+This material is ${context.isContested ? 'CONTESTED — restrict yourself to DIVERGENCE_MAP or TRADITION_TEACHING, and attribute every option.' : 'not flagged as contested.'}
+
+Draft ${count} question(s) as a JSON array:`,
+      },
+    ],
+  })
+
+  const block = response.content.find((b) => b.type === 'text')
+  if (!block || block.type !== 'text') return []
+
+  let parsed: unknown
+  try {
+    // Tolerate the model wrapping JSON in prose or a code fence.
+    const match = block.text.match(/\[[\s\S]*\]/)
+    parsed = JSON.parse(match ? match[0] : block.text.trim())
+  } catch {
+    return []
+  }
+  if (!Array.isArray(parsed)) return []
+
+  const KINDS = ['TRADITION_TEACHING', 'FIGURE_IDENTITY', 'SOURCE_TEXT', 'DIVERGENCE_MAP', 'TERMINOLOGY']
+  const TRADITIONS = ['JEWISH', 'CHRISTIAN', 'ISLAMIC']
+
+  return parsed
+    .filter(
+      (p): p is QuestionProposal =>
+        typeof p === 'object' && p !== null &&
+        KINDS.includes((p as QuestionProposal).kind) &&
+        typeof (p as QuestionProposal).prompt === 'string' &&
+        typeof (p as QuestionProposal).explanation === 'string' &&
+        Array.isArray((p as QuestionProposal).options) &&
+        (p as QuestionProposal).options.length >= 2,
+    )
+    .map((p) => ({
+      ...p,
+      subjectTradition: TRADITIONS.includes(p.subjectTradition as string)
+        ? p.subjectTradition
+        : null,
+      aiRationale: typeof p.aiRationale === 'string' ? p.aiRationale : 'No rationale given.',
+      options: p.options.slice(0, 5).map((o) => ({
+        text: String(o.text ?? ''),
+        isCorrect: o.isCorrect === true,
+        optionTradition: TRADITIONS.includes(o.optionTradition as string) ? o.optionTradition : null,
+        rationale: typeof o.rationale === 'string' ? o.rationale : null,
+      })),
+    }))
+    .slice(0, count)
+}

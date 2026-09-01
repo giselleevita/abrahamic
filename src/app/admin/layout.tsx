@@ -44,10 +44,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/timeline" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Timeline
           </Link>
+          <Link href="/admin/learn" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
+            Courses
+          </Link>
           <hr className="my-2 border-stone-200" />
           <p className="px-2 pt-1 text-xs font-semibold uppercase tracking-wider text-stone-400">AI tools</p>
           <Link href="/admin/verse-link-candidates" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Link Candidates ✦
+          </Link>
+          <Link href="/admin/question-candidates" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
+            Question Candidates ✦
           </Link>
           <Link href="/admin/verse-links" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Approved Links
