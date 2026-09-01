@@ -1,3 +1,80 @@
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
-@import "./colors_and_type.css";
+@import "./colors_and_type.css" layer(base);
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Tailwind v4 theme — generates the `primary-*`, `jewish-*`, `christian-*`,
+   `islamic-*` and `gold-*` utilities (bg-, text-, border-, from-, to-, …).
+
+   These previously lived in `tailwind.config.ts`, which Tailwind v4 never
+   loaded (no `@config` directive), so every one of those utilities silently
+   produced no CSS. Defined here so v4 picks them up natively.
+
+   Hex values live here only; `colors_and_type.css` aliases them.
+   ───────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* PRIMARY · warm neutrals */
+  --color-primary-50:  #f8f6f3;
+  --color-primary-100: #f1ede7;
+  --color-primary-200: #e3ddd3;
+  --color-primary-300: #d4cfc5;
+  --color-primary-400: #a89d91;
+  --color-primary-500: #8b7d71;
+  --color-primary-600: #6e6259;
+  --color-primary-700: #534841;
+  --color-primary-800: #3a322d;
+  --color-primary-900: #231d19;
+  --color-primary-950: #1a1613;
+
+  /* JEWISH · sapphire */
+  --color-jewish-50:  #f0f5ff;
+  --color-jewish-100: #e6edff;
+  --color-jewish-200: #ccdaff;
+  --color-jewish-300: #99b3ff;
+  --color-jewish-400: #668cff;
+  --color-jewish-500: #3366ff;
+  --color-jewish-600: #0f4c7f;
+  --color-jewish-700: #0a3666;
+  --color-jewish-800: #062452;
+  --color-jewish-900: #031838;
+
+  /* CHRISTIAN · garnet */
+  --color-christian-50:  #fff5f5;
+  --color-christian-100: #ffe8e8;
+  --color-christian-200: #ffd4d4;
+  --color-christian-300: #ffadad;
+  --color-christian-400: #ff8686;
+  --color-christian-500: #ff5f5f;
+  --color-christian-600: #7c2d3e;
+  --color-christian-700: #612533;
+  --color-christian-800: #461c28;
+  --color-christian-900: #2b131d;
+
+  /* ISLAMIC · amethyst */
+  --color-islamic-50:  #faf5ff;
+  --color-islamic-100: #f5ecff;
+  --color-islamic-200: #ecd9ff;
+  --color-islamic-300: #dab3ff;
+  --color-islamic-400: #b580ff;
+  --color-islamic-500: #9055ff;
+  --color-islamic-600: #3d2a5c;
+  --color-islamic-700: #322150;
+  --color-islamic-800: #251844;
+  --color-islamic-900: #1a1038;
+
+  /* GOLD · accent */
+  --color-gold-50:  #fffbf0;
+  --color-gold-100: #fff6e0;
+  --color-gold-200: #ffecc0;
+  --color-gold-300: #ffe0a0;
+  --color-gold-400: #ffd480;
+  --color-gold-500: #d4a574;
+  --color-gold-600: #c29560;
+  --color-gold-700: #8b6f47;
+  --color-gold-800: #6b572f;
+  --color-gold-900: #4a3d1f;
+
+  /* Type families */
+  --font-serif: 'Crimson Text', Georgia, serif;
+  --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
+}

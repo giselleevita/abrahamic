@@ -65,13 +65,13 @@ function buildFamilyTree(
 
 function FigureCard({ node }: { node: FigureNode }) {
   return (
-    <div className="bg-white rounded-lg border border-primary-800 p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-lg border border-primary-200 p-4 shadow-sm hover:shadow-md transition-shadow">
       <Link href={`/figures/${node.figure.slug}`} className="block">
-        <h3 className="font-semibold text-primary-50 hover:text-gold-400 transition-colors">
+        <h3 className="font-semibold text-primary-950 hover:text-gold-700 transition-colors">
           {node.figure.canonicalName}
         </h3>
       </Link>
-      {node.figure.legacy && <p className="text-xs text-primary-400 mt-1 line-clamp-2">{node.figure.legacy}</p>}
+      {node.figure.legacy && <p className="text-xs text-primary-600 mt-1 line-clamp-2">{node.figure.legacy}</p>}
     </div>
   )
 }
@@ -89,8 +89,8 @@ function GenerationRow({
     <div className="relative mb-12">
       {/* Generation label and spine connector */}
       <div className="flex items-start gap-4 mb-4">
-        <div className={`flex-shrink-0 w-20 ${spine.color} border-r-2 border-primary-700 pt-2`}>
-          <div className="text-xs font-semibold text-gold-500 text-right pr-3 tracking-wider">
+        <div className={`flex-shrink-0 w-20 ${spine.color} border-r-2 border-primary-200 pt-2`}>
+          <div className="text-xs font-semibold text-gold-700 text-right pr-3 tracking-wider">
             GEN {generation}
           </div>
         </div>
@@ -111,9 +111,9 @@ function GenerationRow({
 
 export function GenerationalTree({ figures, tradition }: GenerationalTreeProps) {
   const traditions = {
-    JEWISH: { color: 'bg-jewish-900/20', label: 'Jewish lineage' },
-    CHRISTIAN: { color: 'bg-christian-900/20', label: 'Christian lineage' },
-    ISLAMIC: { color: 'bg-islamic-900/20', label: 'Islamic lineage' },
+    JEWISH: { color: 'bg-jewish-50', label: 'Jewish lineage' },
+    CHRISTIAN: { color: 'bg-christian-50', label: 'Christian lineage' },
+    ISLAMIC: { color: 'bg-islamic-50', label: 'Islamic lineage' },
   } as const
 
   const config = traditions[tradition as keyof typeof traditions] || traditions.JEWISH
@@ -157,7 +157,7 @@ export function GenerationalTree({ figures, tradition }: GenerationalTreeProps) 
 
   return (
     <div className={`rounded-lg p-8 ${config.color}`}>
-      <h2 className="text-2xl font-bold mb-8 capitalize text-primary-50">{config.label}</h2>
+      <h2 className="text-2xl font-bold mb-8 capitalize text-primary-950">{config.label}</h2>
 
       <div className="space-y-0">
         {sortedGens.map(gen => (

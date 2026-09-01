@@ -1,70 +1,71 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Abrahamic Texts — colors & typography
-   Single source of truth for design tokens. Mirrors tailwind.config.ts +
-   src/app/globals.css from the giselleevita/abrahamic repo.
+   Semantic roles + type scale. The raw palette scales are defined in the
+   Tailwind v4 `@theme` block in globals.css (which generates the matching
+   utilities); the vars below alias them so the hex lives in exactly one place.
    ───────────────────────────────────────────────────────────────────────── */
 
 :root {
   /* ── PRIMARY · warm neutrals ─────────────────────────────────────────── */
-  --primary-50:  #f8f6f3;
-  --primary-100: #f1ede7;
-  --primary-200: #e3ddd3;
-  --primary-300: #d4cfc5;
-  --primary-400: #a89d91;
-  --primary-500: #8b7d71;
-  --primary-600: #6e6259;
-  --primary-700: #534841;
-  --primary-800: #3a322d;
-  --primary-900: #231d19;
-  --primary-950: #1a1613;
+  --primary-50:  var(--color-primary-50);
+  --primary-100: var(--color-primary-100);
+  --primary-200: var(--color-primary-200);
+  --primary-300: var(--color-primary-300);
+  --primary-400: var(--color-primary-400);
+  --primary-500: var(--color-primary-500);
+  --primary-600: var(--color-primary-600);
+  --primary-700: var(--color-primary-700);
+  --primary-800: var(--color-primary-800);
+  --primary-900: var(--color-primary-900);
+  --primary-950: var(--color-primary-950);
 
   /* ── JEWISH · sapphire ────────────────────────────────────────────────── */
-  --jewish-50:  #f0f5ff;
-  --jewish-100: #e6edff;
-  --jewish-200: #ccdaff;
-  --jewish-300: #99b3ff;
-  --jewish-400: #668cff;
-  --jewish-500: #3366ff;
-  --jewish-600: #0f4c7f;
-  --jewish-700: #0a3666;
-  --jewish-800: #062452;
-  --jewish-900: #031838;
+  --jewish-50:  var(--color-jewish-50);
+  --jewish-100: var(--color-jewish-100);
+  --jewish-200: var(--color-jewish-200);
+  --jewish-300: var(--color-jewish-300);
+  --jewish-400: var(--color-jewish-400);
+  --jewish-500: var(--color-jewish-500);
+  --jewish-600: var(--color-jewish-600);
+  --jewish-700: var(--color-jewish-700);
+  --jewish-800: var(--color-jewish-800);
+  --jewish-900: var(--color-jewish-900);
 
   /* ── CHRISTIAN · garnet ───────────────────────────────────────────────── */
-  --christian-50:  #fff5f5;
-  --christian-100: #ffe8e8;
-  --christian-200: #ffd4d4;
-  --christian-300: #ffadad;
-  --christian-400: #ff8686;
-  --christian-500: #ff5f5f;
-  --christian-600: #7c2d3e;
-  --christian-700: #612533;
-  --christian-800: #461c28;
-  --christian-900: #2b131d;
+  --christian-50:  var(--color-christian-50);
+  --christian-100: var(--color-christian-100);
+  --christian-200: var(--color-christian-200);
+  --christian-300: var(--color-christian-300);
+  --christian-400: var(--color-christian-400);
+  --christian-500: var(--color-christian-500);
+  --christian-600: var(--color-christian-600);
+  --christian-700: var(--color-christian-700);
+  --christian-800: var(--color-christian-800);
+  --christian-900: var(--color-christian-900);
 
   /* ── ISLAMIC · amethyst ──────────────────────────────────────────────── */
-  --islamic-50:  #faf5ff;
-  --islamic-100: #f5ecff;
-  --islamic-200: #ecd9ff;
-  --islamic-300: #dab3ff;
-  --islamic-400: #b580ff;
-  --islamic-500: #9055ff;
-  --islamic-600: #3d2a5c;
-  --islamic-700: #322150;
-  --islamic-800: #251844;
-  --islamic-900: #1a1038;
+  --islamic-50:  var(--color-islamic-50);
+  --islamic-100: var(--color-islamic-100);
+  --islamic-200: var(--color-islamic-200);
+  --islamic-300: var(--color-islamic-300);
+  --islamic-400: var(--color-islamic-400);
+  --islamic-500: var(--color-islamic-500);
+  --islamic-600: var(--color-islamic-600);
+  --islamic-700: var(--color-islamic-700);
+  --islamic-800: var(--color-islamic-800);
+  --islamic-900: var(--color-islamic-900);
 
   /* ── GOLD · accent ───────────────────────────────────────────────────── */
-  --gold-50:  #fffbf0;
-  --gold-100: #fff6e0;
-  --gold-200: #ffecc0;
-  --gold-300: #ffe0a0;
-  --gold-400: #ffd480;
-  --gold-500: #d4a574;
-  --gold-600: #c29560;
-  --gold-700: #8b6f47;
-  --gold-800: #6b572f;
-  --gold-900: #4a3d1f;
+  --gold-50:  var(--color-gold-50);
+  --gold-100: var(--color-gold-100);
+  --gold-200: var(--color-gold-200);
+  --gold-300: var(--color-gold-300);
+  --gold-400: var(--color-gold-400);
+  --gold-500: var(--color-gold-500);
+  --gold-600: var(--color-gold-600);
+  --gold-700: var(--color-gold-700);
+  --gold-800: var(--color-gold-800);
+  --gold-900: var(--color-gold-900);
 
   /* ── SEMANTIC ROLES ──────────────────────────────────────────────────── */
   --bg:        #fffaf5;

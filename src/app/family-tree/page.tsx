@@ -100,8 +100,8 @@ export default async function FamilyTreePage() {
       <div className="min-h-screen px-4 py-12">
         <div className="max-w-7xl mx-auto">
           <header className="mb-12">
-            <h1 className="text-4xl font-serif font-bold text-primary-50 mb-2">Abrahamic Genealogy</h1>
-            <p className="text-lg text-primary-400 max-w-2xl">
+            <h1 className="text-4xl font-serif font-bold text-primary-950 mb-2">Abrahamic Genealogy</h1>
+            <p className="text-lg text-primary-600 max-w-2xl">
               A comprehensive family tree organized by generation, showing the lineages of key figures across Judaism, Christianity, and Islam. Each generation is marked by a timeline spine, with figures grouped horizontally for easy comparison across traditions.
             </p>
           </header>
@@ -123,8 +123,8 @@ export default async function FamilyTreePage() {
     return (
       <div className="min-h-screen px-4 py-12">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-serif font-bold text-primary-50 mb-4">Abrahamic Genealogy</h1>
-          <p className="text-primary-300">Loading family tree data...</p>
+          <h1 className="text-4xl font-serif font-bold text-primary-950 mb-4">Abrahamic Genealogy</h1>
+          <p className="text-primary-700">Loading family tree data...</p>
         </div>
       </div>
     )
