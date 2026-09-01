@@ -1,40 +1,14 @@
 import Link from 'next/link'
+import { FOOTER_GROUPS } from '@/lib/navigation'
 
-const SECTIONS = [
-  {
-    title: 'Explore',
-    links: [
-      { href: '/figures', label: 'Figures' },
-      { href: '/themes', label: 'Themes' },
-      { href: '/sources', label: 'Sources' },
-      { href: '/comparisons', label: 'Comparisons' },
-    ],
-  },
-  {
-    title: 'Study',
-    links: [
-      { href: '/concepts', label: 'Concepts' },
-      { href: '/timeline', label: 'Timeline' },
-      { href: '/verse-links', label: 'Cross-References' },
-      { href: '/glossary', label: 'Glossary' },
-    ],
-  },
-  {
-    title: 'Platform',
-    links: [
-      { href: '/search', label: 'Search' },
-      { href: '/licensing', label: 'Licensing' },
-    ],
-  },
-]
 
 export function Footer() {
   return (
     <footer className="mt-20 border-t border-amber-200 bg-gradient-to-br from-amber-50 via-white to-violet-50">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
           {/* Brand */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <Link href="/" className="text-lg font-serif font-bold text-slate-950">
               Abrahamic Texts
             </Link>
@@ -50,13 +24,13 @@ export function Footer() {
           </div>
 
           {/* Link columns */}
-          {SECTIONS.map((section) => (
-            <div key={section.title}>
+          {FOOTER_GROUPS.map((section) => (
+            <div key={section.id}>
               <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
-                {section.title}
+                {section.label}
               </p>
               <ul className="space-y-2">
-                {section.links.map((link) => (
+                {section.items.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}

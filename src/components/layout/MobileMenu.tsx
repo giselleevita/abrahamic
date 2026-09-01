@@ -2,20 +2,12 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-
-const NAV_LINKS = [
-  { href: '/figures', label: 'Explore people' },
-  { href: '/comparisons', label: 'Compare beliefs' },
-  { href: '/sources', label: 'Read sources' },
-  { href: '/timeline', label: 'Timeline' },
-  { href: '/themes', label: 'Browse themes' },
-  { href: '/concepts', label: 'Beliefs & concepts' },
-  { href: '/family-tree', label: 'Family tree' },
-  { href: '/glossary', label: 'Glossary' },
-]
+import { usePathname } from 'next/navigation'
+import { NAV_GROUPS, isActivePath } from '@/lib/navigation'
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
 
   return (
     <div className="md:hidden">
@@ -43,15 +35,28 @@ export function MobileMenu() {
         <div className="absolute left-0 right-0 top-full z-50 border-b border-slate-200 bg-white shadow-xl">
           <nav aria-label="Mobile navigation" className="mx-auto max-w-7xl px-5 py-5">
             <form action="/search" role="search" className="mb-4"><label htmlFor="mobile-search" className="sr-only">Search the whole site</label><input id="mobile-search" name="q" type="search" placeholder="Search the whole site" className="h-12 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-base text-slate-950" /></form>
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="block rounded-lg px-3 py-3 text-base font-semibold text-slate-800 hover:bg-blue-50 hover:text-blue-900 transition-colors"
-              >
-                {link.label}
-              </Link>
+            {NAV_GROUPS.map((group) => (
+              <div key={group.id} className="mb-2">
+                <p className="px-3 pb-1 pt-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                  {group.label}
+                </p>
+                {group.items.map((item) => {
+                  const active = isActivePath(pathname, item.href)
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={active ? 'page' : undefined}
+                      className={`block rounded-lg px-3 py-3 text-base font-semibold transition-colors ${
+                        active ? 'bg-blue-50 text-blue-900' : 'text-slate-800 hover:bg-blue-50 hover:text-blue-900'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                })}
+              </div>
             ))}
           </nav>
         </div>
