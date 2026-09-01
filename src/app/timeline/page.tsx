@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import prisma from '@/lib/prisma'
 import type { TimelineEra, TraditionPresence } from '@/generated/prisma/client'
 import VisualTimeline from '@/components/timeline/VisualTimeline'
+import { PageIntro } from '@/components/layout/PageIntro'
 
 export const metadata: Metadata = { title: 'Timeline' }
 export const dynamic = 'force-dynamic'
@@ -15,13 +16,15 @@ const ERA_CONFIG: Record<TimelineEra, {
   gradient: string
   dotColor: string
   textAccent: string
+  imageSrc: string
+  imageAlt: string
 }> = {
-  PRIMORDIAL:  { gradient: 'from-indigo-100 to-blue-50',    dotColor: 'bg-indigo-400',   textAccent: 'text-indigo-700',  label: 'Primordial — From Creation to the Flood' },
-  PATRIARCHAL: { gradient: 'from-amber-100 to-yellow-50',   dotColor: 'bg-amber-400',    textAccent: 'text-amber-700',   label: 'Patriarchal — Abraham, Isaac & Jacob' },
-  EXODUS:      { gradient: 'from-rose-100 to-red-50',       dotColor: 'bg-rose-400',     textAccent: 'text-rose-700',    label: 'Exodus — Moses & the Law' },
-  KINGDOM:     { gradient: 'from-violet-100 to-purple-50',  dotColor: 'bg-violet-400',   textAccent: 'text-violet-700',  label: 'Kingdom — David, Solomon & the Prophets' },
-  GOSPEL:      { gradient: 'from-sky-100 to-cyan-50',       dotColor: 'bg-sky-400',      textAccent: 'text-sky-700',     label: 'Gospel Era — Jesus / Isa' },
-  EARLY_ISLAM: { gradient: 'from-emerald-100 to-teal-50',   dotColor: 'bg-emerald-400',  textAccent: 'text-emerald-700', label: 'Early Islam — Muhammad & the Quran' },
+  PRIMORDIAL:  { gradient: 'from-indigo-100 to-blue-50', dotColor: 'bg-indigo-500', textAccent: 'text-indigo-700', label: 'Primordial — From Creation to the Flood', imageSrc: '/timeline/primordial.jpg', imageAlt: 'Illustrated cosmic dawn over mountains, water, and a flourishing landscape' },
+  PATRIARCHAL: { gradient: 'from-amber-100 to-yellow-50', dotColor: 'bg-amber-500', textAccent: 'text-amber-800', label: 'Patriarchal — Abraham, Isaac & Jacob', imageSrc: '/timeline/patriarchal.jpg', imageAlt: 'Illustrated ancient desert encampment beneath a field of stars' },
+  EXODUS:      { gradient: 'from-rose-100 to-red-50', dotColor: 'bg-rose-500', textAccent: 'text-rose-700', label: 'Exodus — Moses & the Law', imageSrc: '/timeline/exodus.jpg', imageAlt: 'Illustrated journey through the rocky Sinai landscape at sunrise' },
+  KINGDOM:     { gradient: 'from-violet-100 to-purple-50', dotColor: 'bg-violet-500', textAccent: 'text-violet-700', label: 'Kingdom — David, Solomon & the Prophets', imageSrc: '/timeline/kingdom.jpg', imageAlt: 'Illustrated ancient hill city with scrolls and olive trees' },
+  GOSPEL:      { gradient: 'from-sky-100 to-cyan-50', dotColor: 'bg-sky-500', textAccent: 'text-sky-700', label: 'Gospel Era — Jesus / Isa', imageSrc: '/timeline/gospel.jpg', imageAlt: 'Illustrated first-century lakeshore with boats, paths, and stone villages' },
+  EARLY_ISLAM: { gradient: 'from-emerald-100 to-teal-50', dotColor: 'bg-emerald-500', textAccent: 'text-emerald-700', label: 'Early Islam — Muhammad & the Quran', imageSrc: '/timeline/early-islam.jpg', imageAlt: 'Illustrated historic Arabian oasis city at dawn with a caravan trail' },
 }
 
 const PRESENCE_CONFIG: Record<TraditionPresence, { icon: string; label: string; bg: string; text: string; border: string }> = {
@@ -49,6 +52,8 @@ export default async function TimelinePage() {
       gradient: cfg.gradient,
       dotColor: cfg.dotColor,
       textAccent: cfg.textAccent,
+      imageSrc: cfg.imageSrc,
+      imageAlt: cfg.imageAlt,
       events: events
         .filter((e) => e.era === era)
         .map((e) => ({
@@ -73,20 +78,12 @@ export default async function TimelinePage() {
   })
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-      {/* Page header */}
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold tracking-tight text-stone-900">
-          Timeline of Humanity
-        </h1>
-        <p className="mt-3 text-stone-500 leading-relaxed max-w-2xl">
-          Key events from the dawn of creation to the founding of Islam — and how each
-          tradition records, modifies, or disputes them. Events are drawn from the shared
-          scriptures: Torah, Bible, and Quran.
-        </p>
+    <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
+      <PageIntro eyebrow="Follow the story" title="Interactive timeline" description="Travel from creation narratives to early Islam. Choose an era, open any event, and compare how each tradition records it." />
 
-        {/* Legend pills */}
-        <div className="mt-5 flex flex-wrap gap-3">
+      <details className="mb-8 rounded-2xl border border-slate-200 bg-white p-5">
+        <summary className="cursor-pointer font-bold text-slate-900">How to read the comparison labels</summary>
+        <div className="mt-4 flex flex-wrap gap-3">
           {(Object.keys(PRESENCE_CONFIG) as TraditionPresence[]).map((p) => {
             const c = PRESENCE_CONFIG[p]
             return (
@@ -108,14 +105,14 @@ export default async function TimelinePage() {
             <span className="h-2 w-2 rounded-full bg-green-500" /> Islam
           </span>
         </div>
-      </div>
+      </details>
 
       {/* Visual timeline */}
       <VisualTimeline groups={groups} />
 
       {/* Editorial note */}
-      <div className="mt-14 rounded-lg border border-stone-100 bg-stone-50 p-4">
-        <p className="text-xs text-stone-500">
+      <div className="mt-14 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+        <p className="text-sm leading-6 text-amber-950">
           Chronology is presented in canonical narrative order rather than by disputed historical dating.
           &ldquo;Modified&rdquo; means the tradition records the event but with significant differences.
           &ldquo;Silent&rdquo; means the tradition&apos;s canon does not address this event.

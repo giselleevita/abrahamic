@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Tradition, TraditionPresence, TimelineEra } from '@/generated/prisma/client'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -35,6 +36,8 @@ export interface EraGroup {
   gradient: string
   dotColor: string
   textAccent: string
+  imageSrc: string
+  imageAlt: string
   events: EventData[]
 }
 
@@ -107,22 +110,22 @@ function EventCard({ event, textAccent, isLeft }: EventCardProps) {
     >
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="w-full text-left rounded-xl border border-stone-200 bg-white shadow-sm hover:shadow-md hover:border-stone-300 transition-all p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400"
+        className="w-full rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-lg focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
         aria-expanded={expanded}
       >
         {/* Card header */}
         <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className={`text-sm font-semibold ${textAccent} leading-snug`}>
+          <h3 className={`text-lg font-bold ${textAccent} leading-snug`}>
             {event.name}
           </h3>
-          <span className="shrink-0 text-xs text-stone-400 mt-0.5">
-            {expanded ? '▲' : '▼'}
+          <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
+            {expanded ? 'Close' : 'Explore'}
           </span>
         </div>
 
         {/* Summary */}
         {event.summary && (
-          <p className={`text-xs text-stone-600 leading-relaxed ${expanded ? '' : 'line-clamp-2'} mb-3`}>
+          <p className={`mb-4 text-sm leading-6 text-slate-600 ${expanded ? '' : 'line-clamp-2'}`}>
             {event.summary}
           </p>
         )}
@@ -144,7 +147,7 @@ function EventCard({ event, textAccent, isLeft }: EventCardProps) {
 
       {/* Expanded panel */}
       {expanded && (
-        <div className="mt-2 rounded-xl border border-stone-100 bg-stone-50 p-4">
+        <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           {/* Per-tradition panels */}
           <div className="grid gap-3 sm:grid-cols-3 mb-3">
             {traditionDots.map(({ trad, entry, cfg }) => (
@@ -161,9 +164,9 @@ function EventCard({ event, textAccent, isLeft }: EventCardProps) {
                   </span>
                 </div>
                 {entry?.notes ? (
-                  <p className="text-xs text-stone-600 leading-relaxed">{entry.notes}</p>
+                  <p className="text-sm text-slate-700 leading-6">{entry.notes}</p>
                 ) : (
-                  <p className="text-xs text-stone-400 italic">
+                  <p className="text-sm text-slate-500 italic">
                     Not recorded in this tradition&apos;s canon.
                   </p>
                 )}
@@ -198,20 +201,20 @@ interface EraBannerProps {
   era: TimelineEra
   label: string
   gradient: string
-  textAccent: string
+  imageSrc: string
+  imageAlt: string
+  eventCount: number
 }
 
-function EraBanner({ era, label, gradient, textAccent }: EraBannerProps) {
+function EraBanner({ era, label, gradient, imageSrc, imageAlt, eventCount }: EraBannerProps) {
   return (
-    <div className={`relative flex items-center gap-3 w-full py-2 bg-gradient-to-r ${gradient} rounded-xl px-4`}>
-      <hr className="flex-1 border-stone-300" />
-      <div className="shrink-0 flex items-center gap-2 rounded-full bg-white border border-stone-200 shadow-sm px-4 py-1.5">
-        <span aria-hidden>{ERA_EMOJI[era]}</span>
-        <span className={`text-xs font-bold tracking-wide uppercase ${textAccent}`}>
-          {label}
-        </span>
+    <div className={`relative h-56 overflow-hidden rounded-3xl border border-white/70 bg-gradient-to-r ${gradient} shadow-lg sm:h-72`}>
+      <Image src={imageSrc} alt={imageAlt} fill sizes="(max-width: 768px) 100vw, 1100px" className="object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-7">
+        <div><span className="text-2xl" aria-hidden>{ERA_EMOJI[era]}</span><h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">{label}</h2></div>
+        <span className="shrink-0 rounded-full border border-white/30 bg-white/90 px-3 py-1.5 text-sm font-bold text-slate-900">{eventCount} events</span>
       </div>
-      <hr className="flex-1 border-stone-300" />
     </div>
   )
 }
@@ -225,6 +228,16 @@ interface VisualTimelineProps {
 export default function VisualTimeline({ groups }: VisualTimelineProps) {
   return (
     <div className="relative">
+      <nav aria-label="Jump to an era" className="sticky top-24 z-30 mb-10 overflow-x-auto rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-md backdrop-blur">
+        <div className="flex min-w-max gap-2">
+          {groups.filter((group) => group.events.length > 0).map((group) => (
+            <a key={group.era} href={`#era-${group.era.toLowerCase()}`} className={`rounded-xl bg-gradient-to-r ${group.gradient} px-4 py-3 text-sm font-bold ${group.textAccent} transition hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-blue-100`}>
+              <span className="mr-2" aria-hidden>{ERA_EMOJI[group.era]}</span>{group.label.split(' — ')[0]}
+            </a>
+          ))}
+        </div>
+      </nav>
+
       {/* Global desktop spine */}
       <div
         className="absolute left-1/2 top-0 bottom-0 w-px bg-stone-200 -translate-x-1/2 hidden sm:block"
@@ -238,13 +251,15 @@ export default function VisualTimeline({ groups }: VisualTimelineProps) {
           let globalIdx = 0
 
           return (
-            <section key={group.era} className="space-y-6">
+            <section id={`era-${group.era.toLowerCase()}`} key={group.era} className="scroll-mt-44 space-y-7">
               {/* Era banner */}
               <EraBanner
                 era={group.era}
                 label={group.label}
                 gradient={group.gradient}
-                textAccent={group.textAccent}
+                imageSrc={group.imageSrc}
+                imageAlt={group.imageAlt}
+                eventCount={group.events.length}
               />
 
               {/* Events */}
