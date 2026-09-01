@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { VerseLinkCandidate, Verse, Source } from '@/generated/prisma/client'
+import type { VerseLinkCandidate, Verse, Source, VerseLinkType } from '@/generated/prisma/client'
 
 type CandidateWithVerses = VerseLinkCandidate & {
   verseA: Verse & { source: Source }
@@ -13,11 +13,11 @@ interface Props {
   candidate: CandidateWithVerses
 }
 
-const LINK_TYPE_LABEL: Record<string, string> = {
+const LINK_TYPE_LABEL: Record<VerseLinkType, string> = {
   PARALLEL: 'Parallel',
-  INTERTEXTUAL: 'Intertextual reference',
-  THEMATIC: 'Thematic link',
-  CONTRASTING: 'Contrasting',
+  CONTRAST: 'Contrast',
+  ELABORATION: 'Elaboration',
+  FULFILLMENT_CLAIM: 'Fulfilment claim',
 }
 
 export function VerseLinkCandidateCard({ candidate }: Props) {

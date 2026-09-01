@@ -6,7 +6,8 @@ import { TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
 import { ClaimCard } from '@/components/claims/ClaimCard'
 import type { ClaimWithRelations, FigureWithAliases } from '@/types'
-import type { ConceptCategory, TimelineEra } from '@/generated/prisma/client'
+import type { ConceptCategory, SourceKey, TimelineEra, Tradition } from '@/generated/prisma/client'
+import { SearchFilters } from '@/components/search/SearchFilters'
 
 export const metadata: Metadata = { title: 'Search' }
 export const dynamic = 'force-dynamic'
@@ -21,13 +22,32 @@ const ERA_LABEL: Record<TimelineEra, string> = {
   KINGDOM: 'Kingdom', GOSPEL: 'Gospel', EARLY_ISLAM: 'Early Islam',
 }
 
+const TRADITIONS: Tradition[] = ['JEWISH', 'CHRISTIAN', 'ISLAMIC', 'SHARED']
+const SOURCE_KEYS: SourceKey[] = ['TORAH', 'HEBREW_BIBLE', 'NEW_TESTAMENT', 'QURAN', 'SIRAH_IBN_HISHAM', 'HADITH_TRADITION']
+const CATEGORIES = Object.keys(CATEGORY_LABEL) as ConceptCategory[]
+
+/** Narrow a raw query-string value to a known enum member, else undefined. */
+function asEnum<T extends string>(value: string | undefined, allowed: readonly T[]): T | undefined {
+  return allowed.includes(value as T) ? (value as T) : undefined
+}
+
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>
+  searchParams: Promise<{ q?: string; tradition?: string; source?: string; category?: string }>
 }) {
-  const { q } = await searchParams
+  const { q, tradition: rawTradition, source: rawSource, category: rawCategory } = await searchParams
   const query = q?.trim()
+  const tradition = asEnum(rawTradition, TRADITIONS)
+  const sourceKey = asEnum(rawSource, SOURCE_KEYS)
+  const category = asEnum(rawCategory, CATEGORIES)
+
+  // Both filters constrain the same relation, so they must be merged into a
+  // single `source` object — two spreads would silently clobber each other.
+  const sourceFilter =
+    sourceKey || tradition
+      ? { source: { ...(sourceKey ? { key: sourceKey } : {}), ...(tradition ? { tradition } : {}) } }
+      : {}
 
   if (!query || query.length < 2) {
     return (
@@ -44,6 +64,7 @@ export default async function SearchPage({
     prisma.figure.findMany({
       where: {
         OR: [{ canonicalName: search }, { aliases: { some: { name: search } } }, { description: search }],
+        ...(tradition ? { aliases: { some: { tradition } } } : {}),
       },
       include: { aliases: true, _count: { select: { claims: true } } },
       take: 5,
@@ -54,7 +75,11 @@ export default async function SearchPage({
       take: 5,
     }),
     prisma.claim.findMany({
-      where: { isPublished: true, OR: [{ statement: search }, { notes: search }] },
+      where: {
+        isPublished: true,
+        OR: [{ statement: search }, { notes: search }],
+        ...sourceFilter,
+      },
       include: {
         source: true,
         verses: {
@@ -68,7 +93,10 @@ export default async function SearchPage({
       take: 10,
     }),
     prisma.verse.findMany({
-      where: { translations: { some: { text: search } } },
+      where: {
+        translations: { some: { text: search } },
+        ...sourceFilter,
+      },
       include: { source: true, translations: { where: { isDefault: true } } },
       take: 5,
     }),
@@ -80,6 +108,8 @@ export default async function SearchPage({
           { summary: search },
           { traditions: { some: { definition: search } } },
         ],
+        ...(category ? { category } : {}),
+        ...(tradition ? { traditions: { some: { tradition } } } : {}),
       },
       select: { slug: true, name: true, category: true, summary: true },
       take: 5,
@@ -88,6 +118,7 @@ export default async function SearchPage({
       where: {
         isPublished: true,
         OR: [{ name: search }, { summary: search }],
+        ...(tradition ? { traditions: { some: { tradition } } } : {}),
       },
       select: { slug: true, name: true, era: true, summary: true },
       take: 5,
@@ -105,6 +136,8 @@ export default async function SearchPage({
         title="Search"
         description={`${totalResults} result${totalResults !== 1 ? 's' : ''} for \u201c${query}\u201d`}
       />
+
+      <SearchFilters />
 
       {figures.length > 0 && (
         <section className="mb-10">
