@@ -25,6 +25,7 @@ export default async function SourcesPage() {
             href={`/sources/${source.slug}`}
             className="group rounded-2xl border border-slate-200 bg-white p-7 shadow-sm hover:border-blue-300 hover:shadow-md transition-all"
           >
+            <div className="mb-5 flex h-1.5 overflow-hidden rounded-full" aria-hidden="true"><span className="flex-1 bg-blue-500" /><span className="flex-1 bg-rose-500" /><span className="flex-1 bg-emerald-500" /></div>
             <div className="flex items-start justify-between gap-3">
               <h2 className="text-2xl font-bold text-slate-950 group-hover:text-blue-800">{source.title}</h2>
               <Badge className={TRADITION_BG[source.tradition]}>{source.tradition}</Badge>

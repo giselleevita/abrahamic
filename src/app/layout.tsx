@@ -38,7 +38,7 @@ export const dynamic = 'force-dynamic'
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="flex min-h-full flex-col bg-slate-50 text-slate-900">
+      <body className="flex min-h-full flex-col bg-[#fffaf5] text-slate-900">
         <PublicDemoBanner />
         <Nav />
         <main className="flex-1">{children}</main>

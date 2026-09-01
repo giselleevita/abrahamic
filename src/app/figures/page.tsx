@@ -28,6 +28,7 @@ export default async function FiguresPage() {
             href={`/figures/${figure.slug}`}
             className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:border-blue-300 hover:shadow-md transition-all"
           >
+            <div className="mb-5 flex h-1.5 overflow-hidden rounded-full" aria-hidden="true"><span className="flex-1 bg-blue-500" /><span className="flex-1 bg-rose-500" /><span className="flex-1 bg-emerald-500" /></div>
             <h2 className="text-xl font-bold text-slate-950 group-hover:text-blue-800">{figure.canonicalName}</h2>
 
             {figure.description && (
