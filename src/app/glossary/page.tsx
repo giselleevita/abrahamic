@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageIntro } from '@/components/layout/PageIntro'
 import Link from 'next/link'
 
 export const metadata: Metadata = { title: 'Glossary' }
@@ -192,11 +193,11 @@ const GLOSSARY: GlossarySection[] = [
 export default function GlossaryPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <h1 className="mb-2 text-3xl font-bold tracking-tight text-stone-900">Glossary</h1>
-      <p className="mb-10 text-stone-500 leading-relaxed">
-        Definitions of terms used across this platform — concept categories, timeline presence states,
-        interpretive vocabulary, and key theological concepts.
-      </p>
+      <PageIntro
+        eyebrow="Read"
+        title="Glossary"
+        description="Definitions of terms used across this platform — concept categories, timeline presence states, interpretive vocabulary, and key theological concepts."
+      />
 
       <div className="space-y-12">
         {GLOSSARY.map((section) => (

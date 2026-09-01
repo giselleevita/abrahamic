@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageIntro } from '@/components/layout/PageIntro'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { TRADITION_BG } from '@/lib/constants'
@@ -99,10 +100,11 @@ export default async function SearchPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <h1 className="mb-2 text-3xl font-bold tracking-tight text-stone-900">Search</h1>
-      <p className="mb-8 text-stone-500">
-        {totalResults} result{totalResults !== 1 ? 's' : ''} for &ldquo;{query}&rdquo;
-      </p>
+      <PageIntro
+        eyebrow="Search"
+        title="Search"
+        description={`${totalResults} result${totalResults !== 1 ? 's' : ''} for \u201c${query}\u201d`}
+      />
 
       {figures.length > 0 && (
         <section className="mb-10">

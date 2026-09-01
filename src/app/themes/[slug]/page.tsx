@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { PageIntro } from '@/components/layout/PageIntro'
 import prisma from '@/lib/prisma'
 import { ClaimCard } from '@/components/claims/ClaimCard'
 import type { ClaimWithRelations } from '@/types'
@@ -50,24 +51,19 @@ export default async function ThemePage({ params }: { params: Promise<{ slug: st
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <nav className="mb-6 flex items-center gap-2 text-sm text-stone-500">
-        <a href="/search" className="hover:text-stone-700">Search</a>
-        <span>/</span>
-        <span className="text-stone-900">{theme.name}</span>
-      </nav>
-
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight text-stone-900">{theme.name}</h1>
+      <PageIntro
+        eyebrow="Theme"
+        title={theme.name}
+        description={theme.description ?? undefined}
+        trail={[{ href: '/themes', label: 'Themes' }]}
+      >
         {theme.color && (
-          <div className="mt-4 h-3 w-20 rounded-full" style={{ backgroundColor: theme.color }}></div>
+          <div className="h-3 w-20 rounded-full" style={{ backgroundColor: theme.color }} />
         )}
-        {theme.description && (
-          <p className="mt-4 text-lg text-stone-700">{theme.description}</p>
-        )}
-      </div>
+      </PageIntro>
 
       <div>
-        <h2 className="mb-4 text-lg font-semibold text-stone-900">
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">
           Claims ({theme.claims.length})
         </h2>
         {theme.claims.length === 0 ? (

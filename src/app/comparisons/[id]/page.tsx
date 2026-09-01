@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
+import { PageIntro } from '@/components/layout/PageIntro'
 import { notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { ComparisonBlock } from '@/components/claims/ComparisonBlock'
 import { ControversialBanner } from '@/components/claims/ControversialBanner'
 import type { ComparisonWithClaims } from '@/types'
-import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,11 +45,12 @@ export default async function ComparisonDetailPage({ params }: { params: Promise
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <nav className="mb-6 flex items-center gap-2 text-sm text-stone-500">
-        <Link href="/comparisons" className="hover:text-stone-700">Comparisons</Link>
-        <span>/</span>
-        <span className="text-stone-900">{comparison.title}</span>
-      </nav>
+      <PageIntro
+        eyebrow="Comparison"
+        title={comparison.title}
+        description={comparison.summary ?? undefined}
+        trail={[{ href: '/comparisons', label: 'Comparisons' }]}
+      />
 
       {comparison.isControversial && (
         <div className="mb-6">

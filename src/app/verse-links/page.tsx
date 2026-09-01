@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageIntro } from '@/components/layout/PageIntro'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { TRADITION_BG } from '@/lib/constants'
@@ -67,11 +68,11 @@ export default async function VerseLinksPage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <h1 className="mb-2 text-3xl font-bold tracking-tight text-stone-900">Cross-References</h1>
-      <p className="mb-8 text-stone-500 leading-relaxed max-w-2xl">
-        Editorially curated connections between passages across Jewish, Christian, and Islamic scriptures.
-        Each link is reviewed and categorised by type.
-      </p>
+      <PageIntro
+        eyebrow="Compare"
+        title="Cross-references"
+        description="Editorially curated connections between passages across Jewish, Christian, and Islamic scriptures. Each link is reviewed and categorised by type."
+      />
 
       {/* Type filter */}
       <div className="mb-8 flex flex-wrap gap-2">

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { PageIntro } from '@/components/layout/PageIntro'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { Tabs } from '@/components/ui/Tabs'
@@ -193,17 +194,12 @@ export default async function FigurePage({ params }: { params: Promise<{ slug: s
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <nav className="mb-6 flex items-center gap-2 text-sm text-stone-500">
-        <Link href="/figures" className="hover:text-stone-700">Figures</Link>
-        <span>/</span>
-        <span className="text-stone-900">{figure.canonicalName}</span>
-      </nav>
-
-      <div className="mb-8">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-bold tracking-tight text-stone-900">
-            {figure.canonicalName}
-          </h1>
+      <PageIntro
+        eyebrow="Person"
+        title={figure.canonicalName}
+        trail={[{ href: '/figures', label: 'People' }]}
+      >
+        {figure.aliases.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {figure.aliases.map((a) => (
               <Badge key={a.id} className={TRADITION_BG[a.tradition]}>
@@ -211,8 +207,8 @@ export default async function FigurePage({ params }: { params: Promise<{ slug: s
               </Badge>
             ))}
           </div>
-        </div>
-      </div>
+        )}
+      </PageIntro>
 
       <Tabs
         tabs={[
