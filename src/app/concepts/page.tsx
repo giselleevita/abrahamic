@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import prisma from '@/lib/prisma'
 import { ConceptFilter } from '@/components/claims/ConceptFilter'
+import { PageIntro } from '@/components/layout/PageIntro'
 
 export const metadata: Metadata = { title: 'Concepts' }
 export const dynamic = 'force-dynamic'
@@ -13,14 +14,8 @@ export default async function ConceptsPage() {
   })
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold tracking-tight text-stone-900">Key Concepts</h1>
-        <p className="mt-3 max-w-2xl text-stone-500 leading-relaxed">
-          How do Judaism, Christianity, and Islam understand the same foundational ideas?
-          Each entry presents the tradition's own definition — no tradition interprets for another.
-        </p>
-      </div>
+    <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
+      <PageIntro eyebrow="Learn" title="Beliefs & concepts" description="Choose an idea and see how Judaism, Christianity, and Islam describe it in their own terms. Filters help you narrow the list." />
 
       <ConceptFilter concepts={concepts} />
     </div>

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
+import { PageIntro } from '@/components/layout/PageIntro'
 
 export const metadata: Metadata = { title: 'Figures' }
 export const dynamic = 'force-dynamic'
@@ -17,23 +18,20 @@ export default async function FiguresPage() {
   })
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-      <h1 className="mb-2 text-3xl font-bold tracking-tight text-stone-900">Figures</h1>
-      <p className="mb-10 text-stone-500">
-        Key persons mentioned across the Abrahamic scriptures, with their names in each tradition.
-      </p>
+    <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
+      <PageIntro eyebrow="Explore" title="People" description="Find important people and see how their names, stories, and roles appear across Judaism, Christianity, and Islam." />
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {figures.map((figure) => (
           <Link
             key={figure.slug}
             href={`/figures/${figure.slug}`}
-            className="rounded-xl border border-stone-200 bg-white p-5 hover:border-stone-400 hover:shadow-sm transition-all"
+            className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:border-blue-300 hover:shadow-md transition-all"
           >
-            <h2 className="text-lg font-semibold text-stone-900">{figure.canonicalName}</h2>
+            <h2 className="text-xl font-bold text-slate-950 group-hover:text-blue-800">{figure.canonicalName}</h2>
 
             {figure.description && (
-              <p className="mt-2 line-clamp-3 text-sm text-stone-500">{figure.description}</p>
+              <p className="mt-2 line-clamp-3 text-base leading-7 text-slate-600">{figure.description}</p>
             )}
 
             <div className="mt-4 flex flex-wrap gap-1.5">
@@ -44,8 +42,8 @@ export default async function FiguresPage() {
               ))}
             </div>
 
-            <p className="mt-3 text-xs text-stone-400">
-              {figure._count.claims} claim{figure._count.claims !== 1 ? 's' : ''}
+            <p className="mt-4 text-sm font-semibold text-blue-700">
+              Read profile · {figure._count.claims} sourced claim{figure._count.claims !== 1 ? 's' : ''}
             </p>
           </Link>
         ))}

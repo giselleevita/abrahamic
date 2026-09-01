@@ -28,7 +28,7 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div>
             <p className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-blue-700">A clear guide to three traditions</p>
-            <h1 className="max-w-4xl text-4xl font-bold leading-tight text-slate-950 sm:text-5xl lg:text-6xl">Understand Judaism, Christianity, and Islam—side by side.</h1>
+            <h1 style={{ fontSize: 'clamp(2.5rem, 7vw, 4.5rem)' }} className="max-w-4xl font-bold leading-tight text-slate-950">Understand Judaism, Christianity, and Islam—side by side.</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">Find a person, belief, event, or scripture passage. We organise the evidence so you can learn without already knowing specialist terms.</p>
             <form action="/search" role="search" className="mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
               <label htmlFor="home-search" className="sr-only">Search the whole site</label>

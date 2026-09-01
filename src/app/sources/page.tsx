@@ -3,6 +3,7 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { TRADITION_BG } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
+import { PageIntro } from '@/components/layout/PageIntro'
 
 export const metadata: Metadata = { title: 'Sources' }
 export const dynamic = 'force-dynamic'
@@ -14,33 +15,30 @@ export default async function SourcesPage() {
   })
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-      <h1 className="mb-2 text-3xl font-bold tracking-tight text-stone-900">Sources</h1>
-      <p className="mb-10 text-stone-500">
-        The four canonical scriptures of the Abrahamic traditions.
-      </p>
+    <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
+      <PageIntro eyebrow="Read" title="Source library" description="Choose a scripture or historical source. Each collection shows its language, available passages, and related comparisons." />
 
       <div className="grid gap-5 sm:grid-cols-2">
         {sources.map((source) => (
           <Link
             key={source.slug}
             href={`/sources/${source.slug}`}
-            className="rounded-xl border border-stone-200 bg-white p-6 hover:border-stone-400 hover:shadow-sm transition-all"
+            className="group rounded-2xl border border-slate-200 bg-white p-7 shadow-sm hover:border-blue-300 hover:shadow-md transition-all"
           >
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-xl font-semibold text-stone-900">{source.title}</h2>
+              <h2 className="text-2xl font-bold text-slate-950 group-hover:text-blue-800">{source.title}</h2>
               <Badge className={TRADITION_BG[source.tradition]}>{source.tradition}</Badge>
             </div>
 
-            <p className="mt-1 text-sm text-stone-400">{source.language}</p>
+            <p className="mt-2 text-sm font-semibold text-slate-500">Language: {source.language}</p>
 
             {source.description && (
-              <p className="mt-3 line-clamp-4 text-sm text-stone-600 leading-relaxed">
+              <p className="mt-4 line-clamp-4 text-base text-slate-600 leading-7">
                 {source.description}
               </p>
             )}
 
-            <div className="mt-4 flex gap-4 text-xs text-stone-400">
+            <div className="mt-5 flex gap-4 text-sm font-semibold text-blue-700">
               <span>{source._count.verses} verses</span>
               <span>{source._count.claims} claims</span>
             </div>
