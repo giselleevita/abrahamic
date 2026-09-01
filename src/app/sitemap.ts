@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
+    { url: `${base}/learn`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${base}/comparisons`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: `${base}/figures`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${base}/themes`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
@@ -35,8 +36,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     prisma.timelineEvent.findMany({ where: { isPublished: true }, select: { slug: true, updatedAt: true } }),
   ])
 
+  const chapters = await prisma.chapter.findMany({
+    where: { isPublished: true, course: { isPublished: true } },
+    select: { slug: true, updatedAt: true, course: { select: { slug: true } } },
+  })
+
   return [
     ...staticRoutes,
+    ...chapters.map((c) => ({
+      url: `${base}/learn/${c.course.slug}/${c.slug}`,
+      lastModified: c.updatedAt,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    })),
     ...comparisons.map((c) => ({
       url: `${base}/comparisons/${c.id}`,
       lastModified: c.updatedAt,

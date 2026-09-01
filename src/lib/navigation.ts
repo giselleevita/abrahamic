@@ -27,8 +27,7 @@ export const NAV_GROUPS: NavGroup[] = [
     id: 'learn',
     label: 'Learn',
     items: [
-      // NOTE: { href: '/learn', label: 'Chapters' } is added with the Learn
-      // section. navigation.test.ts fails if a link here has no route on disk.
+      { href: '/learn', label: 'Chapters', description: 'Guided paths through the material, each ending in a short quiz.' },
       { href: '/timeline', label: 'Timeline', description: 'Major people and events in chronological order.' },
     ],
   },
@@ -67,7 +66,7 @@ export const ALL_NAV_ITEMS: NavItem[] = NAV_GROUPS.flatMap((group) => group.item
  * Hrefs promoted to the header bar. Everything else lives in the "More" menu.
  * Order here is the order shown.
  */
-const PRIMARY_NAV_HREFS = ['/figures', '/comparisons', '/sources', '/timeline'] as const
+const PRIMARY_NAV_HREFS = ['/learn', '/figures', '/comparisons', '/sources'] as const
 
 /**
  * Header links shown directly (not behind the "More" menu). Derived from
