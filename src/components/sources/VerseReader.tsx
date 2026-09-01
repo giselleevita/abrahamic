@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { Verse, VerseTranslation, VerseLink, Source } from '@/generated/prisma/client'
 import { Badge } from '@/components/ui/Badge'
 import { TRADITION_BG } from '@/lib/constants'
+import { verseAnchorId } from '@/lib/verse-links'
 
 type LinkedVerse = Verse & {
   source: Source
@@ -115,7 +116,10 @@ export function VerseReader({ verses }: Props) {
           return (
             <div
               key={verse.id}
-              className={`group rounded-lg p-3 transition-colors ${
+              id={verseAnchorId(verse.verse)}
+              // scroll-mt clears the sticky header when a claim citation deep
+              // links straight to this verse; target: highlights where it lands.
+              className={`group scroll-mt-28 rounded-lg p-3 transition-colors target:bg-amber-100 target:ring-2 target:ring-amber-300 ${
                 isExpanded ? 'bg-stone-100' : 'hover:bg-stone-50'
               }`}
             >

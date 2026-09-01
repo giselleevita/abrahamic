@@ -1,5 +1,8 @@
+import Link from 'next/link'
 import type { ClaimWithRelations } from '@/types'
 import type { Tradition } from '@/generated/prisma/client'
+import { formatVerseRef, verseReaderHref } from '@/lib/verse-links'
+import { filterVerseTranslations } from '@/lib/filter-public-translations'
 
 interface Props {
   claim: ClaimWithRelations
@@ -17,7 +20,12 @@ export function ClaimCard({ claim, showSource = true }: Props) {
   const tradition = claim.source.tradition as Tradition
   const style = TRADITION_STYLE[tradition] ?? TRADITION_STYLE.SHARED
   const primaryVerse = claim.verses[0]?.verse
-  const defaultTranslation = primaryVerse?.translations[0]
+  // Pages feeding this component query prisma directly, so apply the
+  // public-demo policy here too rather than trusting how the DB was seeded.
+  // If the only available translation is licensed, the quote is omitted.
+  const defaultTranslation = primaryVerse
+    ? filterVerseTranslations(primaryVerse.translations)[0]
+    : undefined
 
   return (
     <div className={`rounded-lg border border-stone-200 border-l-4 ${style.border} bg-white p-4 shadow-sm flex flex-col gap-3`}>
@@ -35,8 +43,14 @@ export function ClaimCard({ claim, showSource = true }: Props) {
           <p className="text-xs text-stone-600 italic leading-relaxed">
             "{defaultTranslation.text}"
           </p>
-          <cite className="mt-1 block text-xs font-semibold text-stone-500 not-italic">
-            {primaryVerse.book} {primaryVerse.chapter}:{primaryVerse.verse}
+          <cite className="mt-1 block not-italic">
+            <Link
+              href={verseReaderHref(claim.source.slug, primaryVerse)}
+              className="text-xs font-semibold text-stone-500 underline decoration-stone-300 underline-offset-2 transition-colors hover:text-blue-800 hover:decoration-blue-400"
+            >
+              {formatVerseRef(primaryVerse)}
+              <span className="sr-only"> — read in context</span>
+            </Link>
           </cite>
         </blockquote>
       )}

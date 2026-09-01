@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { VerseReader } from '@/components/sources/VerseReader'
+import { filterVersesWithTranslations } from '@/lib/filter-public-translations'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
@@ -117,7 +118,7 @@ export default async function VerseReaderPage({
             </div>
           </div>
 
-          <VerseReader verses={verses as any} />
+          <VerseReader verses={filterVersesWithTranslations(verses) as any} />
         </>
       )}
     </div>
