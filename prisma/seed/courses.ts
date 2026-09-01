@@ -336,9 +336,40 @@ export async function seedCourses(prisma: PrismaClient) {
     })
     chapterPosition += 1
 
-    // Rebuild items and questions so re-seeding is idempotent.
-    await prisma.chapterItem.deleteMany({ where: { chapterId: chapter.id } })
-    await prisma.question.deleteMany({ where: { chapterId: chapter.id } })
+    // Rebuild only the rows this seed owns, matched by their own identifying
+    // content. A blanket deleteMany on the chapter would also destroy
+    // questions an editor approved through the admin queue and items they
+    // curated by hand — re-seeding must never silently undo editorial work.
+    const seededPrompts = spec.questions.map((q) => q.prompt)
+    if (seededPrompts.length > 0) {
+      await prisma.question.deleteMany({
+        where: { chapterId: chapter.id, prompt: { in: seededPrompts } },
+      })
+    }
+
+    const seededItemRefs = spec.items
+      .map((item) => {
+        const entity =
+          item.kind === 'CONCEPT' ? conceptBySlug.get(item.slug)
+          : item.kind === 'COMPARISON' ? comparisonBySlug.get(item.slug)
+          : item.kind === 'FIGURE' ? figureBySlug.get(item.slug)
+          : themeBySlug.get(item.slug)
+        if (!entity) return null
+        return {
+          itemType: item.kind,
+          conceptId: item.kind === 'CONCEPT' ? entity.id : null,
+          comparisonId: item.kind === 'COMPARISON' ? entity.id : null,
+          figureId: item.kind === 'FIGURE' ? entity.id : null,
+          themeId: item.kind === 'THEME' ? entity.id : null,
+        }
+      })
+      .filter((ref): ref is NonNullable<typeof ref> => ref !== null)
+
+    if (seededItemRefs.length > 0) {
+      await prisma.chapterItem.deleteMany({
+        where: { chapterId: chapter.id, OR: seededItemRefs },
+      })
+    }
 
     let itemPosition = 0
     for (const item of spec.items) {
