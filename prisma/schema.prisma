@@ -57,6 +57,13 @@ enum CandidateStatus {
   REJECTED
 }
 
+enum EditorialStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
 enum ConceptCategory {
   THEOLOGY
   SOTERIOLOGY
@@ -243,6 +250,7 @@ model Claim {
   contentHash         String               @unique
   notes               String?              @db.Text
   isPublished         Boolean              @default(false)
+  editorialStatus     EditorialStatus      @default(DRAFT)
   interpretationScope InterpretationScope?
   specificTradition   String?
   embedding           Json?
@@ -261,7 +269,24 @@ model Claim {
 
   @@index([sourceId])
   @@index([isPublished])
+  @@index([editorialStatus])
   @@map("claims")
+}
+
+model EditorialAuditEvent {
+  id         Int      @id @default(autoincrement())
+  entityType String
+  entityId   String
+  action     String
+  actorId    String
+  actorRole  String
+  before     Json?
+  after      Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId, createdAt])
+  @@index([actorId, createdAt])
+  @@map("editorial_audit_events")
 }
 
 model ClaimVerse {

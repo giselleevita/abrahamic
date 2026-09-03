@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 - 2026-09-03
+
+- Added database-backed `DRAFT`, `IN_REVIEW`, `PUBLISHED`, and `ARCHIVED` claim states.
+- Added viewer/editor/administrator transition rules and optional editor credentials.
+- Prevented unauthenticated API callers from enumerating draft claims.
+- Added immutable editorial audit events for claim creation, changes, transitions, and deletion.
+- Added a database constraint keeping legacy publication flags consistent with editorial state.
+
 ## 0.9.1 - 2026-09-03
 
 - Added mandatory, database-enforced license and attribution metadata to every corpus source.

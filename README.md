@@ -19,6 +19,8 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 
 This is a structured editorial and software-engineering case study. It does not claim theological authority, and AI-generated suggestions are never published without an explicit editorial approval step.
 
+Claims use an auditable editorial workflow (`DRAFT → IN_REVIEW → PUBLISHED → ARCHIVED`). Public API callers can retrieve published material only; authenticated editors may prepare and submit drafts, while publication, archival, and deletion remain administrator actions.
+
 ## Public demo policy (no publisher licenses)
 
 | On public deploy | Not shown |

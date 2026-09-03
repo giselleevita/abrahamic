@@ -656,13 +656,14 @@ export async function seedClaims(prisma: PrismaClient) {
 
     const claim = await prisma.claim.upsert({
       where: { contentHash: hash },
-      update: {},
+      update: { isPublished: true, editorialStatus: 'PUBLISHED' },
       create: {
         sourceId,
         statement: c.statement,
         contentHash: hash,
         notes: c.notes,
         isPublished: true,
+        editorialStatus: 'PUBLISHED',
       },
     })
 

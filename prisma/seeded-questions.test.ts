@@ -44,6 +44,27 @@ describeDb('seeded quiz content', () => {
     }
   })
 
+  it('keeps every seeded claim publication flag aligned with editorial state', async () => {
+    const inconsistent = await prisma.claim.count({
+      where: {
+        OR: [
+          { editorialStatus: 'PUBLISHED', isPublished: false },
+          { editorialStatus: { not: 'PUBLISHED' }, isPublished: true },
+        ],
+      },
+    })
+    expect(inconsistent).toBe(0)
+    expect(await prisma.claim.count({ where: { editorialStatus: 'PUBLISHED' } })).toBeGreaterThan(0)
+  })
+
+  it('retains the hand-written publication-state database constraint', async () => {
+    const rows = await prisma.$queryRaw<{ conname: string }[]>`
+      SELECT conname FROM pg_constraint
+      WHERE conrelid = 'claims'::regclass AND contype = 'c'
+    `
+    expect(rows.map((row) => row.conname)).toContain('claims_publication_state_consistent')
+  })
+
   it('passes the neutrality lint with no BLOCK flags', async () => {
     const failures: string[] = []
 
