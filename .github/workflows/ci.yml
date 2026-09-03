@@ -47,6 +47,12 @@ jobs:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
 
+      - name: Seed licensed demonstration corpus
+        run: npm run db:seed
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+
       - name: Type check
         run: npx tsc --noEmit
 

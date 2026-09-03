@@ -98,6 +98,10 @@ flowchart LR
 
 ## Getting Started
 
+For the complete deterministic demonstration, run `docker compose up --build` and open
+`http://localhost:3000`. The app waits for PostgreSQL, applies migrations, and idempotently
+seeds the licensed sample corpus.
+
 ```bash
 npm install
 npx prisma migrate dev

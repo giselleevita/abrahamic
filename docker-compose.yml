@@ -15,5 +15,18 @@ services:
       timeout: 5s
       retries: 5
 
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/abrahamic
+      DIRECT_URL: postgresql://postgres:postgres@postgres:5432/abrahamic
+      NEXTAUTH_SECRET: local-synthetic-demo-only
+      NEXTAUTH_URL: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '3000:3000'
+
 volumes:
   postgres_data:
