@@ -101,6 +101,9 @@ model Source {
   language    String
   description String?   @db.Text
   slug        String    @unique
+  licenseName String
+  attribution String    @db.Text
+  sourceUrl   String
 
   verses          Verse[]
   claims          Claim[]

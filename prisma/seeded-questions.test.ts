@@ -34,6 +34,16 @@ describeDb('seeded quiz content', () => {
     expect((await publishedQuestions()).length).toBeGreaterThan(0)
   })
 
+  it('records licensing provenance for every source', async () => {
+    const sources = await prisma.source.findMany()
+    expect(sources.length).toBeGreaterThan(0)
+    for (const source of sources) {
+      expect(source.licenseName.trim()).not.toBe('')
+      expect(source.attribution.trim()).not.toBe('')
+      expect(() => new URL(source.sourceUrl)).not.toThrow()
+    }
+  })
+
   it('passes the neutrality lint with no BLOCK flags', async () => {
     const failures: string[] = []
 

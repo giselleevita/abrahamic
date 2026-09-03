@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.1 - 2026-09-03
+
+- Added mandatory, database-enforced license and attribution metadata to every corpus source.
+- Made the idempotent seed repair licensing metadata and added a DB-backed CI invariant test.
+
 ## 0.9.0 — 2026-09-03
 
 - Reconciled Next.js, Prisma, authentication, validation, and transitive security dependencies.

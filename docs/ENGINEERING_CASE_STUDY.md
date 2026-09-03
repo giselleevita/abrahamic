@@ -1,5 +1,9 @@
 # Engineering case study
 
+Each source row carries mandatory license name, attribution, and provenance URL fields.
+The database migration backfills existing records before enforcing `NOT NULL`, the idempotent
+seed repairs metadata drift, and CI rejects any seeded corpus missing this information.
+
 Abrahamic demonstrates a licensed-content-aware, structured editorial workflow across traditions. Its core engineering concerns are relational modeling, traceable sources, authorization, neutral presentation, and deterministic demo seeding.
 
 ## Review path
