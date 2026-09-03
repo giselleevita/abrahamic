@@ -17,6 +17,8 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 
 > **Public engineering demo** at https://abrahamic.vercel.app — showcases the full platform (figures, themes, comparisons, timeline, search, admin) with **original Hebrew/Arabic text and project-authored reader notes only** — no licensed English translations. See [`docs/LICENSING.md`](docs/LICENSING.md).
 
+This is a structured editorial and software-engineering case study. It does not claim theological authority, and AI-generated suggestions are never published without an explicit editorial approval step.
+
 ## Public demo policy (no publisher licenses)
 
 | On public deploy | Not shown |
@@ -80,7 +82,7 @@ flowchart LR
 | Language | TypeScript |
 | Database | PostgreSQL via Prisma ORM |
 | Styling | Tailwind CSS |
-| Runtime | Node.js 20+ |
+| Runtime | Node.js 24 |
 
 ## Project Structure
 
