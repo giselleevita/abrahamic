@@ -42,8 +42,8 @@ export default async function AdminClaimsPage() {
                 <Badge className={TRADITION_BG[claim.source.tradition]}>
                   {claim.source.title}
                 </Badge>
-                <span className={`rounded-full px-2 py-0.5 text-xs text-center ${claim.isPublished ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-500'}`}>
-                  {claim.isPublished ? 'Published' : 'Draft'}
+                <span className={`rounded-full px-2 py-0.5 text-xs text-center ${claim.editorialStatus === 'PUBLISHED' ? 'bg-emerald-100 text-emerald-700' : claim.editorialStatus === 'IN_REVIEW' ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-500'}`}>
+                  {claim.editorialStatus.replace('_', ' ')}
                 </span>
               </div>
               <div className="flex-1 min-w-0">

@@ -231,19 +231,26 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
         })
       }
 
-      try {
-        await prisma.figureRelation.create({
-          data: {
+      await prisma.figureRelation.upsert({
+        where: {
+          fromFigureId_toFigureId_relationType: {
             fromFigureId: fromFigure.id,
             toFigureId: toFigure.id,
             relationType: rel.type as 'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING' | 'DESCENDANT',
-            notes: rel.notes || null,
-            verseId: verse?.id || null,
           },
-        })
-      } catch {
-        // Unique constraint or other error — skip
-      }
+        },
+        update: {
+          notes: rel.notes || null,
+          verseId: verse?.id || null,
+        },
+        create: {
+          fromFigureId: fromFigure.id,
+          toFigureId: toFigure.id,
+          relationType: rel.type as 'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING' | 'DESCENDANT',
+          notes: rel.notes || null,
+          verseId: verse?.id || null,
+        },
+      })
     }
   }
 

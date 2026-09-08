@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminDashboard() {
-  const [claimCount, compCount, figureCount, themeCount, verseCount, conceptCount, timelineCount, pendingCandidates, approvedLinks] = await Promise.all([
+  const [claimCount, compCount, figureCount, themeCount, verseCount, conceptCount, timelineCount, pendingCandidates, approvedLinks, inReview] = await Promise.all([
     prisma.claim.count(),
     prisma.comparison.count(),
     prisma.figure.count(),
@@ -14,6 +14,7 @@ export default async function AdminDashboard() {
     prisma.timelineEvent.count(),
     prisma.verseLinkCandidate.count({ where: { status: 'PENDING' } }),
     prisma.verseLink.count(),
+    prisma.claim.count({ where: { editorialStatus: 'IN_REVIEW' } }),
   ])
 
   const recentClaims = await prisma.claim.findMany({
@@ -33,6 +34,7 @@ export default async function AdminDashboard() {
   ]
 
   const toolStats = [
+    { label: 'Claims awaiting review', value: inReview, href: '/admin/editorial', alert: inReview > 0 },
     { label: 'Pending link candidates', value: pendingCandidates, href: '/admin/verse-link-candidates', alert: pendingCandidates > 0 },
     { label: 'Approved verse links', value: approvedLinks, href: '/admin/verse-links', alert: false },
   ]

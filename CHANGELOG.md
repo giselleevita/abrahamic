@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0 - 2026-09-08
+
+- Add a recruiter-readable editorial pipeline dashboard and immutable audit-history viewer.
+- Show the active authorization role throughout the CMS.
+- Replace the publication checkbox with role-aware workflow transitions.
+- Surface claims awaiting review on the administrator dashboard.
+- Make relationship and legacy-data reseeding cleanly idempotent without expected database errors.
+- Move authentication outside the protected admin layout, eliminating its redirect loop.
+
 ## 0.10.0 - 2026-09-03
 
 - Added database-backed `DRAFT`, `IN_REVIEW`, `PUBLISHED`, and `ARCHIVED` claim states.

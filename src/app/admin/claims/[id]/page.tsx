@@ -1,9 +1,13 @@
 import { notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { ClaimForm } from '@/components/admin/ClaimForm'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { roleFromSession } from '@/lib/editorial-policy'
 
 export default async function EditClaimPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+  const role = roleFromSession(await getServerSession(authOptions))
 
   const [claim, sources, figures, themes, verses] = await Promise.all([
     prisma.claim.findUnique({
@@ -34,6 +38,7 @@ export default async function EditClaimPage({ params }: { params: Promise<{ id: 
         themes={themes}
         verses={verses}
         initialData={claim}
+        role={role}
       />
     </div>
   )

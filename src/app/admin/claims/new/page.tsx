@@ -1,7 +1,11 @@
 import prisma from '@/lib/prisma'
 import { ClaimForm } from '@/components/admin/ClaimForm'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { roleFromSession } from '@/lib/editorial-policy'
 
 export default async function NewClaimPage() {
+  const role = roleFromSession(await getServerSession(authOptions))
   const [sources, figures, themes, verses] = await Promise.all([
     prisma.source.findMany({ orderBy: { id: 'asc' } }),
     prisma.figure.findMany({ orderBy: { canonicalName: 'asc' } }),
@@ -15,7 +19,7 @@ export default async function NewClaimPage() {
   return (
     <div className="max-w-2xl">
       <h1 className="mb-8 text-2xl font-bold text-stone-900">New Claim</h1>
-      <ClaimForm sources={sources} figures={figures} themes={themes} verses={verses} />
+      <ClaimForm sources={sources} figures={figures} themes={themes} verses={verses} role={role} />
     </div>
   )
 }

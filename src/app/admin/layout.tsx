@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions)
-  if (!session) redirect('/admin/login')
+  if (!session) redirect('/login')
 
   return (
     <div className="flex min-h-screen">
@@ -15,6 +15,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Link href="/admin" className="block text-base font-semibold text-stone-900 mb-6">
           Admin CMS
         </Link>
+        <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 p-3">
+          <p className="text-xs font-semibold text-amber-900">{session.user.role} session</p>
+          <p className="mt-1 text-[11px] leading-4 text-amber-700">Role-aware actions · audited changes</p>
+        </div>
         <nav className="space-y-1 text-sm">
           <Link href="/admin" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Dashboard
@@ -22,6 +26,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <p className="px-2 pt-1 text-xs font-semibold uppercase tracking-wider text-stone-400">Content</p>
           <Link href="/admin/claims" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Claims
+          </Link>
+          <Link href="/admin/editorial" className="block rounded px-2 py-1.5 font-medium text-amber-800 hover:bg-amber-50">
+            Workflow & Audit
           </Link>
           <Link href="/admin/comparisons" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Comparisons

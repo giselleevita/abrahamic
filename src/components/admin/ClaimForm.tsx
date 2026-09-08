@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Source, Figure, Theme, Claim, InterpretationScope } from '@/generated/prisma/client'
+import type { Source, Figure, Theme, Claim, InterpretationScope, EditorialStatus } from '@/generated/prisma/client'
+import { canDelete, canTransition, type EditorialRole } from '@/lib/editorial-policy'
 
 type VerseOption = {
   id: number
@@ -25,6 +26,7 @@ interface Props {
   themes: Theme[]
   verses: VerseOption[]
   initialData?: ClaimWithRelations
+  role: EditorialRole
 }
 
 const SCOPE_LABELS: Record<InterpretationScope, string> = {
@@ -33,7 +35,7 @@ const SCOPE_LABELS: Record<InterpretationScope, string> = {
   SPECIFIC_TRADITION: 'Specific tradition',
 }
 
-export function ClaimForm({ sources, figures, themes, verses, initialData }: Props) {
+export function ClaimForm({ sources, figures, themes, verses, initialData, role }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -41,7 +43,7 @@ export function ClaimForm({ sources, figures, themes, verses, initialData }: Pro
   const [sourceId, setSourceId] = useState(initialData?.sourceId ?? sources[0]?.id ?? 0)
   const [statement, setStatement] = useState(initialData?.statement ?? '')
   const [notes, setNotes] = useState(initialData?.notes ?? '')
-  const [isPublished, setIsPublished] = useState(initialData?.isPublished ?? false)
+  const [editorialStatus, setEditorialStatus] = useState<EditorialStatus>(initialData?.editorialStatus ?? 'DRAFT')
   const [interpretationScope, setInterpretationScope] = useState<InterpretationScope | ''>(
     initialData?.interpretationScope ?? ''
   )
@@ -112,7 +114,7 @@ export function ClaimForm({ sources, figures, themes, verses, initialData }: Pro
       sourceId,
       statement,
       notes: notes || undefined,
-      isPublished,
+      editorialStatus,
       interpretationScope: interpretationScope || undefined,
       specificTradition: interpretationScope === 'SPECIFIC_TRADITION' ? specificTradition : undefined,
       verseIds: selectedVerseIds,
@@ -292,10 +294,19 @@ export function ClaimForm({ sources, figures, themes, verses, initialData }: Pro
         />
       </div>
 
-      <label className="flex items-center gap-2 cursor-pointer">
-        <input type="checkbox" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} className="rounded border-stone-300" />
-        <span className="text-sm font-medium text-stone-700">Publish this claim</span>
-      </label>
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+        <label className="block text-sm font-semibold text-amber-950">Editorial state</label>
+        <p className="mb-2 text-xs text-amber-800">Only transitions permitted for the {role.toLowerCase()} role are selectable.</p>
+        <select
+          value={editorialStatus}
+          onChange={(event) => setEditorialStatus(event.target.value as EditorialStatus)}
+          className="w-full rounded-md border border-amber-300 bg-white px-3 py-2 text-sm"
+        >
+          {(['DRAFT', 'IN_REVIEW', 'PUBLISHED', 'ARCHIVED'] as EditorialStatus[])
+            .filter((status) => canTransition(role, initialData?.editorialStatus ?? 'DRAFT', status))
+            .map((status) => <option key={status} value={status}>{status.replace('_', ' ')}</option>)}
+        </select>
+      </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -303,7 +314,7 @@ export function ClaimForm({ sources, figures, themes, verses, initialData }: Pro
         <button type="submit" disabled={loading} className="rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700 disabled:opacity-50 transition-colors">
           {loading ? 'Saving…' : initialData ? 'Update Claim' : 'Create Claim'}
         </button>
-        {initialData && (
+        {initialData && canDelete(role) && (
           <button type="button" onClick={handleDelete} className="rounded-md border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
             Delete
           </button>
