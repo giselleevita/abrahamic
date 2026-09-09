@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.11.1 - 2026-09-09
+
+- Upgrade Vitest and its mocker to 4.1.11, resolving the redirect-mock path-traversal advisories.
+- Migrate the DOM test to a file-scoped environment compatible with Vitest 4.
+
 ## 0.11.0 - 2026-09-08
 
 - Add a recruiter-readable editorial pipeline dashboard and immutable audit-history viewer.

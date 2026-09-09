@@ -10,8 +10,6 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts', 'prisma/**/*.test.ts'],
-    // The progress store is browser-only; give just those tests a DOM.
-    environmentMatchGlobs: [['src/lib/learn/progress.test.ts', 'jsdom']],
   },
   resolve: {
     alias: {
