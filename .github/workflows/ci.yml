@@ -47,8 +47,8 @@ jobs:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
 
-      - name: Seed licensed demonstration corpus
-        run: npm run db:seed
+      - name: Verify licensed demonstration seed is idempotent
+        run: bash scripts/verify-idempotent-seed.sh
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"

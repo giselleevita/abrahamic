@@ -10,7 +10,7 @@ The public demo at **https://abrahamic.vercel.app** deploys from `main` via Verc
 
 ## README badges (private repo)
 
-This repo is **private**. Per [portfolio badge policy](https://github.com/giselleevita/portfolio/blob/main/docs/BADGE_POLICY.md), the README shows a **live demo** badge only — not GitHub Actions CI. That avoids red CI badges when Actions minutes are limited and keeps recruiter-facing signal on what actually ships.
+This repository is public. The README emphasizes the live product, while the Actions history provides independently visible CI and security evidence for every default-branch change.
 
 ## GitHub Actions CI
 

@@ -2,7 +2,7 @@
 
 [![Live demo](https://img.shields.io/badge/demo-abrahamic.vercel.app-000?style=flat&logo=vercel&logoColor=white)](https://abrahamic.vercel.app)
 
-**Live demo:** https://abrahamic.vercel.app — production deploys on merge to `main` via Vercel. See [`docs/CI_STATUS.md`](docs/CI_STATUS.md) and [`docs/REVIEWER_GUIDE.md`](docs/REVIEWER_GUIDE.md). README badge policy: [portfolio `BADGE_POLICY.md`](https://github.com/giselleevita/portfolio/blob/main/docs/BADGE_POLICY.md) (private repo → demo badge, not CI).
+**Live demo:** https://abrahamic.vercel.app — production deploys on merge to `main` via Vercel. See [`docs/CI_STATUS.md`](docs/CI_STATUS.md) and [`docs/REVIEWER_GUIDE.md`](docs/REVIEWER_GUIDE.md).
 
 A web application for side-by-side comparison of texts across the Abrahamic scriptures — Torah, Bible, and Quran — with thematic search, verse alignment, and commentary layers.
 

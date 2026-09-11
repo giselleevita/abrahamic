@@ -1,6 +1,6 @@
 # Abrahamic — Reviewer Guide
 
-**Private repository — public demo available.** Use the live site for a quick product read; use this guide for a 15-minute engineering review.
+**Public repository and public demo.** Use the live site for a quick product read; use this guide for a 15-minute engineering review.
 
 **Live demo:** [abrahamic.vercel.app](https://abrahamic.vercel.app)  
 **Content policy:** [/licensing](https://abrahamic.vercel.app/licensing)

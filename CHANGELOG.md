@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.2 - 2026-09-11
+
+- Run the complete licensed demonstration seed twice in CI and reject database-error noise on the second pass.
+
 ## 0.11.1 - 2026-09-09
 
 - Upgrade Vitest and its mocker to 4.1.11, resolving the redirect-mock path-traversal advisories.
