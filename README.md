@@ -21,7 +21,7 @@ This is a structured editorial and software-engineering case study. It does not 
 
 Claims use an auditable editorial workflow (`DRAFT → IN_REVIEW → PUBLISHED → ARCHIVED`). Public API callers can retrieve published material only; authenticated editors may prepare and submit drafts, while publication, archival, and deletion remain administrator actions.
 
-For the role and audit walkthrough, use [the three-minute demo](docs/RECRUITER_DEMO.md).
+For the role and audit walkthrough, use the [90-second demo](docs/90_SECOND_DEMO.md) or [three-minute reviewer path](docs/RECRUITER_DEMO.md).
 
 ## Public demo policy (no publisher licenses)
 

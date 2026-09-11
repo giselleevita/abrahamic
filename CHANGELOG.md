@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.3 - 2026-09-11
+
+- Add a 90-second recruiter walkthrough and interview discussion prompts.
+
 ## 0.11.2 - 2026-09-11
 
 - Run the complete licensed demonstration seed twice in CI and reject database-error noise on the second pass.
