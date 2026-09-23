@@ -194,7 +194,7 @@ host port **5434**, not 5432.
 
 ## Deployment (Vercel)
 
-GitHub CI validates migrations and production builds against Postgres. Vercel applies checked-in migrations before `next build` (see `vercel.json`), which keeps the production schema aligned before database-backed pages are pre-rendered.
+GitHub CI validates migrations and production builds against Postgres. Vercel applies checked-in migrations and the idempotent, licence-safe demo seed before `next build` (see `vercel.json`), which keeps the production schema and reviewed demonstration content aligned before database-backed pages are pre-rendered.
 
 For a no-cost setup, use Vercel's Hobby plan with a free Neon Postgres project. The app also supports legacy `PRISMA_DATABASE_URL` / `POSTGRES_URL` variables and maps them to Prisma's `DATABASE_URL` at runtime (see `src/lib/prisma-env.ts`).
 
