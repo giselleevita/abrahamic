@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET() {
   const concepts = await prisma.concept.findMany({
@@ -10,6 +11,7 @@ export async function GET() {
     include: { traditions: true },
     orderBy: { name: 'asc' },
   })
+  revalidateEntity('concept', { tags: ['concepts'] })
   return NextResponse.json(concepts)
 }
 
@@ -49,5 +51,6 @@ export async function POST(req: Request) {
     include: { traditions: true },
   })
 
+  revalidateEntity('concept', { tags: ['concepts'] })
   return NextResponse.json(concept, { status: 201 })
 }

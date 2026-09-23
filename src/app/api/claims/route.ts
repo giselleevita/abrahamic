@@ -6,11 +6,18 @@ import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { canTransition, roleFromSession } from '@/lib/editorial-policy'
+import { sourceKeySchema } from '@/lib/schemas/enums'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions)
   const { searchParams } = req.nextUrl
-  const sourceKey = searchParams.get('sourceKey')
+  const rawSourceKey = searchParams.get('sourceKey')
+  const parsedSourceKey = rawSourceKey ? sourceKeySchema.safeParse(rawSourceKey) : null
+  if (parsedSourceKey && !parsedSourceKey.success) {
+    return NextResponse.json({ error: 'Invalid sourceKey' }, { status: 400 })
+  }
+  const sourceKey = parsedSourceKey?.data
   const figureSlug = searchParams.get('figure')
   const themeSlug = searchParams.get('theme')
   const requestedPublished = searchParams.get('published')
@@ -20,7 +27,7 @@ export async function GET(req: NextRequest) {
   const claims = await prisma.claim.findMany({
     where: {
       ...(published !== undefined ? { isPublished: published } : {}),
-      ...(sourceKey ? { source: { key: sourceKey as 'TORAH' | 'HEBREW_BIBLE' | 'NEW_TESTAMENT' | 'QURAN' } } : {}),
+      ...(sourceKey ? { source: { key: sourceKey } } : {}),
       ...(figureSlug ? { figures: { some: { figure: { slug: figureSlug } } } } : {}),
       ...(themeSlug ? { themes: { some: { theme: { slug: themeSlug } } } } : {}),
     },
@@ -104,5 +111,6 @@ export async function POST(req: Request) {
   })
 
   revalidatePath('/comparisons', 'layout')
+  revalidateEntity('claim', { tags: ['claims'] })
   return NextResponse.json(claim, { status: 201 })
 }

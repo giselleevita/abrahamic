@@ -6,6 +6,7 @@ import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { canDelete, canEdit, canTransition, roleFromSession } from '@/lib/editorial-policy'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(
   _req: Request,
@@ -123,6 +124,7 @@ export async function PUT(
   })
 
   revalidatePath('/comparisons', 'layout')
+  revalidateEntity('claim', { tags: ['claims'] })
   return NextResponse.json(claim)
 }
 
@@ -147,5 +149,6 @@ export async function DELETE(
     })
   })
   revalidatePath('/comparisons', 'layout')
+  revalidateEntity('claim', { tags: ['claims'] })
   return NextResponse.json({ ok: true })
 }

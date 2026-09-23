@@ -5,7 +5,9 @@ import VisualTimeline from '@/components/timeline/VisualTimeline'
 import { PageIntro } from '@/components/layout/PageIntro'
 
 export const metadata: Metadata = { title: 'Timeline' }
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 const ERA_ORDER: TimelineEra[] = [
   'PRIMORDIAL', 'PATRIARCHAL', 'EXODUS', 'KINGDOM', 'GOSPEL', 'EARLY_ISLAM',

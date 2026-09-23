@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET() {
   const events = await prisma.timelineEvent.findMany({
@@ -10,6 +11,7 @@ export async function GET() {
     include: { traditions: true },
     orderBy: [{ era: 'asc' }, { position: 'asc' }],
   })
+  revalidateEntity('timeline', { tags: ['timeline'] })
   return NextResponse.json(events)
 }
 
@@ -49,5 +51,6 @@ export async function POST(req: Request) {
     include: { traditions: true },
   })
 
+  revalidateEntity('timeline', { tags: ['timeline'] })
   return NextResponse.json(event, { status: 201 })
 }

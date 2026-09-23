@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { PageIntro } from '@/components/layout/PageIntro'
 import prisma from '@/lib/prisma'
 import { Tabs } from '@/components/ui/Tabs'
+import { YouTubeFacade } from '@/components/video/YouTubeFacade'
 import { Badge } from '@/components/ui/Badge'
 import { ClaimCard } from '@/components/claims/ClaimCard'
 import { TRADITION_BG } from '@/lib/constants'
@@ -18,7 +19,9 @@ const CATEGORY_LABEL: Record<string, string> = {
   COSMOLOGY: 'Cosmology',
 }
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export async function generateStaticParams() {
   try {
@@ -56,6 +59,11 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
             },
           },
         },
+        orderBy: { position: 'asc' },
+      },
+      videos: {
+        where: { video: { isPublished: true } },
+        include: { video: true },
         orderBy: { position: 'asc' },
       },
     },
@@ -110,9 +118,34 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
       />
 
       <Tabs
+        label={`${concept.name} views`}
         tabs={[
           { label: 'Overview', content: overviewContent },
           { label: `Claims (${concept.claims.length})`, content: claimsContent },
+          // The tab appears only when an editor has attached a video, so the
+          // page never advertises an empty section.
+          ...(concept.videos.length > 0
+            ? [
+                {
+                  label: `Watch (${concept.videos.length})`,
+                  content: (
+                    <div className="grid gap-6 sm:grid-cols-2">
+                      {concept.videos.map(({ video }) => (
+                        <YouTubeFacade
+                          key={video.id}
+                          youtubeId={video.youtubeId}
+                          title={video.title}
+                          channelName={video.channelName}
+                          editorNote={video.editorNote}
+                          perspectiveTradition={video.perspectiveTradition}
+                          durationSeconds={video.durationSeconds}
+                        />
+                      ))}
+                    </div>
+                  ),
+                },
+              ]
+            : []),
         ]}
       />
     </div>

@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -11,6 +12,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
     include: { traditions: true },
   })
   if (!concept) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  revalidateEntity('concept', { tags: ['concepts'] })
+  revalidateEntity('concept', { slug, tags: ['concepts'] })
   return NextResponse.json(concept)
 }
 
@@ -54,6 +57,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ slug: 
     include: { traditions: true },
   })
 
+  revalidateEntity('concept', { tags: ['concepts'] })
+  revalidateEntity('concept', { slug, tags: ['concepts'] })
   return NextResponse.json(concept)
 }
 
@@ -63,5 +68,6 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ slug
 
   const { slug } = await params
   await prisma.concept.delete({ where: { slug } })
+  revalidateEntity('concept', { slug, tags: ['concepts'] })
   return NextResponse.json({ ok: true })
 }

@@ -3,7 +3,9 @@ import { hasDatabaseUrl } from '@/lib/db-ready'
 import prisma from '@/lib/prisma'
 import { getSiteUrl } from '@/lib/site-url'
 
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getSiteUrl()
@@ -21,6 +23,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/verse-links`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
     { url: `${base}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/licensing`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${base}/videos`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${base}/kids`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${base}/kids/stories`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${base}/kids/games`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
   ]
 
   if (!hasDatabaseUrl()) {

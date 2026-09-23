@@ -90,6 +90,11 @@ enum TimelineEra {
   EARLY_ISLAM
 }
 
+enum Versification {
+  CHRISTIAN
+  MASORETIC
+}
+
 enum FigureRelationType {
   PARENT
   CHILD
@@ -129,11 +134,12 @@ model Verse {
   sourceId Int
   source   Source @relation(fields: [sourceId], references: [id])
 
-  book         String
-  bookNumber   Int?
-  chapter      Int
-  verse        Int
-  referenceKey String @unique
+  book          String
+  bookNumber    Int?
+  chapter       Int
+  verse         Int
+  referenceKey  String        @unique
+  versification Versification @default(CHRISTIAN)
 
   translations      VerseTranslation[]
   claimVerses       ClaimVerse[]
@@ -148,21 +154,28 @@ model Verse {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([sourceId, book, chapter, verse])
+  @@unique([sourceId, book, chapter, verse, versification])
   @@index([sourceId, book, chapter])
+  @@index([sourceId, book, chapter, versification])
   @@map("verses")
 }
 
 model VerseTranslation {
-  id        Int              @id @default(autoincrement())
-  verseId   Int
-  verse     Verse            @relation(fields: [verseId], references: [id], onDelete: Cascade)
-  label     TranslationLabel
-  name      String
-  text      String           @db.Text
-  isDefault Boolean          @default(false)
+  id           Int                      @id @default(autoincrement())
+  verseId      Int
+  verse        Verse                    @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  label        TranslationLabel
+  name         String
+  text         String                   @db.Text
+  isDefault    Boolean                  @default(false)
+  licenseCode  String?
+  sourceUrl    String?
+  attribution  String?
+  retrievedAt  DateTime?
+  searchVector Unsupported("tsvector")? @map("search_vector")
 
   @@unique([verseId, label, name])
+  @@index([licenseCode])
   @@map("verse_translations")
 }
 
@@ -183,6 +196,8 @@ model Figure {
   relationsTo    FigureRelation[]      @relation("RelationsTo")
 
   chapterItems ChapterItem[]
+  kidsStories  KidsStoryFigure[]
+  videos       VideoResourceFigure[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -230,6 +245,7 @@ model Theme {
   color       String?
 
   claims ClaimTheme[]
+  videos VideoResourceTheme[]
 
   chapterItems ChapterItem[]
 
@@ -246,20 +262,22 @@ model Claim {
   sourceId Int
   source   Source @relation(fields: [sourceId], references: [id])
 
-  statement           String               @db.Text
-  contentHash         String               @unique
-  notes               String?              @db.Text
-  isPublished         Boolean              @default(false)
-  editorialStatus     EditorialStatus      @default(DRAFT)
+  statement           String                   @db.Text
+  contentHash         String                   @unique
+  notes               String?                  @db.Text
+  isPublished         Boolean                  @default(false)
+  editorialStatus     EditorialStatus          @default(DRAFT)
   interpretationScope InterpretationScope?
   specificTradition   String?
   embedding           Json?
+  searchVector        Unsupported("tsvector")? @map("search_vector")
 
   verses        ClaimVerse[]
   figures       ClaimFigure[]
   themes        ClaimTheme[]
   comparisons   ComparisonClaim[]
   conceptClaims ConceptClaim[]
+  kidsStories   KidsStoryClaim[]
 
   questions          Question[]
   questionCandidates QuestionCandidate[]
@@ -393,15 +411,17 @@ model VerseLinkCandidate {
 // ─── Concept ──────────────────────────────────────────────────────────────────
 
 model Concept {
-  id          Int             @id @default(autoincrement())
-  slug        String          @unique
-  name        String          @unique
-  category    ConceptCategory
-  summary     String?         @db.Text
-  isPublished Boolean         @default(false)
+  id           Int                      @id @default(autoincrement())
+  slug         String                   @unique
+  name         String                   @unique
+  category     ConceptCategory
+  summary      String?                  @db.Text
+  isPublished  Boolean                  @default(false)
+  searchVector Unsupported("tsvector")? @map("search_vector")
 
   traditions ConceptTradition[]
   claims     ConceptClaim[]
+  videos     VideoResourceConcept[]
 
   chapterItems       ChapterItem[]
   questions          Question[]
@@ -441,13 +461,14 @@ model ConceptClaim {
 // ─── TimelineEvent ────────────────────────────────────────────────────────────
 
 model TimelineEvent {
-  id          Int         @id @default(autoincrement())
-  slug        String      @unique
-  name        String
-  era         TimelineEra
-  position    Int
-  summary     String?     @db.Text
-  isPublished Boolean     @default(false)
+  id           Int                      @id @default(autoincrement())
+  slug         String                   @unique
+  name         String
+  era          TimelineEra
+  position     Int
+  summary      String?                  @db.Text
+  isPublished  Boolean                  @default(false)
+  searchVector Unsupported("tsvector")? @map("search_vector")
 
   traditions TimelineEventTradition[]
   verses     TimelineEventVerse[]
@@ -765,4 +786,114 @@ model QuestionCandidate {
   @@index([chapterId, status])
   @@index([status])
   @@map("question_candidates")
+}
+
+// ─── Kids section ────────────────────────────────────────────────────────────
+
+enum KidsAgeBand {
+  AGE_6_8
+  AGE_9_12
+}
+
+model KidsStory {
+  id          Int             @id @default(autoincrement())
+  slug        String          @unique
+  title       String
+  ageBand     KidsAgeBand
+  body        String          @db.Text
+  glossary    Json?
+  aiModel     String
+  aiRationale String          @db.Text
+  status      CandidateStatus @default(PENDING)
+  reviewedAt  DateTime?
+  reviewNotes String?         @db.Text
+  isPublished Boolean         @default(false)
+
+  claims  KidsStoryClaim[]
+  figures KidsStoryFigure[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([isPublished, ageBand])
+  @@map("kids_stories")
+}
+
+model KidsStoryClaim {
+  storyId  Int
+  story    KidsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  claimId  Int
+  claim    Claim     @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  position Int       @default(0)
+
+  @@id([storyId, claimId])
+  @@map("kids_story_claims")
+}
+
+model KidsStoryFigure {
+  storyId  Int
+  story    KidsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  figureId Int
+  figure   Figure    @relation(fields: [figureId], references: [id], onDelete: Cascade)
+
+  @@id([storyId, figureId])
+  @@map("kids_story_figures")
+}
+
+// ─── Video resources ─────────────────────────────────────────────────────────
+
+model VideoResource {
+  id                   Int        @id @default(autoincrement())
+  youtubeId            String     @unique
+  title                String
+  channelName          String
+  editorNote           String     @db.Text
+  perspectiveTradition Tradition?
+  durationSeconds      Int?
+  isPublished          Boolean    @default(false)
+  isKidsSafe           Boolean    @default(false)
+
+  concepts VideoResourceConcept[]
+  figures  VideoResourceFigure[]
+  themes   VideoResourceTheme[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished])
+  @@map("video_resources")
+}
+
+model VideoResourceConcept {
+  videoId   Int
+  video     VideoResource @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  conceptId Int
+  concept   Concept       @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  position  Int           @default(0)
+
+  @@id([videoId, conceptId])
+  @@map("video_resource_concepts")
+}
+
+model VideoResourceFigure {
+  videoId  Int
+  video    VideoResource @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  figureId Int
+  figure   Figure        @relation(fields: [figureId], references: [id], onDelete: Cascade)
+  position Int           @default(0)
+
+  @@id([videoId, figureId])
+  @@map("video_resource_figures")
+}
+
+model VideoResourceTheme {
+  videoId  Int
+  video    VideoResource @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  themeId  Int
+  theme    Theme         @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  position Int           @default(0)
+
+  @@id([videoId, themeId])
+  @@map("video_resource_themes")
 }

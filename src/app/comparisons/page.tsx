@@ -6,7 +6,9 @@ import { COMPARISON_TAG_LABEL } from '@/lib/constants'
 import { PageIntro } from '@/components/layout/PageIntro'
 
 export const metadata: Metadata = { title: 'Comparisons' }
-export const dynamic = 'force-dynamic'
+// Cached content. Editors' changes appear immediately: mutating routes
+// invalidate the matching tag via revalidateContent().
+export const revalidate = 3600
 
 const FILTERS = [
   { value: '', label: 'All comparisons' },

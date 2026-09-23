@@ -337,3 +337,77 @@ Draft ${count} question(s) as a JSON array:`,
     }))
     .slice(0, count)
 }
+
+// ─── 6. Kids story drafts ─────────────────────────────────────────────────────
+
+export type KidsStoryProposal = {
+  title: string
+  body: string
+  glossary: { term: string; plainDefinition: string }[]
+  rationale: string
+}
+
+export type KidsStoryInsufficient = { insufficient: true; reason: string }
+export const KIDS_STORY_MODEL = 'claude-sonnet-4-6'
+
+const KIDS_BAND_GUIDANCE: Record<'AGE_6_8' | 'AGE_9_12', string> = {
+  AGE_6_8: `Audience: children aged 6-8, reading with an adult.
+- At most 12 words per sentence, and at most 180 words in total.
+- Everyday vocabulary. Define any word longer than two syllables in the glossary.
+- Introduce at most two names per paragraph.`,
+  AGE_9_12: `Audience: children aged 9-12, reading independently.
+- At most 18 words per sentence, and at most 350 words in total.
+- You may compare the traditions explicitly, as long as you never rank them.`,
+}
+
+export async function proposeKidsStory(
+  ageBand: 'AGE_6_8' | 'AGE_9_12',
+  claims: ClaimForSummary[],
+): Promise<KidsStoryProposal | KidsStoryInsufficient> {
+  const claimsBlock = claims.map((c, i) =>
+    `Claim ${i + 1} [${c.sourceTitle}] (verses: ${c.verseRefs.join(', ')}):\n"${c.statement}"`,
+  ).join('\n\n')
+
+  const response = await client.messages.create({
+    model: KIDS_STORY_MODEL,
+    max_tokens: 1200,
+    system: `Write short, neutral retellings for children about what Jewish, Christian, and Islamic scriptures say. Editors review every draft before publication.
+
+Attribute every content statement to a named text. Never narrate religious claims as plain fact. Describe differences warmly and never rank traditions. Do not use evaluative language or second-person religious instruction. Avoid violence, frightening detail, physical descriptions of prophets, and scripture quotations. Use only the supplied claims.
+
+${KIDS_BAND_GUIDANCE[ageBand]}
+
+Return strict JSON only: {"title":"...","body":"...","glossary":[{"term":"...","plainDefinition":"..."}],"rationale":"..."}. If unsuitable return {"insufficient":true,"reason":"..."}.`,
+    messages: [{ role: 'user', content: `Write one story based only on these published claims:\n\n${claimsBlock}` }],
+  })
+
+  const block = response.content[0]
+  const raw = block?.type === 'text' ? block.text.trim() : ''
+  const json = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')
+  let parsed: unknown
+  try { parsed = JSON.parse(json) } catch {
+    return { insufficient: true, reason: 'Model did not return valid JSON.' }
+  }
+  if (typeof parsed !== 'object' || parsed === null) {
+    return { insufficient: true, reason: 'Model returned an unexpected shape.' }
+  }
+  const obj = parsed as Record<string, unknown>
+  if (obj.insufficient === true) {
+    return { insufficient: true, reason: typeof obj.reason === 'string' ? obj.reason : 'Claims were unsuitable.' }
+  }
+  if (typeof obj.title !== 'string' || typeof obj.body !== 'string') {
+    return { insufficient: true, reason: 'Model response was missing a title or body.' }
+  }
+  const glossary = Array.isArray(obj.glossary) ? obj.glossary.flatMap((item) => {
+    const entry = item as Record<string, unknown>
+    return typeof entry?.term === 'string' && typeof entry?.plainDefinition === 'string'
+      ? [{ term: entry.term, plainDefinition: entry.plainDefinition }]
+      : []
+  }) : []
+  return {
+    title: obj.title,
+    body: obj.body,
+    glossary,
+    rationale: typeof obj.rationale === 'string' ? obj.rationale : '',
+  }
+}

@@ -3,6 +3,7 @@ import type { ClaimWithRelations } from '@/types'
 import type { Tradition } from '@/generated/prisma/client'
 import { formatVerseRef, verseReaderHref } from '@/lib/verse-links'
 import { filterVerseTranslations } from '@/lib/filter-public-translations'
+import { ScriptText } from '@/components/ui/ScriptText'
 
 interface Props {
   claim: ClaimWithRelations
@@ -40,9 +41,7 @@ export function ClaimCard({ claim, showSource = true }: Props) {
 
       {primaryVerse && defaultTranslation && (
         <blockquote className={`rounded-md ${style.citeBg} px-3 py-2`}>
-          <p className="text-xs text-stone-600 italic leading-relaxed">
-            "{defaultTranslation.text}"
-          </p>
+          <ScriptText text={defaultTranslation.text} quoted className="text-xs text-stone-600 italic leading-relaxed" />
           <cite className="mt-1 block not-italic">
             <Link
               href={verseReaderHref(claim.source.slug, primaryVerse)}

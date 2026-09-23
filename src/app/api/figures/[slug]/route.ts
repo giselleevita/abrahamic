@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(
   _req: Request,
@@ -66,6 +67,8 @@ export async function GET(
   })
 
   if (!figure) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  revalidateEntity('figure', { tags: ['figures'] })
+  revalidateEntity('figure', { slug, tags: ['figures'] })
   return NextResponse.json(figure)
 }
 
@@ -116,6 +119,8 @@ export async function PATCH(
     include: { aliases: { orderBy: { tradition: 'asc' } }, _count: { select: { claims: true } } },
   })
 
+  revalidateEntity('figure', { tags: ['figures'] })
+  revalidateEntity('figure', { slug, tags: ['figures'] })
   return NextResponse.json(figure)
 }
 
@@ -128,5 +133,6 @@ export async function DELETE(
 
   const { slug } = await params
   await prisma.figure.delete({ where: { slug } })
+  revalidateEntity('figure', { slug, tags: ['figures'] })
   return NextResponse.json({ ok: true })
 }

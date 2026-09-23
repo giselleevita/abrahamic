@@ -28,6 +28,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'Learn',
     items: [
       { href: '/learn', label: 'Chapters', description: 'Guided paths through the material, each ending in a short quiz.' },
+      { href: '/kids', label: 'For kids', description: 'Reviewed stories and accessible learning games.' },
       { href: '/timeline', label: 'Timeline', description: 'Major people and events in chronological order.' },
     ],
   },
@@ -54,6 +55,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'Read',
     items: [
       { href: '/sources', label: 'Sources', description: 'Torah, Hebrew Bible, New Testament, Quran.' },
+      { href: '/videos', label: 'Videos', description: 'Editorially reviewed explainers with privacy-friendly embeds.' },
       { href: '/glossary', label: 'Glossary', description: 'Plain-language definitions of the terms used.' },
     ],
   },

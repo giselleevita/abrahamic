@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Tradition, TraditionPresence, TimelineEra } from '@/generated/prisma/client'
+import { TRADITION_LABEL, TRADITION_DOT, TRADITION_ACCENT } from '@/lib/constants'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -44,29 +45,11 @@ export interface EraGroup {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TRADITION_ORDER: Tradition[] = ['JEWISH', 'CHRISTIAN', 'ISLAMIC']
-const TRADITION_LABEL: Record<Tradition, string> = {
-  JEWISH: 'Judaism',
-  CHRISTIAN: 'Christianity',
-  ISLAMIC: 'Islam',
-  SHARED: 'Shared',
-}
-const TRADITION_DOT: Record<Tradition, string> = {
-  JEWISH: 'bg-blue-500',
-  CHRISTIAN: 'bg-red-500',
-  ISLAMIC: 'bg-green-500',
-  SHARED: 'bg-stone-400',
-}
 const TRADITION_PANEL: Record<Tradition, string> = {
-  JEWISH: 'border-blue-200 bg-blue-50',
-  CHRISTIAN: 'border-red-200 bg-red-50',
-  ISLAMIC: 'border-green-200 bg-green-50',
+  JEWISH: 'border-jewish-200 bg-jewish-50',
+  CHRISTIAN: 'border-christian-200 bg-christian-50',
+  ISLAMIC: 'border-islamic-200 bg-islamic-50',
   SHARED: 'border-stone-200 bg-stone-50',
-}
-const TRADITION_ACCENT: Record<Tradition, string> = {
-  JEWISH: 'text-blue-700',
-  CHRISTIAN: 'text-red-700',
-  ISLAMIC: 'text-green-700',
-  SHARED: 'text-stone-600',
 }
 
 const PRESENCE_CONFIG: Record<TraditionPresence, { icon: string; label: string; bg: string; text: string; border: string }> = {

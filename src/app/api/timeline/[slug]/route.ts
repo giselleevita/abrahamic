@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { revalidateEntity } from '@/lib/cache'
 
 const ERAS = ['PRIMORDIAL','PATRIARCHAL','EXODUS','KINGDOM','GOSPEL','EARLY_ISLAM'] as const
 const TRADITIONS = ['JEWISH','CHRISTIAN','ISLAMIC','SHARED'] as const
@@ -15,6 +16,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
     include: { traditions: true },
   })
   if (!event) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  revalidateEntity('timeline', { tags: ['timeline'] })
+  revalidateEntity('timeline', { slug, tags: ['timeline'] })
   return NextResponse.json(event)
 }
 
@@ -53,6 +56,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ slug: 
     include: { traditions: true },
   })
 
+  revalidateEntity('timeline', { tags: ['timeline'] })
+  revalidateEntity('timeline', { slug, tags: ['timeline'] })
   return NextResponse.json(event)
 }
 
@@ -62,5 +67,6 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ slug
 
   const { slug } = await params
   await prisma.timelineEvent.delete({ where: { slug } })
+  revalidateEntity('timeline', { slug, tags: ['timeline'] })
   return NextResponse.json({ ok: true })
 }

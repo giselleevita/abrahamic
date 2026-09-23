@@ -16,7 +16,13 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "bash scripts/migrate-deploy.sh",
     "db:seed": "bash scripts/seed-demo.sh",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test:run": "vitest run",
+    "import": "tsx scripts/import/index.ts",
+    "import:verify": "tsx scripts/import/verify.ts",
+    "import:defaults": "tsx scripts/import/set-defaults.ts",
+    "import:versification": "tsx scripts/import/check-versification.ts",
+    "import:masoretic": "tsx scripts/import/restore-masoretic.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
@@ -35,6 +41,9 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.5",
     "@types/node": "^26.1.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",

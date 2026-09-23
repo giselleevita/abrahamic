@@ -65,6 +65,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/verse-links" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Approved Links
           </Link>
+          <Link href="/admin/kids-stories" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
+            Kids Stories ✦
+          </Link>
+          <Link href="/admin/videos" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
+            Videos
+          </Link>
           <hr className="my-2 border-stone-200" />
           <Link href="/" className="block rounded px-2 py-1.5 text-stone-500 hover:bg-stone-100">
             ← View site

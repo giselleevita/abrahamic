@@ -2,29 +2,36 @@ import prisma from '@/lib/prisma'
 import Link from 'next/link'
 import { TRADITION_COLORS } from '@/lib/constants'
 import { hasDatabaseUrl } from '@/lib/db-ready'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 
-async function getRootFigures() {
-  if (!hasDatabaseUrl()) {
-    return []
-  }
+/**
+ * This strip sits in the global nav, so before it was cached it ran a Prisma
+ * query on every page view of the entire site — and forced the root layout to
+ * be `force-dynamic`, which in turn made all 83 routes uncacheable.
+ */
+const getRootFigures = cachedQuery(
+  async () => {
+    if (!hasDatabaseUrl()) return []
 
-  const figures = await prisma.figure.findMany({
-    take: 12,
-    orderBy: { canonicalName: 'asc' },
-    include: {
-      aliases: {
-        take: 1,
+    return prisma.figure.findMany({
+      take: 12,
+      orderBy: { canonicalName: 'asc' },
+      select: {
+        id: true,
+        slug: true,
+        canonicalName: true,
+        aliases: { take: 1, select: { tradition: true } },
+        relationsFrom: {
+          where: { relationType: 'PARENT' },
+          take: 3,
+          select: { id: true },
+        },
       },
-      relationsFrom: {
-        where: { relationType: 'PARENT' },
-        take: 3,
-        include: { toFigure: true },
-      },
-    },
-  })
-
-  return figures
-}
+    })
+  },
+  ['nav-root-figures'],
+  [CACHE_TAGS.figures],
+)
 
 export async function HorizontalFamilyTree() {
   const figures = await getRootFigures()

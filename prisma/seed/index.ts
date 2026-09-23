@@ -11,6 +11,7 @@ import { seedConcepts } from './concepts'
 import { seedTimeline } from './timeline'
 import { seedVerseLinks } from './verseLinks'
 import { seedCourses } from './courses'
+import { seedKidsStories } from './kidsStories'
 
 async function main() {
   console.log('🌱 Seeding database...\n')
@@ -25,6 +26,7 @@ async function main() {
   await seedConcepts(prisma)
   await seedTimeline(prisma)
   await seedVerseLinks(prisma)   // ← must run after verses are seeded
+  await seedKidsStories(prisma)  // ← must run after claims and figures
   await seedCourses(prisma)      // ← must run last; curates all of the above
   console.log('\n✅ Seed complete')
 }
