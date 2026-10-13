@@ -24,13 +24,14 @@ import {
   WEB_HEBREW_BIBLE_SPEC,
 } from './adapters/web-bible'
 import { createQuranAdapter, QURAN_ARABIC_SPEC } from './adapters/quran'
+import { createOfficialWebAdapter, OFFICIAL_WEB_SPEC } from './adapters/web-official'
 import {
   createSefariaAdapter,
   HEBREW_TORAH_SPEC, HEBREW_TANAKH_SPEC,
   JPS_TORAH_SPEC, JPS_TANAKH_SPEC,
   HEBREW_VERSION_QUERY, JPS_VERSION_QUERY,
 } from './adapters/sefaria'
-import { TORAH_CANON, NEVIIM_KETUVIM_CANON } from './canon'
+import { TORAH_CANON, NEVIIM_KETUVIM_CANON, GOSPEL_CANON, REST_OF_NT_CANON } from './canon'
 import type { ImportAdapter } from './types'
 
 const ADAPTERS: Record<string, () => ImportAdapter> = {
@@ -38,6 +39,9 @@ const ADAPTERS: Record<string, () => ImportAdapter> = {
   'web-nt': () => createWebBibleAdapter(NT_BOOKS, WEB_NT_SPEC),
   'web-hebrew-bible': () => createWebBibleAdapter(HEBREW_BIBLE_BOOKS, WEB_HEBREW_BIBLE_SPEC),
   'web-nt-rest': () => createWebBibleAdapter(REST_OF_NT_BOOKS, WEB_NT_SPEC),
+  'official-web-torah': () => createOfficialWebAdapter(TORAH_CANON, OFFICIAL_WEB_SPEC),
+  'official-web-hebrew-bible': () => createOfficialWebAdapter(NEVIIM_KETUVIM_CANON, { ...OFFICIAL_WEB_SPEC, sourceKey: 'HEBREW_BIBLE' }),
+  'official-web-nt': () => createOfficialWebAdapter([...GOSPEL_CANON, ...REST_OF_NT_CANON], { ...OFFICIAL_WEB_SPEC, sourceKey: 'NEW_TESTAMENT' }),
   'quran-arabic': () => createQuranAdapter(QURAN_ARABIC_SPEC, 'quran-uthmani'),
   'hebrew-torah': () => createSefariaAdapter(TORAH_CANON, HEBREW_TORAH_SPEC, HEBREW_VERSION_QUERY),
   'hebrew-tanakh': () => createSefariaAdapter(NEVIIM_KETUVIM_CANON, HEBREW_TANAKH_SPEC, HEBREW_VERSION_QUERY),
@@ -69,8 +73,10 @@ async function main() {
 
   // A run that fetched nothing is a failure worth a non-zero exit, so CI or a
   // scheduled job notices rather than reporting success on an empty import.
-  if (stats.fetched === 0) {
-    console.error('\n  Nothing was fetched — treating as a failure.')
+  if (stats.fetched === 0 || stats.errors.length > 0) {
+    console.error(stats.fetched === 0
+      ? '\n  Nothing was fetched — treating as a failure.'
+      : `\n  ${stats.errors.length} database batch(es) failed — re-run the import after investigating.`)
     process.exit(1)
   }
 }

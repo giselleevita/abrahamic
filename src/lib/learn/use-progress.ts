@@ -10,6 +10,8 @@ import {
   withAttemptRecorded,
   withChapterReset,
   withChapterVisited,
+  withJourneyStepCompleted,
+  withJourneyReset,
   writeProgress,
   type LearnProgress,
   type QuizAttempt,
@@ -68,13 +70,21 @@ export function useLearnProgress() {
     writeProgress(withAttemptRecorded(readProgress(), slug, attempt))
   }, [])
 
+  const completeStep = useCallback((courseSlug: string, chapterSlug: string, nextChapterSlug: string | null) => {
+    writeProgress(withJourneyStepCompleted(readProgress(), courseSlug, chapterSlug, nextChapterSlug, new Date().toISOString()))
+  }, [])
+
   const resetChapter = useCallback((slug: string) => {
     writeProgress(withChapterReset(readProgress(), slug))
   }, [])
 
+  const resetJourney = useCallback((courseSlug: string, chapterSlugs: string[]) => {
+    writeProgress(withJourneyReset(readProgress(), courseSlug, chapterSlugs))
+  }, [])
+
   const resetAll = useCallback(() => clearProgress(), [])
 
-  return { progress, markVisited, recordAttempt, resetChapter, resetAll }
+  return { progress, markVisited, completeStep, recordAttempt, resetChapter, resetJourney, resetAll }
 }
 
 /**

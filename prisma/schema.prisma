@@ -150,6 +150,7 @@ model Verse {
   timelineVerses    TimelineEventVerse[]
   figureRelations   FigureRelation[]
   questionVerses    QuestionVerse[]
+  chapterItems      ChapterItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -528,6 +529,7 @@ enum ChapterItemType {
   FIGURE
   TIMELINE_EVENT
   THEME
+  VERSE
 }
 
 /// Every kind is ATTRIBUTIVE by construction: the correct answer is a fact
@@ -578,6 +580,12 @@ model Course {
   description String? @db.Text
   position    Int     @default(0)
   isPublished Boolean @default(false)
+  estimatedMinutes Int?
+  artworkPath       String?
+  artworkAlt        String?
+  artworkCredit     String?
+  artworkSourceUrl  String?
+  artworkLicense    String?
 
   chapters Chapter[]
 
@@ -598,6 +606,14 @@ model Chapter {
   summary     String? @db.Text
   position    Int     @default(0)
   isPublished Boolean @default(false)
+  estimatedMinutes  Int?
+  artworkPath        String?
+  artworkAlt         String?
+  artworkCredit      String?
+  artworkSourceUrl   String?
+  artworkLicense     String?
+  learningObjective String? @db.Text
+  takeaway           String? @db.Text
 
   /// Human sign-off that this chapter's quiz is attributive. Required to
   /// publish — the automated lint is a speed bump, this is the real gate.
@@ -647,12 +663,15 @@ model ChapterItem {
   timelineEvent   TimelineEvent? @relation(fields: [timelineEventId], references: [id], onDelete: Restrict)
   themeId         Int?
   theme           Theme?         @relation(fields: [themeId], references: [id], onDelete: Restrict)
+  verseId         Int?
+  verse           Verse?         @relation(fields: [verseId], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([chapterId, position])
   @@index([itemType])
+  @@index([verseId])
   @@map("chapter_items")
 }
 

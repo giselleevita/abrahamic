@@ -18,7 +18,7 @@ export default async function SourcesPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-      <PageIntro eyebrow="Read" title="Source library" description="Choose a scripture or historical source. Each collection shows its language, available passages, and related comparisons." />
+      <PageIntro eyebrow="Read" title="Source library" description="Read the complete supported Bible canon in public-domain English and all 114 Quran surahs in Arabic. Hebrew-original and historical-source coverage remains selective; each card shows what is available." />
 
       <div className="grid gap-5 sm:grid-cols-2">
         {sources.map((source) => (
@@ -42,7 +42,7 @@ export default async function SourcesPage() {
             )}
 
             <div className="mt-5 flex gap-4 text-sm font-semibold text-blue-700">
-              <span>{source._count.verses} verses</span>
+              <span>{source._count.verses} available verses</span>
               <span>{source._count.claims} claims</span>
             </div>
           </Link>

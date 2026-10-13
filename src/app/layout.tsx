@@ -14,21 +14,21 @@ export async function generateMetadata(): Promise<Metadata> {
       template: '%s — Abrahamic Texts',
     },
     description:
-      'Public engineering demo: structured comparison of Jewish, Christian, and Islamic scriptures with license-free original-language text and project-authored reader notes.',
+      'A sourced guide to Jewish, Christian, and Islamic traditions with public-domain Bible text, Arabic Quran text, and original reader notes.',
     metadataBase: new URL(baseUrl),
     openGraph: {
       type: 'website',
       siteName: 'Abrahamic Texts',
       title: 'Abrahamic Texts',
       description:
-        'Public engineering demo — cross-tradition scripture comparison with editorial workflows. License-free original Hebrew/Arabic text and reader notes only.',
+        'A sourced introduction to three traditions, with public-domain Bible text, Arabic Quran text, and editorially reviewed comparisons.',
       url: baseUrl,
     },
     twitter: {
       card: 'summary_large_image',
       title: 'Abrahamic Texts',
       description:
-        'Public demo — cross-tradition scripture comparison. License-free original-language text and project-authored reader notes.',
+        'Explore Judaism, Christianity, and Islam through guided journeys and sourced comparisons.',
     },
   }
 }

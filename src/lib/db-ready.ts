@@ -1,6 +1,7 @@
 export function hasDatabaseUrl(): boolean {
   return Boolean(
-    process.env.DATABASE_URL ??
+    process.env.NEON_DATABASE_URL ??
+      process.env.DATABASE_URL ??
       process.env.PRISMA_DATABASE_URL ??
       process.env.POSTGRES_URL ??
       process.env.storage_PRISMA_DATABASE_URL ??

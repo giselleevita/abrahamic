@@ -12,6 +12,8 @@ import {
   withAttemptRecorded,
   withChapterReset,
   withChapterVisited,
+  withJourneyReset,
+  withJourneyStepCompleted,
   writeProgress,
   type LearnProgress,
   type QuizAttempt,
@@ -59,6 +61,18 @@ describe('parseProgress', () => {
   it('round-trips a valid payload', () => {
     const p = withAttemptRecorded(fresh(), 'the-one-god', attempt())
     expect(parseProgress(JSON.stringify(p))).toEqual(p)
+  })
+
+  it('migrates valid version-one progress without losing chapters', () => {
+    const stored = JSON.stringify({
+      version: 1,
+      updatedAt: 'then',
+      chapters: { a: { visitedAt: 'then', bestScore: null, attempts: [], completedAt: null } },
+    })
+    const migrated = parseProgress(stored)
+    expect(migrated.version).toBe(2)
+    expect(migrated.currentJourney).toBeNull()
+    expect(migrated.chapters.a.visitedAt).toBe('then')
   })
 })
 
@@ -127,6 +141,24 @@ describe('withChapterReset / completedCount', () => {
     let p = withAttemptRecorded(fresh(), 'a', attempt())
     p = withAttemptRecorded(p, 'b', attempt({ passed: false, correct: 1 }))
     expect(completedCount(p, ['a', 'b', 'c'])).toBe(1)
+  })
+})
+
+describe('journey progress', () => {
+  it('completes a step and points resume at the next step', () => {
+    const p = withJourneyStepCompleted(fresh(), 'journey', 'one', 'two', 'now')
+    expect(chapterProgress(p, 'one').completedAt).toBe('now')
+    expect(p.currentJourney).toEqual({ courseSlug: 'journey', chapterSlug: 'two' })
+  })
+
+  it('restarts only the selected journey and clears its resume pointer', () => {
+    let p = withAttemptRecorded(fresh(), 'one', attempt())
+    p = withAttemptRecorded(p, 'unrelated', attempt())
+    p = { ...p, currentJourney: { courseSlug: 'journey', chapterSlug: 'one' } }
+    p = withJourneyReset(p, 'journey', ['one'])
+    expect(p.chapters.one).toBeUndefined()
+    expect(p.chapters.unrelated).toBeDefined()
+    expect(p.currentJourney).toBeNull()
   })
 })
 

@@ -16,7 +16,7 @@
  */
 
 export const PROGRESS_STORAGE_KEY = 'abrahamic.learn.progress'
-export const PROGRESS_VERSION = 1
+export const PROGRESS_VERSION = 2
 
 /** Fired on same-tab writes; `storage` only fires in *other* tabs. */
 export const PROGRESS_EVENT = 'learn-progress-change'
@@ -41,12 +41,14 @@ export type LearnProgress = {
   version: typeof PROGRESS_VERSION
   updatedAt: string
   chapters: Record<string, ChapterProgress>
+  currentJourney: { courseSlug: string; chapterSlug: string } | null
 }
 
 export const EMPTY_PROGRESS: LearnProgress = Object.freeze({
   version: PROGRESS_VERSION,
   updatedAt: '',
   chapters: {},
+  currentJourney: null,
 }) as LearnProgress
 
 export const EMPTY_CHAPTER: ChapterProgress = Object.freeze({
@@ -75,7 +77,7 @@ export function parseProgress(raw: string | null): LearnProgress {
     return { ...EMPTY_PROGRESS, chapters: {} }
   }
 
-  if (!isRecord(parsed) || parsed.version !== PROGRESS_VERSION || !isRecord(parsed.chapters)) {
+  if (!isRecord(parsed) || ![1, PROGRESS_VERSION].includes(parsed.version as number) || !isRecord(parsed.chapters)) {
     return { ...EMPTY_PROGRESS, chapters: {} }
   }
 
@@ -101,6 +103,12 @@ export function parseProgress(raw: string | null): LearnProgress {
     version: PROGRESS_VERSION,
     updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : '',
     chapters,
+    currentJourney:
+      isRecord(parsed.currentJourney) &&
+      typeof parsed.currentJourney.courseSlug === 'string' &&
+      typeof parsed.currentJourney.chapterSlug === 'string'
+        ? { courseSlug: parsed.currentJourney.courseSlug, chapterSlug: parsed.currentJourney.chapterSlug }
+        : null,
   }
 }
 
@@ -116,6 +124,29 @@ export function withChapterVisited(
     ...prev,
     updatedAt: now,
     chapters: { ...prev.chapters, [slug]: { ...existing, visitedAt: existing.visitedAt ?? now } },
+  }
+}
+
+export function withJourneyStepCompleted(
+  prev: LearnProgress,
+  courseSlug: string,
+  chapterSlug: string,
+  nextChapterSlug: string | null,
+  now: string,
+): LearnProgress {
+  const existing = prev.chapters[chapterSlug] ?? EMPTY_CHAPTER
+  return {
+    ...prev,
+    updatedAt: now,
+    currentJourney: nextChapterSlug ? { courseSlug, chapterSlug: nextChapterSlug } : null,
+    chapters: {
+      ...prev.chapters,
+      [chapterSlug]: {
+        ...existing,
+        visitedAt: existing.visitedAt ?? now,
+        completedAt: existing.completedAt ?? now,
+      },
+    },
   }
 }
 
@@ -147,6 +178,22 @@ export function withChapterReset(prev: LearnProgress, slug: string): LearnProgre
   const chapters = { ...prev.chapters }
   delete chapters[slug]
   return { ...prev, chapters }
+}
+
+export function withJourneyReset(
+  prev: LearnProgress,
+  courseSlug: string,
+  chapterSlugs: string[],
+): LearnProgress {
+  const chapters = { ...prev.chapters }
+  for (const slug of chapterSlugs) delete chapters[slug]
+
+  return {
+    ...prev,
+    updatedAt: new Date().toISOString(),
+    chapters,
+    currentJourney: prev.currentJourney?.courseSlug === courseSlug ? null : prev.currentJourney,
+  }
 }
 
 export function chapterProgress(progress: LearnProgress, slug: string): ChapterProgress {

@@ -11,6 +11,7 @@ export default async function AdminLearnPage() {
         orderBy: { position: 'asc' },
         include: {
           _count: { select: { items: true, questions: true } },
+          items: { select: { itemType: true } },
           questions: { select: { isPublished: true } },
         },
       },
@@ -48,6 +49,7 @@ export default async function AdminLearnPage() {
                 <th className="px-3 py-2 font-semibold">Items</th>
                 <th className="px-3 py-2 font-semibold">Questions</th>
                 <th className="px-3 py-2 font-semibold">Neutrality review</th>
+                <th className="px-3 py-2 font-semibold">Journey readiness</th>
                 <th className="px-3 py-2 font-semibold">Status</th>
               </tr>
             </thead>
@@ -65,6 +67,12 @@ export default async function AdminLearnPage() {
                     <td className="px-3 py-2 text-stone-600">{chapter._count.items}</td>
                     <td className="px-3 py-2 text-stone-600">
                       {published} published{draft > 0 && <span className="text-amber-700"> · {draft} draft</span>}
+                    </td>
+                    <td className="px-3 py-2 text-stone-600">
+                      <span className={chapter.artworkPath && chapter.artworkAlt && chapter.artworkCredit && chapter.artworkLicense ? 'text-emerald-700' : 'text-amber-700'}>
+                        {chapter.artworkPath && chapter.artworkAlt && chapter.artworkCredit && chapter.artworkLicense ? 'Artwork ready' : 'Artwork incomplete'}
+                      </span>
+                      <span className="block text-xs text-stone-500">{chapter.items.filter((item) => item.itemType === 'VERSE').length} scripture citation(s)</span>
                     </td>
                     <td className="px-3 py-2 text-stone-600">
                       {chapter.neutralityReviewedAt

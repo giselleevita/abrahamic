@@ -3,6 +3,8 @@ import { defineConfig } from 'prisma/config'
 
 function resolveMigrationUrl(): string {
   return (
+    process.env.NEON_DATABASE_URL_UNPOOLED ??
+    process.env.NEON_DATABASE_URL ??
     process.env.DIRECT_URL ??
     process.env.POSTGRES_URL ??
     process.env.storage_POSTGRES_URL ??

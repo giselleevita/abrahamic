@@ -105,7 +105,7 @@ export default async function QuizPage({ params }: { params: Params }) {
         description="Every question asks what a tradition teaches or what a text says — not which tradition is correct."
         crumbLabel="Quiz"
         trail={[
-          { href: '/learn', label: 'Chapters' },
+          { href: '/learn', label: 'Journeys' },
           { href: `/learn/${chapter.course.slug}`, label: chapter.course.title },
           { href: `/learn/${chapter.course.slug}/${chapter.slug}`, label: chapter.title },
         ]}

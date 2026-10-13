@@ -13,8 +13,8 @@ export function Footer() {
               Abrahamic Texts
             </Link>
             <p className="mt-3 text-sm leading-6 text-slate-600 max-w-xs">
-              A structured, neutral, and citable comparison of Jewish, Christian, and Islamic
-              sacred texts. Every claim is cited. Every comparison is editorially authored.
+              A curated, sourced introduction to Jewish, Christian, and Islamic
+              perspectives. Traditions are presented separately before comparison.
             </p>
             <div className="mt-4 flex gap-2">
               <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800">Judaism</span>
@@ -47,7 +47,7 @@ export function Footer() {
 
         <div className="mt-10 border-t border-slate-200 pt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-5 text-slate-500">
-            All comparisons are editorially authored and peer-reviewed. No claim is shown without a source citation.
+            Comparisons are editorially authored and reviewed for attribution and citations. Reader coverage varies by language and source.
           </p>
           <p className="text-xs leading-5 text-slate-500">
             Tags (Shared / Similar-Different / Contradiction) are editorial judgments, not computed.

@@ -198,6 +198,18 @@ GitHub CI validates migrations and production builds against Postgres. Vercel ap
 
 For a no-cost setup, use Vercel's Hobby plan with a free Neon Postgres project. The app also supports legacy `PRISMA_DATABASE_URL` / `POSTGRES_URL` variables and maps them to Prisma's `DATABASE_URL` at runtime (see `src/lib/prisma-env.ts`).
 
+The deployment seed loads the curated learning/demo records, not the full scripture corpus. To populate the reader after the database is ready, run the idempotent, provenance-carrying imports separately (never as part of every Vercel build):
+
+```bash
+npm run import -- official-web-torah
+npm run import -- official-web-hebrew-bible
+npm run import -- official-web-nt
+npm run import -- quran-arabic
+npm run import:verify
+```
+
+The official WEB adapters use eBible.org's public-domain archive rather than a rate-limited chapter API. The Quran adapter imports Arabic source text only. Modern proprietary translations are excluded by the public-demo policy. For production, run these commands with the production database environment selected; do not commit downloaded credentials or add the imports to the build command.
+
 1. Create a free Neon Postgres database and set its pooled URL as `DATABASE_URL` and direct URL as `DIRECT_URL` in the Vercel project.
 2. Set `NEXTAUTH_URL` to your production URL (e.g. `https://abrahamic.vercel.app`) for auth callbacks and Open Graph metadata.
 3. Run `npm run db:deploy` against that database.

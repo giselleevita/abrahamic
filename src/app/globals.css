@@ -78,3 +78,6 @@
   --font-serif: 'Crimson Text', Georgia, serif;
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
 }
+
+/* Dark journey artwork heroes inherit white text, including heading defaults. */
+.bg-slate-950.text-white h1 { color: white; }

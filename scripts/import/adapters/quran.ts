@@ -114,5 +114,5 @@ export const QURAN_ARABIC_SPEC: TranslationSpec = {
   sourceKey: 'QURAN',
   licenseCode: 'PD',
   sourceUrl: 'https://alquran.cloud/api',
-  attribution: 'Quran, Uthmani script. Arabic source text (public domain).',
+  attribution: 'Quran, Uthmani script via AlQuran Cloud; text curation credited to Tanzil.net and Quran Academy.',
 }

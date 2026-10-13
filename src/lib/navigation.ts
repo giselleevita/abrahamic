@@ -25,9 +25,9 @@ export type NavGroup = {
 export const NAV_GROUPS: NavGroup[] = [
   {
     id: 'learn',
-    label: 'Learn',
+    label: 'Journeys',
     items: [
-      { href: '/learn', label: 'Chapters', description: 'Guided paths through the material, each ending in a short quiz.' },
+      { href: '/learn', label: 'Journeys', description: 'Guided, sourced paths through the three traditions.' },
       { href: '/kids', label: 'For kids', description: 'Reviewed stories and accessible learning games.' },
       { href: '/timeline', label: 'Timeline', description: 'Major people and events in chronological order.' },
     ],
@@ -97,6 +97,7 @@ export const FOOTER_GROUPS: NavGroup[] = [
     label: 'Site',
     items: [
       { href: '/search', label: 'Search' },
+      { href: '/editorial-method', label: 'Editorial method' },
       { href: '/licensing', label: 'Licensing' },
     ],
   },

@@ -2,7 +2,8 @@
  * Public-demo content policy — no publisher licenses required.
  *
  * - Original-language scripture text (Hebrew, Arabic) is shown as source text.
- * - English uses only original "reader notes" written for this demo.
+ * - English uses the public-domain World English Bible and original reader
+ *   notes written for this demo. Other translations remain blocked.
  * - Editorial claims, figures, themes, and comparisons are project-authored summaries.
  */
 

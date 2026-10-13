@@ -18,6 +18,15 @@ type ItemShape = {
   figure: { slug: string; canonicalName: string; description: string | null } | null
   timelineEvent: { slug: string; name: string; summary: string | null } | null
   theme: { slug: string; name: string; description: string | null } | null
+  verse: {
+    referenceKey: string
+    book: string
+    chapter: number
+    verse: number
+    versification: string
+    source: { key: string; title: string }
+    translations: { name: string; text: string; label: string; licenseCode: string | null; attribution: string | null }[]
+  } | null
 }
 
 const KIND_LABEL: Record<ChapterItemType, string> = {
@@ -26,6 +35,7 @@ const KIND_LABEL: Record<ChapterItemType, string> = {
   FIGURE: 'Person',
   TIMELINE_EVENT: 'Event',
   THEME: 'Theme',
+  VERSE: 'Scripture',
 }
 
 const KIND_STYLE: Record<ChapterItemType, string> = {
@@ -34,6 +44,7 @@ const KIND_STYLE: Record<ChapterItemType, string> = {
   FIGURE: 'bg-blue-100 text-blue-800',
   TIMELINE_EVENT: 'bg-emerald-100 text-emerald-800',
   THEME: 'bg-rose-100 text-rose-800',
+  VERSE: 'bg-teal-100 text-teal-900',
 }
 
 function resolve(item: ItemShape): { href: string; title: string; description: string | null } | null {
@@ -48,6 +59,15 @@ function resolve(item: ItemShape): { href: string; title: string; description: s
       return item.timelineEvent && { href: `/timeline#${item.timelineEvent.slug}`, title: item.timelineEvent.name, description: item.timelineEvent.summary }
     case 'THEME':
       return item.theme && { href: `/themes/${item.theme.slug}`, title: item.theme.name, description: item.theme.description }
+    case 'VERSE': {
+      if (!item.verse) return null
+      const translation = item.verse.translations.find((t) => t.name === 'World English Bible') ?? item.verse.translations[0]
+      return {
+        href: `/sources/${item.verse.source.key.toLowerCase().replaceAll('_', '-')}/read?book=${encodeURIComponent(item.verse.book)}&chapter=${item.verse.chapter}`,
+        title: `${item.verse.book} ${item.verse.chapter}:${item.verse.verse}`,
+        description: translation?.text ?? null,
+      }
+    }
     default:
       return null
   }

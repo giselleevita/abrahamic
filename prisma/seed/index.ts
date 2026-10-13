@@ -11,6 +11,7 @@ import { seedConcepts } from './concepts'
 import { seedTimeline } from './timeline'
 import { seedVerseLinks } from './verseLinks'
 import { seedCourses } from './courses'
+import { seedJourneys } from './journeys'
 import { seedKidsStories } from './kidsStories'
 
 async function main() {
@@ -28,6 +29,7 @@ async function main() {
   await seedVerseLinks(prisma)   // ← must run after verses are seeded
   await seedKidsStories(prisma)  // ← must run after claims and figures
   await seedCourses(prisma)      // ← must run last; curates all of the above
+  await seedJourneys(prisma)
   console.log('\n✅ Seed complete')
 }
 

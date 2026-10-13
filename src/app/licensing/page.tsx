@@ -18,7 +18,9 @@ export default function LicensingPage() {
         <h2 className="text-lg font-semibold text-primary-900">Included (no license required)</h2>
         <ul className="list-disc space-y-2 pl-5">
           <li>Platform data: figures, themes, concepts, timeline, comparisons, claims, cross-references, search</li>
-          <li>Original-language verse text (Hebrew, Arabic) where seeded</li>
+          <li>World English Bible text (public domain), sourced from eBible.org, for the supported Bible canon</li>
+          <li>Arabic Quran text (Uthmani script), sourced through AlQuran Cloud with attribution to its text curators</li>
+          <li>Original-language Hebrew verse text where available</li>
           <li>
             <strong className="text-primary-900">Reader note (original)</strong> — short English context
             written for this demo; not a published translation

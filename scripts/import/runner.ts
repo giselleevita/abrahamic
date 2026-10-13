@@ -8,8 +8,8 @@
  *    (source + book + chapter + verse) and of a translation
  *    (verse + label + name), both of which already carry unique constraints.
  *    Re-running updates text in place rather than duplicating it.
- *  - Resumable. Failures are collected per batch, not thrown, so one bad
- *    chapter cannot abandon a 30,000-verse import halfway.
+ *  - Resumable. Completed batches remain in place after a later failure, so
+ *    re-running fills gaps without duplicating already imported verses.
  *  - Provenance-carrying. Every row records its licence, source URL,
  *    attribution and retrieval time.
  *  - Statistics-aware. Runs ANALYZE at the end: after a bulk load the planner's
@@ -39,48 +39,96 @@ async function resolveSourceId(sourceKey: string): Promise<number> {
   return source.id
 }
 
-async function upsertVerse(
+const WRITE_BATCH_SIZE = 100
+
+function verseKey(v: Pick<ImportedVerse, 'book' | 'chapter' | 'verse'>): string {
+  return `${v.book}\u0000${v.chapter}\u0000${v.verse}`
+}
+
+async function writeBatch(
   sourceId: number,
-  v: ImportedVerse,
+  verses: ImportedVerse[],
+  spec: ImportAdapter['spec'],
+  retrievedAt: Date,
   stats: ImportStats,
-  versification: Versification = 'CHRISTIAN',
-): Promise<number> {
-  // The scheme is part of the reference key so Masoretic and Christian rows for
-  // the same citation stay distinct rather than colliding on the unique index.
-  const referenceKey =
-    versification === 'CHRISTIAN'
-      ? `${v.book}.${v.chapter}.${v.verse}`
-      : `${v.book}.${v.chapter}.${v.verse}.${versification}`
-
-  const existing = await prisma.verse.findUnique({
-    where: {
-      sourceId_book_chapter_verse_versification: {
-        sourceId,
-        book: v.book,
-        chapter: v.chapter,
-        verse: v.verse,
-        versification,
-      },
-    },
-    select: { id: true },
-  })
-
-  if (existing) return existing.id
-
-  const created = await prisma.verse.create({
-    data: {
+): Promise<void> {
+  const versification: Versification = spec.versification ?? 'CHRISTIAN'
+  // Avoid repeated remote round trips: one insert, one lookup, and one
+  // translation insert per chapter-sized chunk. Existing rows remain intact.
+  const inserted = await prisma.verse.createMany({
+    data: verses.map((v) => ({
       sourceId,
       book: v.book,
       bookNumber: v.bookNumber,
       chapter: v.chapter,
       verse: v.verse,
-      referenceKey,
+      referenceKey: versification === 'CHRISTIAN'
+        ? `${v.book}.${v.chapter}.${v.verse}`
+        : `${v.book}.${v.chapter}.${v.verse}.${versification}`,
       versification,
-    },
-    select: { id: true },
+    })),
+    skipDuplicates: true,
   })
-  stats.versesCreated += 1
-  return created.id
+  stats.versesCreated += inserted.count
+
+  const stored = await prisma.verse.findMany({
+    where: {
+      sourceId,
+      versification,
+      OR: verses.map((v) => ({ book: v.book, chapter: v.chapter, verse: v.verse })),
+    },
+    select: { id: true, book: true, chapter: true, verse: true },
+  })
+  const ids = new Map(stored.map((v) => [verseKey(v), v.id]))
+  const missing = verses.filter((v) => !ids.has(verseKey(v)))
+  if (missing.length) {
+    throw new Error(`${missing.length} verse identities could not be resolved after insert`)
+  }
+
+  const verseIds = stored.map((v) => v.id)
+  const existing = await prisma.verseTranslation.findMany({
+    where: { verseId: { in: verseIds }, label: spec.label, name: spec.name },
+    select: { id: true, verseId: true, text: true },
+  })
+  const byVerseId = new Map(existing.map((row) => [row.verseId, row]))
+  const fresh = verses.filter((v) => !byVerseId.has(ids.get(verseKey(v))!))
+  if (fresh.length) {
+    const result = await prisma.verseTranslation.createMany({
+      data: fresh.map((v) => ({
+        verseId: ids.get(verseKey(v))!,
+        label: spec.label,
+        name: spec.name,
+        text: v.text,
+        isDefault: false,
+        licenseCode: spec.licenseCode,
+        sourceUrl: spec.sourceUrl,
+        attribution: spec.attribution,
+        retrievedAt,
+      })),
+      skipDuplicates: true,
+    })
+    stats.translationsCreated += result.count
+  }
+
+  for (const v of verses) {
+    const row = byVerseId.get(ids.get(verseKey(v))!)
+    if (!row) continue
+    if (row.text === v.text) {
+      stats.skipped += 1
+      continue
+    }
+    await prisma.verseTranslation.update({
+      where: { id: row.id },
+      data: {
+        text: v.text,
+        licenseCode: spec.licenseCode,
+        sourceUrl: spec.sourceUrl,
+        attribution: spec.attribution,
+        retrievedAt,
+      },
+    })
+    stats.translationsUpdated += 1
+  }
 }
 
 export async function runImport(
@@ -124,71 +172,24 @@ export async function runImport(
   if (options.dryRun) console.log('  DRY RUN — nothing will be written\n')
 
   for await (const batch of adapter.fetchVerses({ limitBooks: options.limitBooks })) {
-    for (const v of batch) {
-      stats.fetched += 1
+    stats.fetched += batch.length
+    const valid = batch.filter((v) => v.text?.trim())
+    stats.skipped += batch.length - valid.length
+    if (options.dryRun || valid.length === 0) continue
 
-      if (!v.text?.trim()) {
-        stats.skipped += 1
-        continue
-      }
-      if (options.dryRun) continue
-
+    for (let start = 0; start < valid.length; start += WRITE_BATCH_SIZE) {
+      const chunk = valid.slice(start, start + WRITE_BATCH_SIZE)
       try {
-        const verseId = await upsertVerse(sourceId, v, stats, spec.versification ?? 'CHRISTIAN')
-
-        // The unique key is (verseId, label, name), so re-running refreshes the
-        // text of an existing row rather than creating a second copy.
-        const existing = await prisma.verseTranslation.findUnique({
-          where: {
-            verseId_label_name: { verseId, label: spec.label, name: spec.name },
-          },
-          select: { id: true, text: true },
-        })
-
-        if (existing) {
-          if (existing.text !== v.text) {
-            await prisma.verseTranslation.update({
-              where: { id: existing.id },
-              data: {
-                text: v.text,
-                licenseCode: spec.licenseCode,
-                sourceUrl: spec.sourceUrl,
-                attribution: spec.attribution,
-                retrievedAt,
-              },
-            })
-            stats.translationsUpdated += 1
-          } else {
-            stats.skipped += 1
-          }
-        } else {
-          await prisma.verseTranslation.create({
-            data: {
-              verseId,
-              label: spec.label,
-              name: spec.name,
-              text: v.text,
-              // Never claims the default slot on import. Which translation a
-              // reader sees first is an editorial decision, not an import one.
-              isDefault: false,
-              licenseCode: spec.licenseCode,
-              sourceUrl: spec.sourceUrl,
-              attribution: spec.attribution,
-              retrievedAt,
-            },
-          })
-          stats.translationsCreated += 1
-        }
+        await writeBatch(sourceId, chunk, spec, retrievedAt, stats)
       } catch (error) {
-        // Collected, not thrown: one bad verse must not abandon the run.
+        const first = chunk[0]
         stats.errors.push(
-          `${v.book} ${v.chapter}:${v.verse} — ${error instanceof Error ? error.message : String(error)}`,
+          `${first.book} ${first.chapter}:${first.verse} (batch of ${chunk.length}) — ${error instanceof Error ? error.message : String(error)}`,
         )
       }
-
-      if (stats.fetched % BATCH_LOG_EVERY === 0) {
-        console.log(`  … ${stats.fetched} verses processed`)
-      }
+    }
+    if (stats.fetched >= BATCH_LOG_EVERY && stats.fetched % BATCH_LOG_EVERY < batch.length) {
+      console.log(`  … ${stats.fetched} verses processed`)
     }
   }
 
