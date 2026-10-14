@@ -69,14 +69,14 @@ export function VerseReader({ verses }: Props) {
                 sideBySide ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'
               }`}
             >
-              Side by side
+              Compare editions
             </button>
           </div>
         )}
 
         {!sideBySide && hasMultiple && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-stone-400">Translation:</span>
+            <span className="text-xs text-stone-600">Edition:</span>
             {translationNames.map((name) => (
               <button
                 key={name}
@@ -95,7 +95,7 @@ export function VerseReader({ verses }: Props) {
 
         {sideBySide && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-stone-400">Comparing:</span>
+            <span className="text-xs text-stone-600">Editions of this same numbered passage:</span>
             {availableLabels.map((label) => (
               <span key={label} className="rounded-full border border-stone-200 bg-white px-2.5 py-0.5 text-xs text-stone-600">
                 {LABEL_DISPLAY[label]}
