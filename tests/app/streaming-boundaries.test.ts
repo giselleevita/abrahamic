@@ -73,7 +73,9 @@ describe('versification is pinned where verses are listed', () => {
 
   it('the reader queries an explicit scheme', () => {
     const src = readFileSync(readerPage, 'utf8')
-    const queries = src.match(/prisma\.verse\.(findMany|groupBy)\(/g) ?? []
+    // Navigation may union chapter numbers across editions (Joel 4 exists
+    // only in the Hebrew division); rendered verse lists must remain pinned.
+    const queries = src.match(/prisma\.verse\.findMany\(/g) ?? []
     expect(queries.length).toBeGreaterThan(0)
     // Every verse query in the reader names a scheme.
     expect(src.match(/versification:\s*'(CHRISTIAN|MASORETIC)'/g)?.length ?? 0)

@@ -16,6 +16,7 @@ import {
   type LearnProgress,
   type QuizAttempt,
 } from './progress'
+import { recordJourneyCompletion } from './metrics'
 
 /**
  * `useSyncExternalStore` rather than useState+useEffect: `getServerSnapshot`
@@ -67,11 +68,19 @@ export function useLearnProgress() {
   }, [])
 
   const recordAttempt = useCallback((slug: string, attempt: QuizAttempt) => {
-    writeProgress(withAttemptRecorded(readProgress(), slug, attempt))
+    const previous = readProgress()
+    writeProgress(withAttemptRecorded(previous, slug, attempt))
+    if (attempt.passed && !previous.chapters[slug]?.completedAt) {
+      recordJourneyCompletion(slug)
+    }
   }, [])
 
   const completeStep = useCallback((courseSlug: string, chapterSlug: string, nextChapterSlug: string | null) => {
-    writeProgress(withJourneyStepCompleted(readProgress(), courseSlug, chapterSlug, nextChapterSlug, new Date().toISOString()))
+    const previous = readProgress()
+    writeProgress(withJourneyStepCompleted(previous, courseSlug, chapterSlug, nextChapterSlug, new Date().toISOString()))
+    if (!previous.chapters[chapterSlug]?.completedAt) {
+      recordJourneyCompletion(chapterSlug)
+    }
   }, [])
 
   const resetChapter = useCallback((slug: string) => {

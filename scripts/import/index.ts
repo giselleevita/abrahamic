@@ -27,7 +27,8 @@ import { createQuranAdapter, QURAN_ARABIC_SPEC } from './adapters/quran'
 import { createOfficialWebAdapter, OFFICIAL_WEB_SPEC } from './adapters/web-official'
 import {
   createSefariaAdapter,
-  HEBREW_TORAH_SPEC, HEBREW_TANAKH_SPEC,
+  HEBREW_TORAH_MASORETIC_SPEC, HEBREW_TANAKH_MASORETIC_SPEC,
+  HEBREW_TANAKH_CANON,
   JPS_TORAH_SPEC, JPS_TANAKH_SPEC,
   HEBREW_VERSION_QUERY, JPS_VERSION_QUERY,
 } from './adapters/sefaria'
@@ -43,8 +44,10 @@ const ADAPTERS: Record<string, () => ImportAdapter> = {
   'official-web-hebrew-bible': () => createOfficialWebAdapter(NEVIIM_KETUVIM_CANON, { ...OFFICIAL_WEB_SPEC, sourceKey: 'HEBREW_BIBLE' }),
   'official-web-nt': () => createOfficialWebAdapter([...GOSPEL_CANON, ...REST_OF_NT_CANON], { ...OFFICIAL_WEB_SPEC, sourceKey: 'NEW_TESTAMENT' }),
   'quran-arabic': () => createQuranAdapter(QURAN_ARABIC_SPEC, 'quran-uthmani'),
-  'hebrew-torah': () => createSefariaAdapter(TORAH_CANON, HEBREW_TORAH_SPEC, HEBREW_VERSION_QUERY),
-  'hebrew-tanakh': () => createSefariaAdapter(NEVIIM_KETUVIM_CANON, HEBREW_TANAKH_SPEC, HEBREW_VERSION_QUERY),
+  // Full Hebrew text always carries Masoretic numbering. Even chapters with
+  // the same verse count can differ internally, so count alone is not a map.
+  'hebrew-torah': () => createSefariaAdapter(TORAH_CANON, HEBREW_TORAH_MASORETIC_SPEC, HEBREW_VERSION_QUERY),
+  'hebrew-tanakh': () => createSefariaAdapter(HEBREW_TANAKH_CANON, HEBREW_TANAKH_MASORETIC_SPEC, HEBREW_VERSION_QUERY),
   // Both refuse to run while "JPS 1917" is on REMOVED_TRANSLATION_NAMES.
   'jps-torah': () => createSefariaAdapter(TORAH_CANON, JPS_TORAH_SPEC, JPS_VERSION_QUERY),
   'jps-tanakh': () => createSefariaAdapter(NEVIIM_KETUVIM_CANON, JPS_TANAKH_SPEC, JPS_VERSION_QUERY),

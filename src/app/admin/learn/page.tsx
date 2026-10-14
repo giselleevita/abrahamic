@@ -1,10 +1,14 @@
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
+import { ABRAHAM_STEP_SLUGS } from '@/lib/learn/metrics'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminLearnPage() {
-  const courses = await prisma.course.findMany({
+  const since = new Date()
+  since.setUTCDate(since.getUTCDate() - 29)
+  since.setUTCHours(0, 0, 0, 0)
+  const [courses, completionTotals] = await Promise.all([prisma.course.findMany({
     orderBy: { position: 'asc' },
     include: {
       chapters: {
@@ -16,7 +20,12 @@ export default async function AdminLearnPage() {
         },
       },
     },
-  })
+  }), prisma.journeyMetric.groupBy({
+    by: ['chapterSlug'],
+    where: { day: { gte: since } },
+    _sum: { count: true },
+  })])
+  const completions = new Map(completionTotals.map((row) => [row.chapterSlug, row._sum.count ?? 0]))
 
   return (
     <div>
@@ -25,6 +34,19 @@ export default async function AdminLearnPage() {
         A chapter is published only when it has a recorded neutrality review. Questions
         approved from the candidate queue arrive unpublished.
       </p>
+
+      <section className="mb-8 rounded-xl border border-violet-200 bg-violet-50 p-5">
+        <h2 className="font-semibold text-violet-950">Abraham journey · last 30 days</h2>
+        <p className="mt-1 text-xs text-violet-800">Anonymous completion actions, not unique people. No visitor identifiers are stored.</p>
+        <ol className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {ABRAHAM_STEP_SLUGS.map((slug, index) => (
+            <li key={slug} className="rounded-lg bg-white p-3 text-sm text-slate-800">
+              <span className="font-medium">Step {index + 1}</span>
+              <span className="float-right font-bold tabular-nums">{completions.get(slug) ?? 0}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       {courses.length === 0 && <p className="text-sm text-stone-500">No courses yet.</p>}
 

@@ -18,7 +18,7 @@ A web application for side-by-side comparison of texts across the Abrahamic scri
 
 ## Status
 
-> **Public engineering demo** at https://abrahamic.vercel.app — showcases the full platform (figures, themes, comparisons, timeline, search, admin) with **original Hebrew/Arabic text and project-authored reader notes only** — no licensed English translations. See [`docs/LICENSING.md`](docs/LICENSING.md).
+> **Public engineering demo** at https://abrahamic.vercel.app — showcases the full platform (figures, themes, comparisons, timeline, search, admin) with public-domain World English Bible text, original Hebrew/Arabic text, and project-authored reader notes — no proprietary translations. See [`docs/LICENSING.md`](docs/LICENSING.md).
 
 This is a structured editorial and software-engineering case study. It does not claim theological authority, and AI-generated suggestions are never published without an explicit editorial approval step.
 
@@ -40,6 +40,25 @@ non-public translations from every query result at any nesting depth, so a new
 query cannot bypass the policy by omitting a filter. Set `PUBLIC_DEMO_MODE=false`
 for a deployment that holds real translation licences. See
 [`docs/LICENSING.md`](docs/LICENSING.md).
+
+Hebrew text is imported from Sefaria's public-domain “Tanach with Nikkud” under
+Masoretic numbering. It is displayed as an independent edition; verse numbers
+are not assumed to align with the English division. To rerun the resumable load:
+
+```bash
+npm run import -- hebrew-torah
+npm run import -- hebrew-tanakh
+npm run import:verify-hebrew
+```
+
+The import verifies upstream licence metadata chapter by chapter. The final
+check requires every expected Hebrew chapter and contiguous verse numbering,
+including Joel 4 and the three-chapter Hebrew division of Malachi.
+
+On the free Vercel plan, Web Analytics supplies page views. Journey step
+completions are counted separately in `journey_metrics` as anonymous daily
+aggregates: no answers, account, IP, cookie, device ID, or per-visitor event
+rows are stored. Counts are approximate actions, not unique learners.
 
 ## Kids section
 
@@ -90,7 +109,7 @@ flowchart LR
     end
 
     subgraph Server["Vercel / Next.js server"]
-        MW[middleware.ts\nroute gating]
+        MW[proxy.ts\nadmin route gating]
         API[API routes\nsrc/app/api/**]
         Auth[NextAuth\nsrc/lib/auth.ts]
         Policy[Public-demo policy\nsrc/lib/public-demo-policy.ts]
@@ -121,7 +140,7 @@ flowchart LR
 - NextAuth administration boundary, enforced in middleware, layout, and every
   mutating route handler
 - Content policy enforced at the data-access layer, not per call site
-- Vitest suite (126 tests) covering the content policy, the admin boundary
+- Vitest suite (300+ tests) covering the content policy, the admin boundary
   across every mutating route, the kids content guard, embed-id validation, and
   component keyboard/ARIA behaviour
 - CI validation for migrations, TypeScript, ESLint, tests, and production builds
@@ -147,7 +166,7 @@ flowchart LR
 │   │   ├── queries/  # translation-guard: content policy enforcement
 │   │   ├── kids/     # content-guard, readability, localStorage progress
 │   │   └── schemas/  # shared zod schemas
-│   └── middleware.ts # edge admin gate (must live in src/, not the repo root)
+│   └── proxy.ts # admin route gate
 ├── prisma/         # Schema, migrations, and seed modules
 ├── tests/          # Vitest: lib/, api/, components/
 ├── public/         # Static assets

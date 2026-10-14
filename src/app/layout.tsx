@@ -4,6 +4,7 @@ import { Nav } from '@/components/layout/Nav'
 import { Footer } from '@/components/layout/Footer'
 import { PublicDemoBanner } from '@/components/layout/PublicDemoBanner'
 import { getSiteUrl } from '@/lib/site-url'
+import { Analytics } from '@vercel/analytics/next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = getSiteUrl()
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )

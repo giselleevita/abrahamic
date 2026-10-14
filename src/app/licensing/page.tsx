@@ -20,7 +20,7 @@ export default function LicensingPage() {
           <li>Platform data: figures, themes, concepts, timeline, comparisons, claims, cross-references, search</li>
           <li>World English Bible text (public domain), sourced from eBible.org, for the supported Bible canon</li>
           <li>Arabic Quran text (Uthmani script), sourced through AlQuran Cloud with attribution to its text curators</li>
-          <li>Original-language Hebrew verse text where available</li>
+          <li>Original-language Hebrew text (Tanach with Nikkud, public domain, via Sefaria) in Masoretic numbering</li>
           <li>
             <strong className="text-primary-900">Reader note (original)</strong> — short English context
             written for this demo; not a published translation
@@ -33,6 +33,16 @@ export default function LicensingPage() {
         <p>
           JPS 1917, JPS 1985, KJV, ESV, Yusuf Ali, Sahih International, and similar third-party translations
           are removed at seed time and filtered from APIs.
+        </p>
+      </section>
+
+      <section className="mt-10 space-y-4 text-sm leading-relaxed text-primary-700">
+        <h2 className="text-lg font-semibold text-primary-900">Journey measurement</h2>
+        <p>
+          Journey progress stays in your browser. When you complete an Abraham journey step,
+          the site increments a daily total for that step. It does not send your answers or
+          store a name, account, IP address, cookie, or device identifier with that total.
+          The totals are approximate actions, not a count of unique learners.
         </p>
       </section>
 

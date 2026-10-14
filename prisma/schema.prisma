@@ -636,6 +636,16 @@ model Chapter {
   @@map("chapters")
 }
 
+/// Anonymous daily totals only. No visitor, session, IP, or device columns.
+model JourneyMetric {
+  day         DateTime @db.Date
+  chapterSlug String   @db.VarChar(100)
+  count       Int      @default(0)
+
+  @@id([day, chapterSlug])
+  @@map("journey_metrics")
+}
+
 /// One ordered playlist entry pointing at an existing entity.
 ///
 /// Polymorphism is a discriminator + nullable typed FKs rather than a loose

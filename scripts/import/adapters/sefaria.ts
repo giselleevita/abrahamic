@@ -21,6 +21,13 @@
 import type { ImportAdapter, ImportedVerse, TranslationSpec } from '../types'
 import { TORAH_CANON, NEVIIM_KETUVIM_CANON, type CanonBook } from '../canon'
 
+// The Hebrew Bible's chapter divisions are not always the Christian ones used
+// by the WEB import. Keep the Hebrew edition's own complete chapter range.
+export const HEBREW_TANAKH_CANON: CanonBook[] = NEVIIM_KETUVIM_CANON.map((book) => ({
+  ...book,
+  chapters: book.book === 'Joel' ? 4 : book.book === 'Malachi' ? 3 : book.chapters,
+}))
+
 const API = 'https://www.sefaria.org/api/v3/texts'
 
 const REQUEST_DELAY_MS = 300
@@ -69,8 +76,13 @@ async function fetchChapter(
   book: string,
   chapter: number,
   versionQuery: string,
+  singleChapterVerses?: number,
 ): Promise<{ verses: string[]; license?: string }> {
-  const ref = encodeURIComponent(`${book} ${chapter}`)
+  // Sefaria interprets "Obadiah 1" as verse 1, not the whole book.
+  const requestedRef = singleChapterVerses
+    ? `${book} 1:1-${singleChapterVerses}`
+    : `${book} ${chapter}`
+  const ref = encodeURIComponent(requestedRef)
   const url = `${API}/${ref}?version=${versionQuery}`
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
@@ -124,33 +136,31 @@ export function createSefariaAdapter(
     spec,
     async *fetchVerses({ limitBooks }: { limitBooks?: number } = {}) {
       const selected = limitBooks ? books.slice(0, limitBooks) : books
-      let licenceChecked = false
-
       for (const book of selected) {
         for (let chapter = 1; chapter <= book.chapters; chapter += 1) {
           if (options.onlyChapters && !options.onlyChapters.has(`${book.book} ${chapter}`)) {
             continue
           }
           try {
-            const { verses, license } = await fetchChapter(book.book, chapter, versionQuery)
+            const { verses, license } = await fetchChapter(
+              book.book, chapter, versionQuery, book.singleChapterVerses,
+            )
 
             // Verify the licence the service actually reports on the first
             // successful response, rather than trusting the spec. If upstream
             // ever re-licenses an edition, the import stops instead of quietly
             // ingesting text under terms the policy does not permit.
-            if (!licenceChecked && license) {
-              licenceChecked = true
-              const normalised = license.toLowerCase().replace(/[^a-z]/g, '')
-              if (normalised !== 'publicdomain') {
-                throw new Error(
-                  `Refusing to import: upstream reports licence "${license}" for ` +
-                    `"${spec.name}", but this import is configured as ${spec.licenseCode}.`,
-                )
-              }
-              console.log(`  upstream licence confirmed: ${license}`)
+            const normalised = license?.toLowerCase().replace(/[^a-z]/g, '')
+            if (normalised !== 'publicdomain') {
+              throw new Error(
+                `Refusing to import: upstream reports licence "${license ?? 'missing'}" for ` +
+                  `"${spec.name}" at ${book.book} ${chapter}.`,
+              )
             }
 
-            if (verses.length === 0) break
+            if (verses.length === 0 || verses.some((verse) => !verse)) {
+              throw new Error(`${book.book} ${chapter}: incomplete Hebrew chapter returned upstream`)
+            }
 
             yield verses.flatMap<ImportedVerse>((text, i) =>
               text
@@ -164,11 +174,9 @@ export function createSefariaAdapter(
                 : [],
             )
           } catch (error) {
-            const message = error instanceof Error ? error.message : String(error)
-            // A licence mismatch is fatal; a fetch failure is a gap the next
-            // run repairs.
-            if (message.startsWith('Refusing to import')) throw error
-            console.warn(`  ! ${message}`)
+            // Stop instead of silently declaring a partial corpus complete.
+            // The importer is idempotent, so a later run resumes safely.
+            throw error
           }
 
           await sleep(REQUEST_DELAY_MS)

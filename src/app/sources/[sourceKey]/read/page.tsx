@@ -47,11 +47,9 @@ export default async function VerseReaderPage({
     ? requestedChapter
     : 1
 
-  // The reader shows one scheme at a time. Christian numbering is the primary
-  // view — it is what every claim, verse link and citation on the site uses.
-  // Masoretic-numbered Hebrew, where a chapter's divisions differ, is shown
-  // separately below rather than interleaved: the two number the same passage
-  // differently, so mixing them would put two "verse 1"s in one list.
+  // Christian numbering is the primary view used by existing citations.
+  // The full Hebrew edition keeps its own Masoretic numbering below; matching
+  // verse numbers alone do not prove that two texts divide a passage alike.
   const verses = book
     ? await prisma.verse.findMany({
         where: {
@@ -107,7 +105,7 @@ export default async function VerseReaderPage({
   const allChapters = book
     ? await prisma.verse.groupBy({
         by: ['chapter'],
-        where: { sourceId: source.id, book, versification: 'CHRISTIAN' },
+        where: { sourceId: source.id, book },
         orderBy: { chapter: 'asc' },
       })
     : []
@@ -160,11 +158,9 @@ export default async function VerseReaderPage({
                 Hebrew text — Masoretic numbering
               </h2>
               <p className="mt-1 text-sm leading-relaxed text-stone-700">
-                This chapter is divided differently in the Hebrew. The Masoretic text
-                counts verses that the English translation numbers otherwise, so the verse
-                numbers below do not line up with those above — they are shown separately
-                rather than paired, because pairing them would assert a correspondence
-                that does not hold.
+                This is the complete Hebrew edition in its own traditional numbering.
+                Some chapters and verses differ from the English division above, so the
+                two editions are shown separately rather than paired without a verified mapping.
               </p>
               <ol className="mt-4 space-y-2">
                 {masoretic.map((v) => {
