@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import type { ChapterItemType } from '@/generated/prisma/client'
+import { ScriptText } from '@/components/ui/ScriptText'
 
 /**
  * Renders one playlist entry, switching on the discriminator.
@@ -39,12 +40,12 @@ const KIND_LABEL: Record<ChapterItemType, string> = {
 }
 
 const KIND_STYLE: Record<ChapterItemType, string> = {
-  CONCEPT: 'bg-violet-100 text-violet-800',
-  COMPARISON: 'bg-amber-100 text-amber-900',
-  FIGURE: 'bg-blue-100 text-blue-800',
-  TIMELINE_EVENT: 'bg-emerald-100 text-emerald-800',
-  THEME: 'bg-rose-100 text-rose-800',
-  VERSE: 'bg-teal-100 text-teal-900',
+  CONCEPT: 'bg-[#eee2cf] text-[#654414]',
+  COMPARISON: 'bg-[#eee2cf] text-[#654414]',
+  FIGURE: 'bg-[#eee2cf] text-[#654414]',
+  TIMELINE_EVENT: 'bg-[#eee2cf] text-[#654414]',
+  THEME: 'bg-[#eee2cf] text-[#654414]',
+  VERSE: 'bg-[#dce8f2] text-[#173b68]',
 }
 
 function resolve(item: ItemShape): { href: string; title: string; description: string | null } | null {
@@ -80,7 +81,7 @@ export function ChapterItemCard({ item }: { item: ItemShape }) {
   if (!resolved) return null
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-300 hover:shadow-md">
+    <div className={`editorial-card p-5 ${item.itemType === 'VERSE' ? 'border-l-4 border-l-[#80571b] bg-[#fdf9f1]' : ''}`}>
       {item.note && (
         <p className="mb-3 rounded-lg border-l-4 border-amber-300 bg-amber-50 px-3 py-2 text-sm leading-6 text-slate-700">
           {item.note}
@@ -89,13 +90,12 @@ export function ChapterItemCard({ item }: { item: ItemShape }) {
       <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${KIND_STYLE[item.itemType]}`}>
         {KIND_LABEL[item.itemType]}
       </span>
-      <h3 className="mt-2 text-lg font-bold text-slate-950">{resolved.title}</h3>
-      {resolved.description && (
-        <p className="mt-1 line-clamp-3 leading-7 text-slate-600">{resolved.description}</p>
-      )}
+      <h3 className="mt-2 text-lg font-bold text-[#242019]">{resolved.title}</h3>
+      {item.itemType === 'VERSE' && item.verse && <p className="mt-1 text-xs font-semibold text-[#655a4b]">{item.verse.source.title} · {item.verse.translations.find((t) => t.name === 'World English Bible')?.name ?? item.verse.translations[0]?.name ?? 'Source excerpt'}{item.verse.source.key === 'QURAN' ? '' : ` · ${item.verse.versification === 'MASORETIC' ? 'Masoretic' : 'Christian'} numbering`}</p>}
+      {resolved.description && (item.itemType === 'VERSE' ? <ScriptText text={resolved.description} className="mt-3 border-l-2 border-[#c9ad7e] pl-4 text-base leading-8 text-[#242019]" /> : <p className="mt-1 line-clamp-3 leading-7 text-[#51483c]">{resolved.description}</p>)}
       <Link
         href={resolved.href}
-        className="group mt-3 inline-flex items-center gap-2 font-bold text-blue-700 hover:text-blue-900"
+        className="editorial-link group mt-3 inline-flex items-center gap-2"
       >
         Open <ArrowRight aria-hidden="true" className="h-4 w-4 transition group-hover:translate-x-1" />
       </Link>

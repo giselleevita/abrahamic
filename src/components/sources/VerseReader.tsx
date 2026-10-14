@@ -52,21 +52,25 @@ export function VerseReader({ verses }: Props) {
   return (
     <div>
       {/* Controls */}
-      <div className="mb-6 flex flex-wrap items-center gap-4">
+      <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-[#e5d9c8] pb-5">
         {hasMultiple && (
-          <div className="flex items-center rounded-full border border-stone-200 bg-stone-50 p-0.5">
+          <div className="flex items-center rounded-full border border-[#d7c5ad] bg-[#f3eadb] p-0.5">
             <button
+              type="button"
               onClick={() => setSideBySide(false)}
+              aria-pressed={!sideBySide}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                !sideBySide ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'
+                !sideBySide ? 'bg-[#173b68] text-white' : 'text-[#51483c] hover:text-[#242019]'
               }`}
             >
               Single
             </button>
             <button
+              type="button"
               onClick={() => setSideBySide(true)}
+              aria-pressed={sideBySide}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                sideBySide ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'
+                sideBySide ? 'bg-[#173b68] text-white' : 'text-[#51483c] hover:text-[#242019]'
               }`}
             >
               Compare editions
@@ -80,11 +84,13 @@ export function VerseReader({ verses }: Props) {
             {translationNames.map((name) => (
               <button
                 key={name}
+                type="button"
                 onClick={() => setSelectedTranslation(name)}
+                aria-pressed={selectedTranslation === name}
                 className={`rounded-full border px-3 py-0.5 text-xs transition-colors ${
                   selectedTranslation === name
-                    ? 'border-stone-800 bg-stone-800 text-white'
-                    : 'border-stone-200 bg-white text-stone-600 hover:border-stone-400'
+                    ? 'border-[#173b68] bg-[#173b68] text-white'
+                    : 'border-[#b9aa95] bg-[#fffdf9] text-[#51483c] hover:border-[#173b68]'
                 }`}
               >
                 {name}
@@ -118,12 +124,12 @@ export function VerseReader({ verses }: Props) {
             <div
               key={verse.id}
               id={verseAnchorId(verse.verse)}
-              className={`group scroll-mt-28 rounded-lg p-3 transition-colors target:bg-amber-100 target:ring-2 target:ring-amber-300 ${
-                isExpanded ? 'bg-stone-100' : 'hover:bg-stone-50'
+              className={`group scroll-mt-28 rounded-lg px-1 py-4 transition-colors target:bg-[#f3eadb] target:ring-2 target:ring-[#a67222] ${
+                isExpanded ? 'bg-[#f7f0e5]' : 'hover:bg-[#faf6ee]'
               }`}
             >
               <div className="flex gap-3">
-                <span className="w-8 flex-shrink-0 pt-0.5 text-right text-xs font-medium text-stone-400">
+                <span className="w-8 flex-shrink-0 pt-1 text-right text-xs font-semibold text-[#655a4b]">
                   {verse.verse}
                 </span>
                 <div className="flex-1">
@@ -137,7 +143,7 @@ export function VerseReader({ verses }: Props) {
                             <span className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                               {LABEL_DISPLAY[label]} — {t.name}
                             </span>
-                            <ScriptText text={t.text} className="text-sm leading-relaxed text-stone-800" />
+                            <ScriptText text={t.text} className="text-base leading-8 text-[#242019]" />
                           </div>
                         )
                       })}
@@ -151,14 +157,16 @@ export function VerseReader({ verses }: Props) {
                           verse.translations[0]
                         )?.text ?? ''
                       }
-                      className="text-sm leading-relaxed text-stone-800"
+                      className="text-lg leading-8 text-[#242019]"
                     />
                   )}
 
                   {allLinks.length > 0 && (
                     <button
+                      type="button"
                       onClick={() => setExpandedVerseId(isExpanded ? null : verse.id)}
-                      className="mt-2 text-xs text-stone-400 hover:text-stone-600"
+                      aria-expanded={isExpanded}
+                      className="editorial-link mt-2 text-xs"
                     >
                       {isExpanded
                         ? '▲ Hide'

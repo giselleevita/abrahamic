@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Clock3, ShieldCheck } from "lucide-react";
 import prisma from "@/lib/prisma";
 import {
+  JourneyResumeCard,
   JourneyStepList,
   RestartJourneyButton,
 } from "@/components/learn/JourneyProgress";
@@ -42,65 +43,38 @@ export default async function CoursePage({ params }: { params: Params }) {
     href: `/learn/${course.slug}/${chapter.slug}`,
   }));
   return (
-    <div className="min-h-screen bg-[#fffaf5] pb-16">
-      <section className="relative min-h-[420px] overflow-hidden bg-slate-950 text-white">
-        <Image
-          src={course.artworkPath ?? "/timeline/patriarchal.jpg"}
-          alt={course.artworkAlt ?? ""}
-          fill
-          priority
-          className="object-cover opacity-50"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20" />
-        <div className="relative mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
-          <Link
-            href="/learn"
-            className="text-sm font-bold text-blue-200 hover:text-white"
-          >
-            ← All journeys
-          </Link>
-          <p className="mt-10 text-sm font-bold uppercase tracking-[0.16em] text-amber-300">
-            Guided journey
-          </p>
-          <h1 className="mt-3 max-w-4xl text-4xl font-bold leading-tight sm:text-6xl">
-            {course.title}
-          </h1>
-          {course.subtitle && (
-            <p className="mt-3 text-xl text-slate-200">{course.subtitle}</p>
-          )}
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
-            {course.description}
-          </p>
-          <div className="mt-7 flex flex-wrap gap-4 text-sm text-slate-200">
-            <span className="inline-flex items-center gap-2">
-              <Clock3 className="h-4 w-4" />{" "}
-              {course.estimatedMinutes ?? course.chapters.length * 3} minutes
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4" /> Editorially reviewed and
-              sourced
-            </span>
+    <div className="editorial-page min-h-screen pb-16">
+      <section className="border-b border-[#e5d9c8] bg-[#f3eadb]">
+        <div className="mx-auto grid max-w-6xl gap-8 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_0.85fr] lg:items-center lg:gap-12">
+          <div>
+            <Link href="/learn" className="editorial-link text-sm">← All journeys</Link>
+            <p className="editorial-eyebrow mt-8">Guided journey</p>
+            <h1 className="editorial-title mt-3 text-4xl sm:text-6xl">{course.title}</h1>
+            {course.subtitle && <p className="mt-3 text-xl font-semibold text-[#51483c]">{course.subtitle}</p>}
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-[#51483c]">{course.description}</p>
+            <div className="mt-6 flex flex-wrap gap-4 text-sm font-semibold text-[#51483c]"><span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#80571b]" aria-hidden="true" /> {course.estimatedMinutes ?? course.chapters.length * 3} minutes</span><span className="inline-flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#80571b]" aria-hidden="true" /> Editorially reviewed and sourced</span></div>
           </div>
+          <figure><div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-[#d7c5ad] bg-[#173b68]"><Image src={course.artworkPath ?? '/timeline/patriarchal.jpg'} alt={course.artworkAlt ?? ''} fill priority className="object-cover" sizes="(min-width:1024px) 42vw, 100vw" /></div><figcaption className="mt-3 text-xs leading-5 text-[#655a4b]">Artwork: {course.artworkCredit ?? 'Abrahamic Texts project artwork'} · {course.artworkLicense === 'PROJECT' ? 'Project-created' : course.artworkLicense ?? 'Project-created'} · <Link href={course.artworkSourceUrl ?? '/licensing'} className="editorial-link">source and licence</Link></figcaption></figure>
         </div>
       </section>
-      <main className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1fr_320px]">
+      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1fr_320px]">
         <section>
           <div className="mb-6">
-            <p className="text-sm font-bold uppercase tracking-[0.14em] text-blue-700">
+            <p className="editorial-eyebrow">
               Your path
             </p>
-            <h2 className="mt-2 text-3xl font-bold text-slate-950">
+            <h2 className="editorial-title mt-2 text-3xl">
               {steps.length} steps
             </h2>
           </div>
           <JourneyStepList steps={steps} />
         </section>
-        <aside className="h-fit rounded-2xl border border-amber-200 bg-amber-50 p-6 lg:sticky lg:top-24">
-          <h2 className="text-xl font-bold text-slate-950">
+        <aside className="h-fit space-y-5 lg:sticky lg:top-24">
+          <JourneyResumeCard courseSlug={course.slug} title={course.title} steps={steps} />
+          <div className="editorial-card p-6"><h2 className="text-xl font-bold text-[#242019]">
             How this journey works
           </h2>
-          <ol className="mt-4 space-y-4 text-sm leading-6 text-slate-700">
+          <ol className="mt-4 space-y-4 text-sm leading-6 text-[#51483c]">
             <li>
               <b>1.</b> Each tradition is presented in its own terms.
             </li>
@@ -111,18 +85,15 @@ export default async function CoursePage({ params }: { params: Params }) {
               <b>3.</b> Sources and editorial framing stay visible.
             </li>
           </ol>
-          <p className="mt-5 border-t border-amber-200 pt-4 text-xs leading-5 text-slate-600">
-            Artwork: {course.artworkCredit ?? "Abrahamic Texts"} ·{" "}
-            {course.artworkLicense ?? "Project licence"}
-          </p>
           <div className="mt-4">
               <RestartJourneyButton
                 courseSlug={course.slug}
                 slugs={course.chapters.map((c) => c.slug)}
               />
           </div>
+          </div>
         </aside>
-      </main>
+      </div>
     </div>
   );
 }

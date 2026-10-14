@@ -5,11 +5,11 @@ import { NavLinks } from '@/components/layout/NavLinks'
 
 export function Nav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-amber-200 bg-white/95 shadow-sm backdrop-blur">
-      <div className="grid h-1 grid-cols-3" aria-hidden="true"><span className="bg-blue-600" /><span className="bg-rose-500" /><span className="bg-emerald-600" /></div>
+    <header className="sticky top-0 z-50 border-b border-[#e5d9c8] bg-[#fffdf9]/95 shadow-sm backdrop-blur">
+      <div className="h-1 bg-[#a67222]" aria-hidden="true" />
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-5 px-5 sm:px-8">
         <Link href="/" className="flex flex-shrink-0 items-center gap-3 text-slate-950">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-700 via-violet-700 to-rose-600 font-serif text-xl font-bold text-white shadow-sm">A</span>
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#173b68] font-serif text-xl font-bold text-white shadow-sm">A</span>
           <span className="block"><span className="block font-serif text-base font-bold leading-5 sm:text-xl">Abrahamic Texts</span><span className="hidden text-xs font-medium text-slate-500 sm:block">Compare. Read. Understand.</span></span>
         </Link>
 

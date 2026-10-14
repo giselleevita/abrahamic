@@ -81,3 +81,22 @@
 
 /* Dark journey artwork heroes inherit white text, including heading defaults. */
 .bg-slate-950.text-white h1 { color: white; }
+
+/* Editorial surfaces shared by the home, journey and reading experiences. */
+.editorial-page { background: #faf6ee; color: #242019; }
+.editorial-eyebrow { color: #80571b; font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.editorial-title { font-family: var(--font-serif); font-weight: 700; letter-spacing: -.025em; line-height: 1.08; color: #242019; }
+.editorial-card { background: #fffdf9; border: 1px solid #e5d9c8; border-radius: 1.25rem; box-shadow: 0 8px 24px rgb(64 45 24 / 5%); }
+.editorial-button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.75rem; border-radius: .75rem; padding: .7rem 1.25rem; background: #173b68; color: white; font-weight: 700; text-align: center; }
+.editorial-button:hover { background: #102d51; color: white; }
+.editorial-button:focus-visible, .editorial-link:focus-visible, .editorial-control:focus-visible { outline: 3px solid #a67222; outline-offset: 3px; }
+.editorial-link { color: #173b68; font-weight: 700; text-decoration: underline; text-underline-offset: .2em; }
+.editorial-link:hover { color: #102d51; }
+.editorial-control { border: 1px solid #b9aa95; border-radius: .65rem; background: #fffdf9; color: #242019; }
+.editorial-control:hover { border-color: #173b68; }
+.editorial-page button:focus-visible, .editorial-page select:focus-visible, .editorial-page input:focus-visible { outline: 3px solid #a67222; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .editorial-page *, .editorial-page *::before, .editorial-page *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
