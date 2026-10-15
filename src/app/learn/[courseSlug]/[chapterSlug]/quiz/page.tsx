@@ -124,6 +124,7 @@ export default async function QuizPage({ params }: { params: Params }) {
         passPercent={chapter.quizPassPercent}
         nextChapterHref={nextChapter ? `/learn/${chapter.course.slug}/${nextChapter.slug}` : null}
         nextChapterTitle={nextChapter?.title ?? null}
+        journeyHref={`/learn/${chapter.course.slug}`}
       />
 
       <p className="mt-6 text-center text-sm text-slate-500">

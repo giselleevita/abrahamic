@@ -19,11 +19,12 @@ type Props = {
   passPercent: number
   nextChapterHref?: string | null
   nextChapterTitle?: string | null
+  journeyHref: string
 }
 
 export function QuizRunner({
   chapterSlug, questions, questionCount,
-  passPercent, nextChapterHref, nextChapterTitle,
+  passPercent, nextChapterHref, nextChapterTitle, journeyHref,
 }: Props) {
   const { recordAttempt } = useLearnProgress()
 
@@ -145,6 +146,11 @@ export function QuizRunner({
               className="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-5 py-3 font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200"
             >
               Next: {nextChapterTitle} <ArrowRight aria-hidden="true" className="h-4 w-4" />
+            </Link>
+          )}
+          {!nextChapterHref && (
+            <Link href={journeyHref} className="editorial-button">
+              Return to journey map <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </Link>
           )}
         </div>

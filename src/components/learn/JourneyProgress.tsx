@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowRight, Check, RotateCcw } from 'lucide-react'
-import { chapterProgress, completedCount } from '@/lib/learn/progress'
+import { chapterProgress, completedCount, firstIncompleteChapter } from '@/lib/learn/progress'
 import { useLearnProgress, useProgressHydrated } from '@/lib/learn/use-progress'
 
 export type JourneyStep = { slug: string; title: string; href: string }
@@ -18,25 +18,25 @@ export function JourneyResumeCard({
 }) {
   const hydrated = useProgressHydrated()
   const { progress } = useLearnProgress()
-  const done = hydrated ? completedCount(progress, steps.map((s) => s.slug)) : 0
-  const saved = progress.currentJourney?.courseSlug === courseSlug
-    ? steps.find((s) => s.slug === progress.currentJourney?.chapterSlug)
-    : undefined
-  const next = saved ?? steps.find((s) => !chapterProgress(progress, s.slug).completedAt) ?? steps[0]
+  const slugs = steps.map((s) => s.slug)
+  const done = hydrated ? completedCount(progress, slugs) : 0
+  const nextSlug = firstIncompleteChapter(progress, slugs)
+  const next = steps.find((s) => s.slug === nextSlug)
+  const complete = hydrated && steps.length > 0 && nextSlug === null
   const percent = steps.length ? Math.round((done / steps.length) * 100) : 0
 
   return (
     <div className="editorial-card p-6 sm:p-8">
       <p className="editorial-eyebrow">
-        {done > 0 ? 'Continue your journey' : 'Flagship journey'}
+        {complete ? 'Journey complete' : done > 0 ? 'Continue your journey' : 'Flagship journey'}
       </p>
       <h2 className="editorial-title mt-2 text-3xl">{title}</h2>
       <div className="mt-5 h-2 overflow-hidden rounded-full bg-[#e9decd]" role="progressbar" aria-label="Journey progress" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
         <div className="h-full rounded-full bg-[#173b68] transition-all" style={{ width: `${percent}%` }} />
       </div>
       <p className="mt-2 text-sm text-[#51483c]">{done} of {steps.length} steps complete</p>
-      <Link href={next?.href ?? `/learn/${courseSlug}`} className="editorial-button mt-5">
-        {done > 0 ? `Continue: ${next?.title}` : 'Begin the journey'} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      <Link href={complete ? `/learn/${courseSlug}` : next?.href ?? `/learn/${courseSlug}`} className="editorial-button mt-5">
+        {complete ? 'Review your journey' : done > 0 && next ? `Continue: ${next.title}` : next ? 'Begin the journey' : 'View journey map'} <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </Link>
     </div>
   )

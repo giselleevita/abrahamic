@@ -204,6 +204,11 @@ export function completedCount(progress: LearnProgress, slugs: string[]): number
   return slugs.filter((slug) => progress.chapters[slug]?.completedAt).length
 }
 
+/** Resume in journey order, even when an old pointer names a completed step. */
+export function firstIncompleteChapter(progress: LearnProgress, slugs: string[]): string | null {
+  return slugs.find((slug) => !progress.chapters[slug]?.completedAt) ?? null
+}
+
 // ── storage access (all guarded) ───────────────────────────────────────────
 
 export function readProgress(): LearnProgress {

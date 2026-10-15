@@ -7,6 +7,7 @@ import {
   chapterProgress,
   clearProgress,
   completedCount,
+  firstIncompleteChapter,
   parseProgress,
   readProgress,
   withAttemptRecorded,
@@ -145,6 +146,23 @@ describe('withChapterReset / completedCount', () => {
 })
 
 describe('journey progress', () => {
+  it('resumes the first incomplete step despite a stale pointer', () => {
+    let p = withJourneyStepCompleted(fresh(), 'journey', 'one', 'two', 'now')
+    p = { ...p, currentJourney: { courseSlug: 'journey', chapterSlug: 'one' } }
+    expect(firstIncompleteChapter(p, ['one', 'two', 'three'])).toBe('two')
+  })
+
+  it('returns null when the journey is complete', () => {
+    let p = withJourneyStepCompleted(fresh(), 'journey', 'one', 'two', 'now')
+    p = withAttemptRecorded(p, 'two', attempt())
+    expect(firstIncompleteChapter(p, ['one', 'two'])).toBeNull()
+  })
+
+  it('ignores a pointer to a later step and resumes the first gap', () => {
+    const p = { ...fresh(), currentJourney: { courseSlug: 'journey', chapterSlug: 'three' } }
+    expect(firstIncompleteChapter(p, ['one', 'two', 'three'])).toBe('one')
+  })
+
   it('completes a step and points resume at the next step', () => {
     const p = withJourneyStepCompleted(fresh(), 'journey', 'one', 'two', 'now')
     expect(chapterProgress(p, 'one').completedAt).toBe('now')
