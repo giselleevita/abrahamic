@@ -40,7 +40,12 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npm audit --audit-level=high
+      - name: Gate high-severity production advisories
+        run: npm audit --omit=dev --audit-level=high
+      - name: Review all dev advisories against the narrow exception
+        run: |
+          node --test scripts/check-dev-audit.test.mjs
+          node scripts/check-dev-audit.mjs
       - run: npx prisma migrate deploy
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/abrahamic

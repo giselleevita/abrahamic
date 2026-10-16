@@ -18,6 +18,12 @@ The workflow at [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) valida
 
 The separate [production health workflow](../.github/workflows/uptime.yml) checks the public app and database every six hours. A failed workflow is visible in Actions; email alerts depend on the maintainer's GitHub notification settings. For server exceptions, inspect the sanitized `[server-error]` and `[health-check]` markers in Vercel runtime logs.
 
+The Security workflow still gates all high/critical production advisories. A
+single, exact dev-only exception for `braces` (via Next's ESLint plugin) is
+documented and checked in `scripts/check-dev-audit.mjs`: the [upstream advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)
+lists no patched release. The exception expires on 16 November 2026 and any
+new advisory, changed dependency path, or production exposure fails the job.
+
 ### What to check
 
 | Signal | Meaning |
