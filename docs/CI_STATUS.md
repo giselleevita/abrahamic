@@ -8,13 +8,15 @@ The public demo at **https://abrahamic.vercel.app** deploys from `main` via Verc
 - Seed: `npm run db:seed` (see `scripts/seed-demo.sh`)
 - Env: `NEXTAUTH_URL`, `DATABASE_URL`, `DIRECT_URL` set in Vercel production
 
-## README badges (private repo)
+## README badges (public repo)
 
 This repository is public. The README emphasizes the live product, while the Actions history provides independently visible CI and security evidence for every default-branch change.
 
 ## GitHub Actions CI
 
-The workflow at [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) validates migrations, TypeScript, ESLint, and production builds against Postgres. It runs on the free private-repo allowance (2,000 minutes/month); failures do **not** block Vercel production deploys.
+The workflow at [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) validates migrations, seed idempotency, TypeScript, ESLint, unit tests, production builds, and the desktop/320px full journey browser flow against Postgres. Failures do **not** block Vercel production deploys.
+
+The separate [production health workflow](../.github/workflows/uptime.yml) checks the public app and database every six hours. A failed workflow is visible in Actions; email alerts depend on the maintainer's GitHub notification settings. For server exceptions, inspect the sanitized `[server-error]` and `[health-check]` markers in Vercel runtime logs.
 
 ### What to check
 

@@ -4,13 +4,13 @@
 
 **Live demo:** https://abrahamic.vercel.app — production deploys on merge to `main` via Vercel. See [`docs/CI_STATUS.md`](docs/CI_STATUS.md) and [`docs/REVIEWER_GUIDE.md`](docs/REVIEWER_GUIDE.md).
 
-A web application for side-by-side comparison of texts across the Abrahamic scriptures — Torah, Bible, and Quran — with thematic search, verse alignment, and commentary layers.
+A sourced introduction to Jewish, Christian, and Islamic traditions, with guided journeys, public-domain and original-language scripture reading, and editorially reviewed comparisons.
 
 ## What It Does
 
-- Browse and search across Torah, Bible, and Quran in parallel
-- Thematic and keyword-based verse alignment across traditions
-- Clean reading interface with side-by-side scripture views
+- Follow a six-step Abraham journey with an attributed final quiz and device-local progress
+- Read available public-domain and original-language source texts in labelled editions
+- Explore curated cross-references and comparisons without assuming verse-by-verse alignment
 - Figures, family tree, concepts, and a cross-tradition timeline
 - **For Kids** (`/kids`) — age-banded stories and four keyboard-accessible games
 - **Videos** (`/videos`) — editor-selected background material, privately embedded
@@ -76,8 +76,8 @@ properties hold by construction rather than by convention:
   second-person religious instruction, distressing content, prophet depiction,
   missing attribution, and reading level — before it is stored.
 - **No child data is collected.** Game progress lives in one localStorage key.
-  No accounts, cookies, network calls, or name fields, which keeps the section
-  outside COPPA and GDPR Article 8 scope. A test asserts the stored object's
+  No accounts, cookies, network calls, or name fields, which minimizes child-data
+  exposure. A test asserts the stored object's
   exact shape so an identifier cannot be added silently.
 
 Games derive from existing reviewed data (`FigureAlias`, `TimelineEvent`,
@@ -195,8 +195,28 @@ Open [http://localhost:3000](http://localhost:3000).
 npm run test:run
 ```
 
-126 tests, no database required — Prisma is mocked. `DATABASE_URL` must still be
-set, because importing `@/lib/prisma` constructs the adapter at module load.
+The unit/integration suite currently has 300+ tests. Some migration and seed
+checks need a local PostgreSQL database; CI provides one. The browser journey
+test also needs a seeded database, a production build, and Chromium:
+
+```bash
+npx playwright install chromium
+npm run build
+npm run test:e2e
+```
+
+The browser test covers the full Abraham journey and final quiz at desktop and
+320px widths, including resume and restart. CI runs it against a seeded database.
+
+## Production health (no paid monitoring service)
+
+`/api/health` checks that the app can reach PostgreSQL without exposing database
+details. GitHub Actions checks it four times daily in
+[`.github/workflows/uptime.yml`](.github/workflows/uptime.yml); failed runs appear
+in Actions. Enable GitHub Actions failure notifications in your account settings
+if you want email alerts. Server exceptions are recorded as sanitized route and
+error-digest entries in Vercel runtime logs, with no request URL, headers, body,
+or search terms. This is basic monitoring, not a guarantee of continuous uptime.
 
 ## Environment Variables
 

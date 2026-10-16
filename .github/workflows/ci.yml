@@ -79,3 +79,14 @@ jobs:
           DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           NEXTAUTH_SECRET: "ci-secret-not-for-production-use"
           NEXTAUTH_URL: "http://localhost:3000"
+
+      - name: Install browser for journey test
+        run: npx playwright install --with-deps chromium
+
+      - name: Run desktop and 320px journey flows
+        run: npm run test:e2e
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          NEXTAUTH_SECRET: "ci-secret-not-for-production-use"
+          NEXTAUTH_URL: "http://localhost:3100"

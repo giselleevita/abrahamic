@@ -34,13 +34,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return staticRoutes
   }
 
-  const [figures, themes, sources, comparisons, concepts, timelineEvents] = await Promise.all([
+  const [figures, themes, sources, comparisons, concepts, timelineEvents, courses] = await Promise.all([
     prisma.figure.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.theme.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.source.findMany({ select: { key: true, updatedAt: true } }),
     prisma.comparison.findMany({ where: { isPublished: true }, select: { id: true, updatedAt: true } }),
     prisma.concept.findMany({ where: { isPublished: true }, select: { slug: true, updatedAt: true } }),
     prisma.timelineEvent.findMany({ where: { isPublished: true }, select: { slug: true, updatedAt: true } }),
+    prisma.course.findMany({ where: { isPublished: true }, select: { slug: true, updatedAt: true } }),
   ])
 
   const chapters = await prisma.chapter.findMany({
@@ -50,6 +51,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
+    ...courses.map((course) => ({
+      url: `${base}/learn/${course.slug}`,
+      lastModified: course.updatedAt,
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    })),
     ...chapters.map((c) => ({
       url: `${base}/learn/${c.course.slug}/${c.slug}`,
       lastModified: c.updatedAt,

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { ABRAHAM_STEP_SLUGS } from '@/lib/learn/metrics'
+import { artworkIssues, chapterReadiness } from '@/lib/learn/readiness'
 
 export const dynamic = 'force-dynamic'
 
@@ -64,12 +65,14 @@ export default async function AdminLearnPage() {
             </Link>
           </div>
 
-          <table className="w-full border-collapse overflow-hidden rounded-lg border border-stone-200 bg-white text-sm">
+          {artworkIssues(course).length > 0 && <p className="mb-3 text-sm text-amber-800">Course artwork needs: {artworkIssues(course).join(', ')}.</p>}
+
+          <div className="overflow-x-auto rounded-lg border border-stone-200"><table className="w-full min-w-[740px] border-collapse bg-white text-sm">
             <thead>
               <tr className="border-b border-stone-200 bg-stone-50 text-left text-xs uppercase tracking-wider text-stone-400">
                 <th className="px-3 py-2 font-semibold">Chapter</th>
-                <th className="px-3 py-2 font-semibold">Items</th>
-                <th className="px-3 py-2 font-semibold">Questions</th>
+                <th className="px-3 py-2 font-semibold">Items / evidence</th>
+                <th className="px-3 py-2 font-semibold">Quiz</th>
                 <th className="px-3 py-2 font-semibold">Neutrality review</th>
                 <th className="px-3 py-2 font-semibold">Journey readiness</th>
                 <th className="px-3 py-2 font-semibold">Status</th>
@@ -79,6 +82,7 @@ export default async function AdminLearnPage() {
               {course.chapters.map((chapter) => {
                 const published = chapter.questions.filter((q) => q.isPublished).length
                 const draft = chapter._count.questions - published
+                const readiness = chapterReadiness(chapter, course)
                 return (
                   <tr key={chapter.id} className="border-b border-stone-100 last:border-0">
                     <td className="px-3 py-2">
@@ -86,20 +90,18 @@ export default async function AdminLearnPage() {
                         {chapter.title}
                       </Link>
                     </td>
-                    <td className="px-3 py-2 text-stone-600">{chapter._count.items}</td>
+                    <td className="px-3 py-2 text-stone-600">{chapter._count.items} items<span className="block text-xs text-stone-500">{readiness.evidenceLinks} evidence link(s) · {readiness.directVerses} direct scripture excerpt(s)</span></td>
                     <td className="px-3 py-2 text-stone-600">
                       {published} published{draft > 0 && <span className="text-amber-700"> · {draft} draft</span>}
-                    </td>
-                    <td className="px-3 py-2 text-stone-600">
-                      <span className={chapter.artworkPath && chapter.artworkAlt && chapter.artworkCredit && chapter.artworkLicense ? 'text-emerald-700' : 'text-amber-700'}>
-                        {chapter.artworkPath && chapter.artworkAlt && chapter.artworkCredit && chapter.artworkLicense ? 'Artwork ready' : 'Artwork incomplete'}
-                      </span>
-                      <span className="block text-xs text-stone-500">{chapter.items.filter((item) => item.itemType === 'VERSE').length} scripture citation(s)</span>
                     </td>
                     <td className="px-3 py-2 text-stone-600">
                       {chapter.neutralityReviewedAt
                         ? new Date(chapter.neutralityReviewedAt).toLocaleDateString()
                         : <span className="text-rose-700">Not reviewed</span>}
+                    </td>
+                    <td className="px-3 py-2 text-stone-600">
+                      <span className={readiness.ready ? 'font-semibold text-emerald-700' : 'font-semibold text-amber-800'}>{readiness.ready ? 'Ready' : 'Needs work'}</span>
+                      {!readiness.ready && <span className="block text-xs text-stone-500">{readiness.issues.join(', ')}</span>}
                     </td>
                     <td className="px-3 py-2">
                       <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -112,7 +114,7 @@ export default async function AdminLearnPage() {
                 )
               })}
             </tbody>
-          </table>
+          </table></div>
         </section>
       ))}
     </div>
