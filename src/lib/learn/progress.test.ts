@@ -169,6 +169,13 @@ describe('journey progress', () => {
     expect(p.currentJourney).toEqual({ courseSlug: 'journey', chapterSlug: 'two' })
   })
 
+  it('finishes a journey without a quiz when the last step is completed', () => {
+    const p = withJourneyStepCompleted(fresh(), 'journey', 'last', null, 'now')
+    expect(chapterProgress(p, 'last').completedAt).toBe('now')
+    expect(p.currentJourney).toBeNull()
+    expect(firstIncompleteChapter(p, ['last'])).toBeNull()
+  })
+
   it('restarts only the selected journey and clears its resume pointer', () => {
     let p = withAttemptRecorded(fresh(), 'one', attempt())
     p = withAttemptRecorded(p, 'unrelated', attempt())

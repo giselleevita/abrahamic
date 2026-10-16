@@ -5,7 +5,7 @@ import { ArrowRight, Check, RotateCcw } from 'lucide-react'
 import { chapterProgress, completedCount, firstIncompleteChapter } from '@/lib/learn/progress'
 import { useLearnProgress, useProgressHydrated } from '@/lib/learn/use-progress'
 
-export type JourneyStep = { slug: string; title: string; href: string }
+export type JourneyStep = { slug: string; title: string; href: string; estimatedMinutes?: number | null }
 
 export function JourneyResumeCard({
   courseSlug,
@@ -45,11 +45,23 @@ export function JourneyResumeCard({
 export function JourneyStepList({ steps }: { steps: JourneyStep[] }) {
   const hydrated = useProgressHydrated()
   const { progress } = useLearnProgress()
+  const nextSlug = hydrated ? firstIncompleteChapter(progress, steps.map((step) => step.slug)) : null
+
   return (
     <ol className="space-y-3">
       {steps.map((step, index) => {
-        const complete = hydrated && Boolean(chapterProgress(progress, step.slug).completedAt)
-        return <li key={step.slug}><Link href={step.href} className="editorial-card group flex items-center gap-4 p-5 transition hover:border-[#173b68] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#a67222]"><span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold ${complete ? 'bg-[#e5efdf] text-[#315526]' : 'bg-[#eee2cf] text-[#654414]'}`}>{complete ? <Check className="h-5 w-5" aria-label="Completed" /> : index + 1}</span><span className="min-w-0 flex-1 font-bold text-[#242019]">{step.title}</span><ArrowRight className="h-5 w-5 text-[#173b68]" aria-hidden="true" /></Link></li>
+        const state = chapterProgress(progress, step.slug)
+        const complete = hydrated && Boolean(state.completedAt)
+        const upNext = hydrated && step.slug === nextSlug
+        const status = !hydrated ? 'Loading progress' : complete ? 'Completed' : upNext ? state.visitedAt ? 'In progress · up next' : 'Up next' : state.visitedAt ? 'Started' : 'Not started'
+
+        return <li key={step.slug}>
+          <Link href={step.href} className={`editorial-card group flex min-w-0 items-center gap-4 p-5 transition hover:border-[#173b68] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#a67222] ${upNext ? 'border-[#173b68]' : ''}`}>
+            <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold ${complete ? 'bg-[#e5efdf] text-[#315526]' : upNext ? 'bg-[#dce8f2] text-[#173b68]' : 'bg-[#eee2cf] text-[#654414]'}`} aria-hidden="true">{complete ? <Check className="h-5 w-5" /> : index + 1}</span>
+            <span className="min-w-0 flex-1"><span className="block font-bold text-[#242019]">{step.title}</span><span className="mt-1 block text-sm text-[#655a4b]">{step.estimatedMinutes ?? 3} min · {status}</span></span>
+            <ArrowRight className="h-5 w-5 shrink-0 text-[#173b68]" aria-hidden="true" />
+          </Link>
+        </li>
       })}
     </ol>
   )
@@ -59,6 +71,11 @@ export function CompleteStepLink({ courseSlug, chapterSlug, next }: { courseSlug
   const { completeStep } = useLearnProgress()
   if (!next) return null
   return <Link href={next.href} onClick={() => completeStep(courseSlug, chapterSlug, next.slug)} className="editorial-button">Complete &amp; continue <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
+}
+
+export function CompleteJourneyLink({ courseSlug, chapterSlug }: { courseSlug: string; chapterSlug: string }) {
+  const { completeStep } = useLearnProgress()
+  return <Link href={`/learn/${courseSlug}`} onClick={() => completeStep(courseSlug, chapterSlug, null)} className="editorial-button">Finish journey <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
 }
 
 export function RestartJourneyButton({ courseSlug, slugs }: { courseSlug: string; slugs: string[] }) {

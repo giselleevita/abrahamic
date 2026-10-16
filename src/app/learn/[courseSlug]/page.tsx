@@ -41,6 +41,7 @@ export default async function CoursePage({ params }: { params: Params }) {
     slug: chapter.slug,
     title: chapter.title,
     href: `/learn/${course.slug}/${chapter.slug}`,
+    estimatedMinutes: chapter.estimatedMinutes,
   }));
   return (
     <div className="editorial-page min-h-screen pb-16">
