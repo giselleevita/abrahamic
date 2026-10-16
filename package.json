@@ -34,7 +34,7 @@
     "@vercel/analytics": "^2.0.1",
     "bcryptjs": "^3.0.3",
     "browserslist": "^4.28.8",
-    "lucide-react": "^1.22.0",
+    "lucide-react": "^1.55.0",
     "next": "^16.4.0",
     "next-auth": "^4.24.15",
     "pg": "^8.16.0",
