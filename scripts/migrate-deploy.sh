@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ "${VERCEL_ENV:-}" == "preview" ]]; then
-  if [[ "${PREVIEW_DATABASE_ISOLATED:-}" != "true" || -z "${PREVIEW_DATABASE_URL:-}" || -z "${PREVIEW_DIRECT_URL:-}" ]]; then
+  if [[ "${PREVIEW_DATABASE_ISOLATED:-}" != "true" || -z "${PREVIEW_DATABASE_URL:-}" || -z "${PREVIEW_DIRECT_URL:-${PREVIEW_DATABASE_URL_UNPOOLED:-}}" ]]; then
     echo "An isolated preview database is required" >&2
     exit 1
   fi

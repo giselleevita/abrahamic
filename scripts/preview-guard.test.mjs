@@ -9,3 +9,8 @@ test('preview cannot inherit production data or migrate without explicit isolati
   assert.throws(() => previewDatabase({ ...env, DATABASE_URL: env.PREVIEW_DIRECT_URL }))
   assert.throws(() => previewDatabase({ ...env, PREVIEW_DIRECT_URL: 'postgresql://other.example/db' }))
 })
+test('accepts the integration unpooled alias while retaining isolation checks', () => {
+  const env = { VERCEL_ENV: 'preview', PREVIEW_DATABASE_ISOLATED: 'true', PREVIEW_DATABASE_URL: 'postgresql://user@preview-pooler.example/db', PREVIEW_DATABASE_URL_UNPOOLED: 'postgresql://user@preview.example:5432/db', NEON_DATABASE_URL: 'postgresql://user@production.example/db' }
+  assert.equal(previewDatabase(env).direct, env.PREVIEW_DATABASE_URL_UNPOOLED)
+  assert.throws(() => previewDatabase({ ...env, storage_DATABASE_URL: env.PREVIEW_DATABASE_URL_UNPOOLED }))
+})

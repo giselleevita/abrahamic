@@ -40,7 +40,7 @@ export function NavLinks() {
   )
 
   return (
-    <nav aria-label="Main navigation" className="hidden items-center gap-1 text-base font-semibold md:flex">
+    <nav aria-label="Main navigation" className="hidden items-center gap-1 text-base font-semibold lg:flex">
       {PRIMARY_NAV.map((link) => {
         const active = isActivePath(pathname, link.href)
         return (

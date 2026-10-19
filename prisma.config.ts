@@ -3,8 +3,9 @@ import { defineConfig } from 'prisma/config'
 
 function resolveMigrationUrl(): string {
   if (process.env.VERCEL_ENV === 'preview') {
-    if (process.env.PREVIEW_DATABASE_ISOLATED !== 'true' || !process.env.PREVIEW_DIRECT_URL) throw new Error('An isolated preview database is required')
-    return process.env.PREVIEW_DIRECT_URL
+    const direct = process.env.PREVIEW_DIRECT_URL || process.env.PREVIEW_DATABASE_URL_UNPOOLED
+    if (process.env.PREVIEW_DATABASE_ISOLATED !== 'true' || !direct) throw new Error('An isolated preview database is required')
+    return direct
   }
   return (
     process.env.NEON_DATABASE_URL_UNPOOLED ??
