@@ -49,9 +49,9 @@ export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture', ini
 
   const { value: storedPreferences, save } = useDeviceStore(READING_KEY, DEFAULT_READING, parseReading)
   const [sessionPreferences, setSessionPreferences] = useState<typeof DEFAULT_READING | null>(null)
-  const preferences = sessionPreferences ?? storedPreferences
+  const preferences = sessionPreferences ?? (initialEdition ? { ...storedPreferences, edition: initialEdition } : storedPreferences)
   const [preferenceMessage, setPreferenceMessage] = useState('')
-  const selectedTranslation = activeEdition(sessionPreferences ? preferences.edition : initialEdition ?? preferences.edition, allTranslations)
+  const selectedTranslation = activeEdition(preferences.edition, allTranslations)
   function updatePreferences(next: typeof preferences) {
     const ok = save(next)
     setSessionPreferences(next)

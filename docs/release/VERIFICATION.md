@@ -4,7 +4,7 @@ Premium baseline: `645c6bb` (preserved before release-readiness implementation).
 
 | Check | Result |
 | --- | --- |
-| Unit/integration suite | 359 tests passed across 41 files. Includes real PostgreSQL search policy/filter/reference checks and concurrent quota/rollover/expiry checks. |
+| Unit/integration suite | 360 tests passed across 41 files. Includes real PostgreSQL search policy/filter/reference checks and concurrent quota/rollover/expiry checks. |
 | Browser suite | 39 passed, zero skipped, across desktop, 768px tablet and 320px. Synthetic editorial inbox submission/resolution ran at all widths. |
 | Type checking | Passed. |
 | Lint | Passed with zero warnings. |
@@ -22,6 +22,18 @@ See [encoded transfer measurements](PERFORMANCE_EVIDENCE.json): initial document
 
 The branch targets `main`; production publication is a separate decision. Human usability sessions and theological review have **not** been performed. Share the two review kits and record real findings separately. Draft Shared ground/Key differences wording is documentation only.
 
-**Hosted preview verification is blocked:** this workspace has no configured Neon/Vercel API credentials or CLI authentication and no dedicated hosted preview database. The deployment guard requires `PREVIEW_DATABASE_URL`, `PREVIEW_DIRECT_URL`, and `PREVIEW_DATABASE_ISOLATED=true` before any preview migration/seed. Provision a fresh empty isolated database, configure its scoped credentials and preview auth/quota secrets, then verify the hosted discovery → comparison → exact source → save flow and inbox. Do not reuse production database credentials or copy production reports into a public preview. No production migrations or seeding were run for this work.
+## Hosted preview isolation
 
-CI and preview status links will be recorded in the PR after the remote checks run. CI evidence is distinct from local evidence above; a blocked Vercel preview must not be presented as a successful hosted test.
+An authenticated browser session allowed creation of a fresh **Free** Neon project, `abrahamic-release-preview` (`frosty-glitter-94868772`), in Frankfurt (`fra1`). Auth and Realtime are disabled. It is connected to this Vercel project's **Preview environment only**, using the `PREVIEW_` prefix. Existing production storage/connections were not changed. The integration supplies `PREVIEW_DATABASE_URL` and `PREVIEW_DATABASE_URL_UNPOOLED`; the latter is accepted as the direct-connection alias. The isolation marker and a stable random quota secret are saved only in Preview.
+
+The initial unconfigured Vercel attempt failed before migrations with “An isolated preview database is required.” After configuration, the first isolated build applied all migrations to the new database and began the curated seed. No production data was copied and no production migrations or seeding were run.
+
+## Hosted verification and remote evidence
+
+The [first isolated deployment](https://vercel.com/giselleevitas-projects/abrahamic/9pMMqEjUnpcWu4PuNE2qNtAbzUHf) reached Ready after applying all migrations and completing the fresh demo seed. The [branch preview](https://abrahamic-git-codex-release-readiness-giselleevitas-projects.vercel.app) uses Vercel's existing deployment protection; open it while signed in to Vercel. No public-access bypass was introduced.
+
+Verified in the hosted browser: homepage → Abraham's Covenant with God → supporting Genesis 17:7 citation → exact `#v-7` Hebrew passage; saved the comparison and passage; set 24px reading size; reloaded and confirmed the preference and save persisted; opened Saved and found both items. Submitted a clearly labelled synthetic correction successfully to this isolated database. Authenticated inbox resolution and anonymous read restrictions are verified by CI at all three widths; no independent human editorial approval is claimed.
+
+[CI after the tablet correction](https://github.com/giselleevita/abrahamic/actions/runs/39256181116) passed 359 tests and 39 browser scenarios with zero skips. [Security checks](https://github.com/giselleevita/abrahamic/actions/runs/39256181156) also passed. The final reader comfort fix adds one regression test, bringing local unit/integration coverage to 360; the complete 39-scenario local suite passed again. Current checks and the final hosted smoke result are linked from [PR #60](https://github.com/giselleevita/abrahamic/pull/60).
+
+Human review and production publication remain separate decisions.

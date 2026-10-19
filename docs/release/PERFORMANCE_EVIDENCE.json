@@ -6,10 +6,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 190958,
+      "bytes": 190952,
       "layoutShift": 0
     },
-    "increasePercent": 0.05
+    "increasePercent": 0.04
   },
   {
     "route": "/learn/abraham-across-traditions",
@@ -18,7 +18,7 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 182959,
+      "bytes": 182953,
       "layoutShift": 0
     },
     "increasePercent": 0.68
@@ -30,7 +30,7 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 235806,
+      "bytes": 235800,
       "layoutShift": 0
     },
     "increasePercent": 0.02
@@ -42,10 +42,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 197196,
+      "bytes": 197189,
       "layoutShift": 0
     },
-    "increasePercent": 0.05
+    "increasePercent": 0.04
   },
   {
     "route": "/family-tree",
@@ -54,10 +54,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 191087,
+      "bytes": 191107,
       "layoutShift": 0
     },
-    "increasePercent": -4.21
+    "increasePercent": -4.2
   },
   {
     "route": "/glossary",
@@ -66,10 +66,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 191155,
+      "bytes": 191148,
       "layoutShift": 0
     },
-    "increasePercent": 4.77
+    "increasePercent": 4.76
   },
   {
     "route": "/search?q=Abraham",
@@ -78,10 +78,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 197113,
+      "bytes": 197107,
       "layoutShift": 0
     },
-    "increasePercent": 1.22
+    "increasePercent": 1.21
   },
   {
     "route": "/kids/stories",
@@ -90,10 +90,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 187786,
+      "bytes": 187777,
       "layoutShift": 0
     },
-    "increasePercent": 1.27
+    "increasePercent": 1.26
   },
   {
     "route": "/kids/games",
@@ -102,10 +102,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 185168,
+      "bytes": 185160,
       "layoutShift": 0
     },
-    "increasePercent": 0.1
+    "increasePercent": 0.09
   },
   {
     "route": "/sources/torah/read?book=Genesis&chapter=22",

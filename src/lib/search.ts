@@ -128,7 +128,7 @@ export async function search(rawQuery: string, limit = 10, rawFilters: SearchOpt
     // Trigram rather than FTS: these are short proper nouns, and users misspell
     // them. similarity() also gives a usable ordering that FTS would not.
     selected('figures', () => prisma.$queryRaw<FigureHit[]>`
-      SELECT DISTINCT ON (f.slug)
+      SELECT * FROM (SELECT DISTINCT ON (f.slug)
         f.slug, f."canonicalName" AS "canonicalName",
         GREATEST(
           similarity(f."canonicalName", ${query}),
@@ -140,7 +140,8 @@ export async function search(rawQuery: string, limit = 10, rawFilters: SearchOpt
         AND EXISTS (SELECT 1 FROM claim_figures cf JOIN claims c ON c.id = cf."claimId" JOIN sources s ON s.id = c."sourceId" WHERE cf."figureId" = f.id AND c."isPublished" = true ${filters.source ? Prisma.sql`AND s.key::text = ${filters.source}` : Prisma.empty})
         ${filters.tradition ? Prisma.sql`AND EXISTS (SELECT 1 FROM figure_aliases fa WHERE fa."figureId" = f.id AND fa.tradition::text = ${filters.tradition})` : Prisma.empty}
         AND (similarity(f."canonicalName", ${query}) >= ${NAME_SIMILARITY_FLOOR} OR similarity(a.name, ${query}) >= ${NAME_SIMILARITY_FLOOR})
-      ORDER BY f.slug, similarity DESC
+      ORDER BY f.slug, similarity DESC) matches
+      ORDER BY similarity DESC, slug
       LIMIT ${limit}
     `),
 

@@ -46,6 +46,16 @@ describe('reader controls', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Reset reading preferences' }))
     expect(screen.getByLabelText('Text size')).toHaveValue('18')
   })
+  it('keeps an edition chosen from search while adjusting comfort and restores the chapter default on reset', async () => {
+    const editions = [{ ...verses[0], translations: [...verses[0].translations, { ...verses[0].translations[0], name: 'Reader note (original)', isDefault: false, text: 'Project explanation' }] }]
+    render(<VerseReader verses={editions} sourceSlug="torah" initialEdition="Reader note (original)" />)
+    expect(screen.getByRole('button', { name: 'Reader note (original)' })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.selectOptions(screen.getByLabelText('Text size'), '24')
+    expect(screen.getByRole('button', { name: 'Reader note (original)' })).toHaveAttribute('aria-pressed', 'true')
+    expect(JSON.parse(localStorage.getItem(READING_KEY)!).edition).toBe('Reader note (original)')
+    await userEvent.click(screen.getByRole('button', { name: 'Reset reading preferences' }))
+    expect(screen.getByRole('button', { name: 'World English Bible' })).toHaveAttribute('aria-pressed', 'true')
+  })
   it('allows reading adjustments for the visit when persistence is blocked', async () => {
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked') })
     render(<VerseReader verses={verses} />)
