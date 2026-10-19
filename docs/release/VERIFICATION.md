@@ -37,3 +37,9 @@ Verified in the hosted browser: homepage → Abraham's Covenant with God → sup
 [CI after the tablet correction](https://github.com/giselleevita/abrahamic/actions/runs/39256181116) passed 359 tests and 39 browser scenarios with zero skips. [Security checks](https://github.com/giselleevita/abrahamic/actions/runs/39256181156) also passed. The final reader comfort fix adds one regression test, bringing local unit/integration coverage to 360; the complete 39-scenario local suite passed again. Current checks and the final hosted smoke result are linked from [PR #60](https://github.com/giselleevita/abrahamic/pull/60).
 
 Human review and production publication remain separate decisions.
+
+## Source-checked follow-up
+
+See [content corrections](CONTENT_CORRECTIONS.md) for corrected glossary wording, targeted legacy family-data migrations, reference-only destinations and public hold filtering. Regression coverage includes migration preservation of editor-authored notes, parent classification, withheld identities, idempotent reference creation and inspectable glossary citations. This follow-up does not replace the outstanding five-person sessions or theological review.
+
+Follow-up local verification: **370 unit/integration tests and 42 browser scenarios passed**, zero skipped; types, zero-warning lint and production build passed. Disposable seeded restore passed with 100 verses, 156 translations, 22 migrations and 116 constraints. Eleven-route transfer comparison remains within the 10% budget; maximum measured growth 5.18%, with zero measured layout shift.

@@ -6,10 +6,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 190952,
+      "bytes": 190980,
       "layoutShift": 0
     },
-    "increasePercent": 0.04
+    "increasePercent": 0.06
   },
   {
     "route": "/learn/abraham-across-traditions",
@@ -18,10 +18,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 182953,
+      "bytes": 182981,
       "layoutShift": 0
     },
-    "increasePercent": 0.68
+    "increasePercent": 0.69
   },
   {
     "route": "/timeline",
@@ -30,10 +30,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 235800,
+      "bytes": 235827,
       "layoutShift": 0
     },
-    "increasePercent": 0.02
+    "increasePercent": 0.03
   },
   {
     "route": "/comparisons",
@@ -42,10 +42,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 197189,
+      "bytes": 197217,
       "layoutShift": 0
     },
-    "increasePercent": 0.04
+    "increasePercent": 0.06
   },
   {
     "route": "/family-tree",
@@ -54,10 +54,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 191107,
+      "bytes": 190273,
       "layoutShift": 0
     },
-    "increasePercent": -4.2
+    "increasePercent": -4.62
   },
   {
     "route": "/glossary",
@@ -66,10 +66,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 191148,
+      "bytes": 191900,
       "layoutShift": 0
     },
-    "increasePercent": 4.76
+    "increasePercent": 5.18
   },
   {
     "route": "/search?q=Abraham",
@@ -78,10 +78,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 197107,
+      "bytes": 197134,
       "layoutShift": 0
     },
-    "increasePercent": 1.21
+    "increasePercent": 1.23
   },
   {
     "route": "/kids/stories",
@@ -90,10 +90,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 187777,
+      "bytes": 187805,
       "layoutShift": 0
     },
-    "increasePercent": 1.26
+    "increasePercent": 1.28
   },
   {
     "route": "/kids/games",
@@ -102,10 +102,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 185160,
+      "bytes": 185189,
       "layoutShift": 0
     },
-    "increasePercent": 0.09
+    "increasePercent": 0.11
   },
   {
     "route": "/sources/torah/read?book=Genesis&chapter=22",
@@ -114,10 +114,10 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 190294,
+      "bytes": 190321,
       "layoutShift": 0
     },
-    "increasePercent": 0.04
+    "increasePercent": 0.05
   },
   {
     "route": "/sources/quran/read?book=Al-Ikhlas&chapter=112",
@@ -126,9 +126,9 @@
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 186659,
+      "bytes": 186689,
       "layoutShift": 0
     },
-    "increasePercent": 0.04
+    "increasePercent": 0.05
   }
 ]

@@ -1,3 +1,4 @@
+import { PUBLIC_FAMILY_RELATIONS } from '@/lib/queries/family-relations'
 import prisma from '@/lib/prisma'
 import type { NamePair } from '@/components/kids/games/NameMatchGame'
 import type { PresenceQuestion } from '@/components/kids/games/WhoTellsItGame'
@@ -109,7 +110,7 @@ export async function getSortableEra(): Promise<{ era: TimelineEra; events: Sort
 
 export async function getFamilyChain(): Promise<ChainLink[]> {
   const relations = await prisma.figureRelation.findMany({
-    where: { relationType: 'PARENT' },
+    where: { AND: [PUBLIC_FAMILY_RELATIONS, { relationType: 'PARENT' }] },
     select: {
       fromFigure: { select: { id: true, canonicalName: true } },
       toFigure: { select: { id: true, canonicalName: true } },

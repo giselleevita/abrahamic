@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-19T12:50:00.531Z",
+  "timestamp": "2026-10-19T19:29:24.718Z",
   "scope": "Disposable local seeded databases only. No production backup was accessed or verified.",
   "counts": [
     {
@@ -9,13 +9,13 @@
     },
     {
       "table": "verses",
-      "before": 95,
-      "after": 95
+      "before": 100,
+      "after": 100
     },
     {
       "table": "verse_translations",
-      "before": 151,
-      "after": 151
+      "before": 156,
+      "after": 156
     },
     {
       "table": "comparisons",
@@ -59,8 +59,8 @@
     },
     {
       "table": "_prisma_migrations",
-      "before": 20,
-      "after": 20
+      "before": 22,
+      "after": 22
     }
   ],
   "contentFingerprintMatches": true,

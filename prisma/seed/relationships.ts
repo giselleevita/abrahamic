@@ -1,3 +1,4 @@
+import { MOTHER_REFERENCES, normalizeFamilyEntry } from './family-policy'
 import type { PrismaClient } from '@/generated/prisma/client'
 
 // Recorded project references. Citation wiring does not establish editorial approval.
@@ -50,7 +51,7 @@ const relationshipVerses: Record<string, { source: 'TORAH' | 'HEBREW_BIBLE' | 'Q
   'boaz-obed': { source: 'HEBREW_BIBLE', book: 'Ruth', chapter: 4, verse: 21 },
   'obed-jesse': { source: 'HEBREW_BIBLE', book: 'Ruth', chapter: 4, verse: 22 },
   'jesse-david': { source: 'HEBREW_BIBLE', book: 'Ruth', chapter: 4, verse: 22 },
-  'david-solomon': { source: 'HEBREW_BIBLE', book: '2 Samuel', chapter: 12, verse: 25 },
+  'david-solomon': { source: 'HEBREW_BIBLE', book: '2 Samuel', chapter: 12, verse: 24 },
   'joseph-manasseh': { source: 'TORAH', book: 'Genesis', chapter: 41, verse: 50 },
   'joseph-ephraim': { source: 'TORAH', book: 'Genesis', chapter: 41, verse: 52 },
   'zerubbabel-abijah-nt': { source: 'NEW_TESTAMENT', book: 'Matthew', chapter: 1, verse: 12 },
@@ -66,8 +67,7 @@ const relationshipVerses: Record<string, { source: 'TORAH' | 'HEBREW_BIBLE' | 'Q
   'joseph-jesus': { source: 'NEW_TESTAMENT', book: 'Matthew', chapter: 1, verse: 16 },
 }
 
-export async function seedFigureRelationships(prisma: PrismaClient) {
-  const relationships = [
+export const familySeedEntries = [
     // Adam's lineage
     { from: 'adam', to: 'seth', type: 'PARENT', verseKey: 'adam-seth' },
     { from: 'seth', to: 'enosh', type: 'PARENT', verseKey: 'seth-enosh' },
@@ -214,8 +214,13 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
     { from: 'terah', to: 'sarah', type: 'CHILD', notes: 'Daughter (some sources)' },
   ]
 
+
+export async function seedFigureRelationships(prisma: PrismaClient) {
+
+  for (const ref of MOTHER_REFERENCES) relationshipVerses[ref.key] = ref
   const sources = await prisma.source.findMany({ select: { id: true, key: true } })
-  for (const rel of relationships) {
+  for (const original of familySeedEntries) {
+    const rel = normalizeFamilyEntry(original)
     const fromFigure = await prisma.figure.findUnique({ where: { slug: rel.from } })
     const toFigure = await prisma.figure.findUnique({ where: { slug: rel.to } })
 
@@ -225,10 +230,8 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
       let verse = null
 
       if (verseRef) {
-        verse = await prisma.verse.findUnique({
-          where: {
-            referenceKey: `${verseRef.source}.${verseRef.book}.${verseRef.chapter}.${verseRef.verse}`,
-          },
+        verse = await prisma.verse.findFirst({
+          where: { source: { key: verseRef.source }, book: verseRef.book, chapter: verseRef.chapter, verse: verseRef.verse, versification: 'CHRISTIAN' },
         })
       }
 

@@ -1,3 +1,4 @@
+import { seedFamilyReferences } from './family-references'
 import prisma from '../../src/lib/prisma'
 import { seedSources } from './sources'
 import { seedThemes } from './themes'
@@ -21,6 +22,7 @@ async function main() {
   await seedFigures(prisma)
   await seedFigureLegacy(prisma)
   await seedVerses(prisma)
+  await seedFamilyReferences(prisma)
   await seedFigureRelationships(prisma)
   await seedClaims(prisma)
   await seedComparisons(prisma)

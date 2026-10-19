@@ -86,3 +86,13 @@ test('family, glossary and kids controls are accessible and keep progress local'
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   }
 })
+
+test('source corrections remain inspectable and held genealogies stay private', async ({ page }) => {
+  await page.goto('/glossary')
+  await page.getByLabel('Find a term').fill('Modified')
+  await expect(page.getByText(/does not name the son/)).toBeVisible()
+  await expect(page.getByRole('link', { name: /Quran 37:102/ })).toHaveAttribute('href', 'https://quran.com/37/102-107')
+  await page.goto('/family-tree')
+  await expect(page.getByText(/Connections awaiting source or identity verification are withheld/)).toBeVisible()
+  await expect(page.getByText(/EDITORIAL HOLD|Sirah al-Ibn Hisham|Qur'an 21:76/)).toHaveCount(0)
+})

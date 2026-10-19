@@ -1,3 +1,4 @@
+import { seedFamilyReferences } from '../prisma/seed/family-references'
 import prisma from '../src/lib/prisma'
 import { seedJourneys } from '../prisma/seed/journeys'
 
@@ -12,6 +13,8 @@ async function main() {
     if (result.status !== 0) process.exit(result.status ?? 1)
     return
   }
+
+  if (process.env.VERCEL_ENV === 'preview') await seedFamilyReferences(prisma)
 
   console.log('Seeding deployment-owned journey content only...')
   await seedJourneys(prisma)

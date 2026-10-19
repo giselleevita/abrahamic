@@ -2,6 +2,7 @@ interface GlossaryEntry {
   term: string
   definition: string
   note?: string
+  sources?: { label: string; href: string }[]
 }
 
 export interface GlossarySection {
@@ -21,7 +22,7 @@ export const GLOSSARY: GlossarySection[] = [
       {
         term: 'Soteriology',
         definition: 'The branch of theology dealing with salvation — how human beings are saved, redeemed, or liberated from sin, death, or spiritual peril.',
-        note: 'Each Abrahamic tradition has a distinct soteriology: grace/faith (Christianity), Torah observance and repentance (Judaism), submission to God and righteous deeds (Islam).',
+        note: 'Understandings of salvation vary within as well as between traditions. Consult the attributed source discussions rather than treating one formula as universal.',
       },
       {
         term: 'Eschatology',
@@ -52,12 +53,13 @@ export const GLOSSARY: GlossarySection[] = [
     entries: [
       {
         term: 'Affirmed',
-        definition: 'The tradition explicitly records and accepts this event as historical, substantially as described.',
+        definition: 'A project timeline label indicating that the selected tradition’s account includes this event. It describes that account, not independent historical verification.',
       },
       {
         term: 'Modified',
         definition: 'The tradition records this event but with significant differences in narrative detail, theological interpretation, or key participants.',
-        note: 'For example, the Quran affirms the story of Abraham\'s sacrifice but identifies the son as Ishmael rather than Isaac.',
+        note: 'Genesis 22 names Isaac. The sacrifice scene in Quran 37:102–107 does not name the son; identifying him belongs to interpretation.',
+        sources: [{ label: 'Genesis 22', href: 'https://bible.usccb.org/bible/genesis/22' }, { label: 'Quran 37:102–107', href: 'https://quran.com/37/102-107' }],
       },
       {
         term: 'Silent',
@@ -156,8 +158,8 @@ export const GLOSSARY: GlossarySection[] = [
       },
       {
         term: 'Trinity',
-        definition: 'The Christian doctrine that God exists as three persons — Father, Son, and Holy Spirit — who are co-equal and co-eternal, yet one God.',
-        note: 'Rejected by both Judaism and Islam as incompatible with strict monotheism.',
+        definition: 'The Nicene Christian doctrine that God exists as three persons — Father, Son, and Holy Spirit — who are co-equal and co-eternal, yet one God.',
+        note: 'This describes Nicene Christianity. It is not a statement that every community identifying as Christian uses the same formulation.',
       },
       {
         term: 'Tawhid',
@@ -169,12 +171,14 @@ export const GLOSSARY: GlossarySection[] = [
       },
       {
         term: 'Messiah / Mashiach',
-        definition: 'Hebrew for "anointed one." In Judaism, a future king who will restore Israel and bring universal peace. Christianity identifies Jesus as the Messiah; Islam venerates Jesus (Isa) as a prophet but not as a messianic saviour in the Jewish sense.',
+        definition: 'Hebrew for "anointed one." Jewish, Christian, and Islamic traditions develop distinct accounts of messiahship. Christianity identifies Jesus as the Messiah; Quran 3:45 also calls Jesus (Isa) al-Masih. The shared title does not imply agreement about his nature or role.',
+        sources: [{ label: 'Quran 3:45', href: 'https://quran.com/3/45' }],
       },
       {
         term: 'Original Sin',
-        definition: 'The Christian doctrine that Adam and Eve\'s disobedience in Eden brought a state of sinfulness inherited by all humanity, requiring redemption.',
-        note: 'Judaism and Islam reject original sin. Islam holds that Adam repented and was forgiven; humans are born innocent.',
+        definition: 'A term used in Christian traditions for humanity’s condition in relation to Adam’s disobedience. Traditions differ in how they describe inherited sin, guilt, and its consequences.',
+        note: 'Compare the specifically Catholic explanation with the Orthodox discussion; neither should be presented as the single formulation of every Christian community.',
+        sources: [{ label: 'Catholic Catechism: original sin', href: 'https://www.vatican.va/archive/ENG0015/__P1C.HTM' }, { label: 'Orthodox Church in America: original sin', href: 'https://www.oca.org/questions/teaching/original-sin' }],
       },
       {
         term: 'Prophethood (Nubuwwah)',
