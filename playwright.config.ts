@@ -10,6 +10,7 @@ export default defineConfig({
   use: { baseURL: `http://127.0.0.1:${port}`, trace: 'retain-on-failure' },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
+    { name: 'tablet', use: { ...devices['Desktop Chrome'], viewport: { width: 768, height: 1024 } } },
     { name: 'mobile-320', use: { ...devices['Desktop Chrome'], viewport: { width: 320, height: 740 }, isMobile: false, reducedMotion: 'reduce' } },
   ],
   webServer: {

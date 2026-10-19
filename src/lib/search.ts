@@ -24,12 +24,15 @@ export interface VerseHit {
   verse: number
   sourceKey: SourceKey
   sourceTitle: string
+  sourceSlug: string
+  versification: string
   translationName: string
   text: string
   rank: number
 }
 
 export interface ClaimHit {
+  citation?: { sourceSlug: string; book: string; chapter: number; verse: number; versification?: string }
   id: number
   statement: string
   sourceKey: SourceKey
@@ -97,9 +100,10 @@ export async function search(rawQuery: string, limit = 10): Promise<SearchResult
       SELECT
         v.id,
         v."referenceKey" AS "referenceKey",
-        v.book, v.chapter, v.verse,
+        v.book, v.chapter, v.verse, v.versification,
         s.key  AS "sourceKey",
         s.title AS "sourceTitle",
+        s.slug AS "sourceSlug",
         t.name AS "translationName",
         t.text,
         ts_rank(t.search_vector, websearch_to_tsquery('english', ${query})) AS rank
@@ -177,12 +181,21 @@ export async function search(rawQuery: string, limit = 10): Promise<SearchResult
     filterPublicDemoTranslations([{ name: v.translationName }]).length > 0,
   )
 
+  const supports = claims.length ? await prisma.claim.findMany({
+    where: { id: { in: claims.map((c) => c.id) }, isPublished: true },
+    select: { id: true, source: { select: { slug: true } }, verses: { orderBy: [{ isPrimary: 'desc' }, { verseId: 'asc' }], take: 1, select: { verse: { select: { book: true, chapter: true, verse: true, versification: true } } } } },
+  }) : []
+  const claimsWithCitations = claims.map((claim) => {
+    const support = supports.find((s) => s.id === claim.id)
+    const verse = support?.verses[0]?.verse
+    return { ...claim, ...(verse && support ? { citation: { sourceSlug: support.source.slug, ...verse } } : {}) }
+  })
   const strongFigures = figures.filter((f) => f.similarity >= NAME_SIMILARITY_FLOOR)
   const strongThemes = themes.filter((t) => t.similarity >= NAME_SIMILARITY_FLOOR)
 
   return {
     verses: publicVerses,
-    claims,
+    claims: claimsWithCitations,
     figures: strongFigures,
     themes: strongThemes,
     concepts,

@@ -1,7 +1,9 @@
+import { verseReaderHref } from '@/lib/verse-links'
+import { Citation } from '@/components/ui/Citation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { search } from '@/lib/search'
-import { SectionHeader } from '@/components/ui/SectionHeader'
+import { PageIntro } from '@/components/layout/PageIntro'
 import { Surface } from '@/components/ui/Surface'
 import { Callout } from '@/components/ui/Callout'
 import { CONCEPT_CATEGORY_LABEL, ERA_LABEL, SOURCE_TRADITION, TRADITION_BG } from '@/lib/constants'
@@ -20,11 +22,12 @@ export default async function SearchPage({
   const { q } = await searchParams
   const query = q?.trim() ?? ''
 
+  const form = <form action="/search" role="search" className="mb-8 flex flex-wrap gap-3"><label className="sr-only" htmlFor="results-search">Search the whole site</label><input id="results-search" name="q" type="search" defaultValue={query} minLength={2} placeholder="Search people, beliefs, or verses" className="editorial-control min-w-0 flex-1 px-4 py-3" /><button className="editorial-button" type="submit">Search</button></form>
   if (query.length < 2) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <SectionHeader title="Search" />
-        <p className="text-primary-300">Enter at least two characters to search.</p>
+        <PageIntro eyebrow="Explore" title="Search" />
+        {form}<p className="text-primary-700">Enter at least two characters to search.</p><div className="mt-5 flex flex-wrap gap-3">{['Abraham', 'prayer', 'creation'].map((term) => <Link key={term} href={`/search?q=${term}`} className="reading-action">{term}</Link>)}</div>
       </div>
     )
   }
@@ -33,11 +36,12 @@ export default async function SearchPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <SectionHeader
+      <PageIntro eyebrow="Explore"
         title="Search"
         description={`${results.total} result${results.total !== 1 ? 's' : ''} for “${query}”, ranked by relevance.`}
       />
 
+      {form}
       {results.total === 0 && (
         <Callout tone="note">
           Nothing matched “{query}”. Try a different word, or browse{' '}
@@ -70,7 +74,7 @@ export default async function SearchPage({
             {results.verses.map((verse) => (
               <Surface
                 key={verse.id}
-                href={`/sources/${verse.sourceKey.toLowerCase()}/read?book=${encodeURIComponent(verse.book)}&chapter=${verse.chapter}`}
+                href={verseReaderHref(verse.sourceSlug ?? verse.sourceKey.toLowerCase(), verse)}
                 className="p-4"
               >
                 <div className="flex flex-wrap items-baseline gap-2">
@@ -85,7 +89,7 @@ export default async function SearchPage({
                 </div>
                 <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-700">
                   {verse.text}
-                </p>
+                </p><p className="mt-2 text-xs text-primary-700">Edition: {verse.translationName}</p>
               </Surface>
             ))}
           </div>
@@ -95,17 +99,18 @@ export default async function SearchPage({
       {results.claims.length > 0 && (
         <section className="mb-10">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-primary-400">
-            Claims
+            Teachings &amp; interpretations
           </h2>
           <div className="space-y-2">
             {results.claims.map((claim) => (
-              <Surface key={claim.id} className="p-4" interactive>
+              <Surface key={claim.id} className="p-4">
                 <span
                   className={`rounded px-2 py-0.5 text-[10px] font-semibold ${TRADITION_BG[SOURCE_TRADITION[claim.sourceKey]]}`}
                 >
                   {claim.sourceTitle}
                 </span>
                 <p className="mt-2 text-sm leading-relaxed text-stone-800">{claim.statement}</p>
+                {claim.citation && <div className="mt-3"><Citation sourceSlug={claim.citation.sourceSlug} verse={claim.citation} /></div>}
               </Surface>
             ))}
           </div>

@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Local test env
 .env
+
+# Browser review artifacts
+/output/playwright/

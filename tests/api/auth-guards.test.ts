@@ -40,6 +40,7 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 type Method = 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 const MUTATING_ROUTES: { path: string; module: string; methods: Method[] }[] = [
+  { path: '/api/admin/corrections/[id]', module: '@/app/api/admin/corrections/[id]/route', methods: ['PATCH'] },
   { path: '/api/claims', module: '@/app/api/claims/route', methods: ['POST'] },
   { path: '/api/claims/[id]', module: '@/app/api/claims/[id]/route', methods: ['PUT', 'DELETE'] },
   { path: '/api/comparisons', module: '@/app/api/comparisons/route', methods: ['POST'] },

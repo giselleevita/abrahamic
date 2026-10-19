@@ -32,8 +32,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  if (!/^[1-9]\d*$/.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const session = await getServerSession(authOptions)
   const comparison = await prisma.comparison.findUnique({
-    where: { id: parseInt(id) },
+    where: { id: parseInt(id), ...(!session ? { isPublished: true } : {}) },
     include: claimInclude,
   })
   if (!comparison) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -44,6 +46,8 @@ const updateSchema = z.object({
   title: z.string().min(3).max(200).optional(),
   tag: z.enum(['SHARED', 'SIMILAR_DIFFERENT', 'CONTRADICTION']).optional(),
   summary: z.string().optional(),
+  sharedGround: z.string().max(3000).nullable().optional(),
+  keyDifferences: z.string().max(3000).nullable().optional(),
   isPublished: z.boolean().optional(),
   isControversial: z.boolean().optional(),
   claimIds: z.array(z.number()).min(2).optional(),

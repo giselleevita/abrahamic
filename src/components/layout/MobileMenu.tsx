@@ -49,7 +49,7 @@ export function MobileMenu() {
                       onClick={() => setOpen(false)}
                       aria-current={active ? 'page' : undefined}
                       className={`block rounded-lg px-3 py-3 text-base font-semibold transition-colors ${
-                        active ? 'bg-blue-50 text-blue-900' : 'text-slate-800 hover:bg-blue-50 hover:text-blue-900'
+                        active ? 'bg-[#f3eadb] text-blue-900' : 'text-slate-800 hover:bg-[#f3eadb] hover:text-blue-900'
                       }`}
                     >
                       {item.label}

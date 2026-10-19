@@ -1,5 +1,9 @@
 'use client'
 
+import { PassageActions } from '@/components/experience/PassageActions'
+import { useDeviceStore } from '@/lib/experience/storage'
+import { DEFAULT_READING, READING_KEY, parseReading, activeEdition } from '@/lib/experience/preferences'
+import { Citation } from '@/components/ui/Citation'
 import { useState } from 'react'
 import type { Verse, VerseTranslation, VerseLink, Source } from '@/generated/prisma/client'
 import { Badge } from '@/components/ui/Badge'
@@ -20,6 +24,8 @@ type VerseWithLinks = Verse & {
 
 interface Props {
   verses: VerseWithLinks[]
+  sourceSlug?: string
+  sourceTitle?: string
 }
 
 const LABEL_ORDER = ['ORIGINAL', 'CLASSIC', 'MODERN', 'SCHOLARLY'] as const
@@ -29,7 +35,7 @@ const LABEL_DISPLAY: Record<LabelKey, string> = {
   ORIGINAL: 'Original', CLASSIC: 'Classic', MODERN: 'Modern', SCHOLARLY: 'Scholarly',
 }
 
-export function VerseReader({ verses }: Props) {
+export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture' }: Props) {
   const [expandedVerseId, setExpandedVerseId] = useState<number | null>(null)
   const [sideBySide, setSideBySide] = useState(false)
 
@@ -40,8 +46,16 @@ export function VerseReader({ verses }: Props) {
     allTranslations.some((t) => t.label === label)
   )
 
-  const defaultName = verses[0]?.translations.find((t) => t.isDefault)?.name ?? translationNames[0]
-  const [selectedTranslation, setSelectedTranslation] = useState(defaultName)
+  const { value: storedPreferences, save } = useDeviceStore(READING_KEY, DEFAULT_READING, parseReading)
+  const [sessionPreferences, setSessionPreferences] = useState<typeof DEFAULT_READING | null>(null)
+  const preferences = sessionPreferences ?? storedPreferences
+  const [preferenceMessage, setPreferenceMessage] = useState('')
+  const selectedTranslation = activeEdition(preferences.edition, allTranslations)
+  function updatePreferences(next: typeof preferences) {
+    const ok = save(next)
+    setSessionPreferences(ok ? null : next)
+    setPreferenceMessage(ok ? 'Reading preferences saved on this device.' : 'Preferences apply for this visit. Device storage is unavailable.')
+  }
 
   const hasMultiple = translationNames.length > 1
 
@@ -51,6 +65,12 @@ export function VerseReader({ verses }: Props) {
 
   return (
     <div>
+      <div className="mb-5 flex flex-wrap items-end gap-4" aria-label="Reading preferences">
+        <label className="text-sm font-semibold">Text size<select aria-label="Text size" value={preferences.size} onChange={(e) => updatePreferences({ ...preferences, size: Number(e.target.value) as 18 | 21 | 24 })} className="editorial-control ml-2 min-h-11 p-2">{[18, 21, 24].map((size) => <option key={size} value={size}>{size}px</option>)}</select></label>
+        <label className="text-sm font-semibold">Line spacing<select aria-label="Line spacing" value={preferences.spacious ? 'spacious' : 'comfortable'} onChange={(e) => updatePreferences({ ...preferences, spacious: e.target.value === 'spacious' })} className="editorial-control ml-2 min-h-11 p-2"><option value="comfortable">Comfortable</option><option value="spacious">Spacious</option></select></label>
+        <button type="button" className="reading-action" onClick={() => updatePreferences(DEFAULT_READING)}>Reset reading preferences</button>
+        <p role="status" className="w-full text-xs text-primary-700">{preferenceMessage}</p>
+      </div>
       {/* Controls */}
       <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-[#e5d9c8] pb-5">
         {hasMultiple && (
@@ -59,7 +79,7 @@ export function VerseReader({ verses }: Props) {
               type="button"
               onClick={() => setSideBySide(false)}
               aria-pressed={!sideBySide}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className={`min-h-11 rounded-full px-3 py-1 text-sm font-medium transition-colors ${
                 !sideBySide ? 'bg-[#173b68] text-white' : 'text-[#51483c] hover:text-[#242019]'
               }`}
             >
@@ -69,7 +89,7 @@ export function VerseReader({ verses }: Props) {
               type="button"
               onClick={() => setSideBySide(true)}
               aria-pressed={sideBySide}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className={`min-h-11 rounded-full px-3 py-1 text-sm font-medium transition-colors ${
                 sideBySide ? 'bg-[#173b68] text-white' : 'text-[#51483c] hover:text-[#242019]'
               }`}
             >
@@ -85,9 +105,9 @@ export function VerseReader({ verses }: Props) {
               <button
                 key={name}
                 type="button"
-                onClick={() => setSelectedTranslation(name)}
+                onClick={() => updatePreferences({ ...preferences, edition: name })}
                 aria-pressed={selectedTranslation === name}
-                className={`rounded-full border px-3 py-0.5 text-xs transition-colors ${
+                className={`min-h-11 rounded-full border px-3 py-0.5 text-sm transition-colors ${
                   selectedTranslation === name
                     ? 'border-[#173b68] bg-[#173b68] text-white'
                     : 'border-[#b9aa95] bg-[#fffdf9] text-[#51483c] hover:border-[#173b68]'
@@ -111,8 +131,9 @@ export function VerseReader({ verses }: Props) {
         )}
       </div>
 
+      <p className="mb-4 text-sm text-primary-700">{sideBySide ? 'Editions shown below each passage.' : `Edition: ${selectedTranslation}`} · {selectedTranslation === 'Reader note (original)' && !sideBySide ? 'Project explanation' : 'Source text'}</p>
       {/* Verse list */}
-      <div className="space-y-1">
+      <div className="verse-reading space-y-1" style={{ fontSize: `${preferences.size}px`, lineHeight: preferences.spacious ? 2.2 : 1.8 }}>
         {verses.map((verse) => {
           const allLinks = [
             ...verse.linksAsA.map((l) => ({ ...l, linkedVerse: l.verseB })),
@@ -123,7 +144,7 @@ export function VerseReader({ verses }: Props) {
           return (
             <div
               key={verse.id}
-              id={verseAnchorId(verse.verse)}
+              id={verseAnchorId(verse.verse, verse.versification)}
               className={`group scroll-mt-28 rounded-lg px-1 py-4 transition-colors target:bg-[#f3eadb] target:ring-2 target:ring-[#a67222] ${
                 isExpanded ? 'bg-[#f7f0e5]' : 'hover:bg-[#faf6ee]'
               }`}
@@ -132,18 +153,18 @@ export function VerseReader({ verses }: Props) {
                 <span className="w-8 flex-shrink-0 pt-1 text-right text-xs font-semibold text-[#655a4b]">
                   {verse.verse}
                 </span>
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   {sideBySide && hasMultiple ? (
                     <div className="space-y-3">
-                      {availableLabels.map((label) => {
-                        const t = verse.translations.find((tr) => tr.label === label)
+                      {translationNames.map((name) => {
+                        const t = verse.translations.find((tr) => tr.name === name)
                         if (!t) return null
                         return (
-                          <div key={label}>
+                          <div key={name}>
                             <span className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-stone-400">
-                              {LABEL_DISPLAY[label]} — {t.name}
+                              {LABEL_DISPLAY[t.label as LabelKey] ?? t.label} — {t.name}
                             </span>
-                            <ScriptText text={t.text} className="text-base leading-8 text-[#242019]" />
+                            <ScriptText text={t.text} className="verse-text text-[#242019]" />
                           </div>
                         )
                       })}
@@ -151,16 +172,13 @@ export function VerseReader({ verses }: Props) {
                   ) : (
                     <ScriptText
                       text={
-                        (
-                          verse.translations.find((t) => t.name === selectedTranslation) ??
-                          verse.translations.find((t) => t.isDefault) ??
-                          verse.translations[0]
-                        )?.text ?? ''
+                        verse.translations.find((t) => t.name === selectedTranslation)?.text ?? 'No text is available in this edition for this verse.'
                       }
-                      className="text-lg leading-8 text-[#242019]"
+                      className="verse-text text-[#242019]"
                     />
                   )}
 
+                  {sourceSlug && <PassageActions sourceSlug={sourceSlug} sourceTitle={sourceTitle} verse={verse} id={verse.id} />}
                   {allLinks.length > 0 && (
                     <button
                       type="button"
@@ -186,12 +204,13 @@ export function VerseReader({ verses }: Props) {
                                 {link.linkedVerse.source.title}
                               </Badge>
                               <span className="text-xs text-stone-400">
-                                {link.linkedVerse.book} {link.linkedVerse.chapter}:{link.linkedVerse.verse}
+                                <Citation sourceSlug={link.linkedVerse.source.slug} verse={link.linkedVerse} />
                               </span>
                               <span className="rounded bg-stone-100 px-1.5 py-0.5 text-[10px] uppercase text-stone-500">
                                 {link.linkType.replace('_', ' ')}
                               </span>
                             </div>
+                            {linkedDefault && <p className="mt-2 text-xs text-primary-700">Edition: {linkedDefault.name}</p>}
                             {linkedDefault && (
                               <ScriptText
                                 text={linkedDefault.text}

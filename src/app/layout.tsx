@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Nav } from '@/components/layout/Nav'
+import { MotionSettings } from '@/components/experience/Motion'
 import { Footer } from '@/components/layout/Footer'
 import { PublicDemoBanner } from '@/components/layout/PublicDemoBanner'
 import { getSiteUrl } from '@/lib/site-url'
@@ -47,9 +48,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-[#fffaf5] text-slate-900">
+        <a href="#main-content" className="skip-link">Skip to content</a>
         <PublicDemoBanner />
         <Nav />
-        <main className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1 public-content">{children}</main>
+        <MotionSettings />
         <Footer />
         <Analytics />
       </body>

@@ -98,13 +98,13 @@ export default async function TimelinePage() {
             )
           })}
           <span className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
-            <span className="h-2 w-2 rounded-full bg-blue-500" /> Judaism
+            <span className="h-2 w-2 rounded-full bg-jewish-600" /> Judaism
           </span>
           <span className="flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
-            <span className="h-2 w-2 rounded-full bg-red-500" /> Christianity
+            <span className="h-2 w-2 rounded-full bg-christian-600" /> Christianity
           </span>
-          <span className="flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
-            <span className="h-2 w-2 rounded-full bg-green-500" /> Islam
+          <span className="flex items-center gap-1.5 rounded-full border border-islamic-200 bg-islamic-50 px-3 py-1 text-xs font-medium text-islamic-700">
+            <span className="h-2 w-2 rounded-full bg-islamic-600" /> Islam
           </span>
         </div>
       </details>

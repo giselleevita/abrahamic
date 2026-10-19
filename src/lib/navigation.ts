@@ -56,6 +56,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: '/sources', label: 'Sources', description: 'Torah, Hebrew Bible, New Testament, Quran.' },
       { href: '/videos', label: 'Videos', description: 'Editorially reviewed explainers with privacy-friendly embeds.' },
+      { href: '/saved', label: 'Saved', description: 'Passages and comparisons saved on this device.' },
       { href: '/glossary', label: 'Glossary', description: 'Plain-language definitions of the terms used.' },
     ],
   },

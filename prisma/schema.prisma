@@ -350,6 +350,8 @@ model Comparison {
   summary         String?       @db.Text
   isPublished     Boolean       @default(false)
   isControversial Boolean       @default(false)
+  sharedGround    String?       @db.Text
+  keyDifferences  String?       @db.Text
   createdById     String?
 
   claims ComparisonClaim[]
@@ -925,4 +927,33 @@ model VideoResourceTheme {
 
   @@id([videoId, themeId])
   @@map("video_resource_themes")
+}
+
+
+enum CorrectionStatus {
+  NEW
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum CorrectionCategory {
+  SOURCE
+  INTERPRETATION
+  LABEL
+  OTHER
+}
+
+model CorrectionReport {
+  id          Int                @id @default(autoincrement())
+  pagePath    String             @db.VarChar(2000)
+  reference   String?            @db.VarChar(300)
+  category    CorrectionCategory
+  description String             @db.VarChar(3000)
+  status      CorrectionStatus   @default(NEW)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([status, createdAt])
+  @@map("correction_reports")
 }

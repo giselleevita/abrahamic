@@ -45,10 +45,11 @@ export function NavLinks() {
         const active = isActivePath(pathname, link.href)
         return (
           <Link
+            prefetch={false}
             key={link.href}
             href={link.href}
             className={`rounded-lg px-3 py-2.5 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-100 ${
-              active ? 'bg-blue-50 text-blue-800' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+              active ? 'bg-[#f3eadb] text-[#173b68]' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
             }`}
             aria-current={active ? 'page' : undefined}
           >
@@ -66,7 +67,7 @@ export function NavLinks() {
           aria-controls={menuId}
           aria-haspopup="true"
           className={`flex items-center gap-1 rounded-lg px-3 py-2.5 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-100 ${
-            open || secondaryActive ? 'bg-blue-50 text-blue-800' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+            open || secondaryActive ? 'bg-[#f3eadb] text-[#173b68]' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
           }`}
         >
           More
@@ -87,11 +88,12 @@ export function NavLinks() {
                   const active = isActivePath(pathname, item.href)
                   return (
                     <Link
+            prefetch={false}
                       key={item.href}
                       href={item.href}
                       onClick={() => setOpen(false)}
                       className={`block rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                        active ? 'bg-blue-50 text-blue-900' : 'text-slate-700 hover:bg-blue-50 hover:text-blue-900'
+                        active ? 'bg-[#f3eadb] text-blue-900' : 'text-slate-700 hover:bg-[#f3eadb] hover:text-blue-900'
                       }`}
                       aria-current={active ? 'page' : undefined}
                     >

@@ -9,6 +9,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+const supports: unknown[] = []
 const rawResults: unknown[][] = []
 let callIndex = 0
 
@@ -16,6 +17,7 @@ vi.mock('@/lib/prisma', () => ({
   default: {
     // The module issues its six queries in a fixed order; hand each the next
     // canned result set.
+    claim: { findMany: () => Promise.resolve(supports) },
     $queryRaw: () => Promise.resolve(rawResults[callIndex++] ?? []),
   },
 }))
@@ -35,6 +37,7 @@ const verse = (translationName: string) => ({
 })
 
 beforeEach(() => {
+  supports.length = 0
   rawResults.length = 0
   callIndex = 0
 })
@@ -118,4 +121,12 @@ describe('search — result shaping', () => {
 
     expect(results.total).toBe(6)
   })
+})
+
+it('attaches published support references without adding scripture excerpts to claim hits', async () => {
+  queueResults([[], [{ id: 1, statement: 'A teaching', sourceKey: 'TORAH', sourceTitle: 'Torah', rank: 1 }], [], [], [], []])
+  supports.push({ id: 1, source: { slug: 'torah' }, verses: [{ verse: { book: 'Genesis', chapter: 22, verse: 2, versification: 'MASORETIC' } }] })
+  const results = await search('Abraham')
+  expect(results.claims[0].citation).toEqual({ sourceSlug: 'torah', book: 'Genesis', chapter: 22, verse: 2, versification: 'MASORETIC' })
+  expect(results.claims[0]).not.toHaveProperty('translations')
 })

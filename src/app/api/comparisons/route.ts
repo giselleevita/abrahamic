@@ -63,6 +63,8 @@ const createSchema = z.object({
   slug: z.string().min(3).max(200),
   tag: z.enum(['SHARED', 'SIMILAR_DIFFERENT', 'CONTRADICTION']),
   summary: z.string().optional(),
+  sharedGround: z.string().max(3000).nullable().optional(),
+  keyDifferences: z.string().max(3000).nullable().optional(),
   isControversial: z.boolean().optional(),
   claimIds: z.array(z.number()).min(2),
 })
