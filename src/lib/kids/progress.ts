@@ -5,10 +5,7 @@
  *
  * There are no accounts, no cookies, no network calls, and no name or nickname
  * field anywhere in the kids section. Progress lives in one localStorage key on
- * the child's own device. That keeps the section entirely outside COPPA and
- * GDPR Article 8 scope: there is no personal data to collect, transmit, or
- * delete on request, and "Clear my progress" on /kids genuinely removes
- * everything the site holds.
+ * the child's own device. Clear my progress removes this local record.
  *
  * Every access is defensive. Safari in private mode throws on setItem, a
  * corrupt blob must never crash a child's page, and the store must be readable

@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const mocks = vi.hoisted(() => ({ create: vi.fn(), findUnique: vi.fn(), findFirst: vi.fn(), findMany: vi.fn(), updateMany: vi.fn(), requireSession: vi.fn(), rateLimit: vi.fn() }))
 vi.mock('@/lib/prisma', () => ({ default: { comparison: { findUnique: mocks.findUnique }, source: { findUnique: mocks.findUnique }, verse: { findFirst: mocks.findFirst }, correctionReport: { create: mocks.create, findMany: mocks.findMany, updateMany: mocks.updateMany } } }))
 vi.mock('@/lib/api-auth', () => ({ requireSession: mocks.requireSession }))
-vi.mock('@/lib/rate-limit', () => ({ rateLimit: mocks.rateLimit, requestKey: () => 'test' }))
+vi.mock('@/lib/rate-limit', () => ({ requestKey: () => 'test' }))
+vi.mock('@/lib/correction-rate-limit', () => ({ correctionRateLimit: mocks.rateLimit }))
 import { POST } from '@/app/api/corrections/route'
 import { GET } from '@/app/api/admin/corrections/route'
 import { PATCH } from '@/app/api/admin/corrections/[id]/route'
@@ -49,6 +50,11 @@ describe('private correction inbox', () => {
     const failed = await POST(request())
     expect(failed.status).toBe(503)
     expect(await failed.text()).not.toContain('private database detail')
+  })
+  it('fails closed when the shared quota is unavailable', async () => {
+    mocks.rateLimit.mockRejectedValue(new Error('private database detail'))
+    expect((await POST(request())).status).toBe(503)
+    expect(mocks.create).not.toHaveBeenCalled()
   })
   it('requires authentication before listing or changing reports', async () => {
     mocks.requireSession.mockResolvedValue(Response.json({ error: 'Unauthorized' }, { status: 401 }))

@@ -1,0 +1,134 @@
+[
+  {
+    "route": "/",
+    "baseline": {
+      "bytes": 190867,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 190958,
+      "layoutShift": 0
+    },
+    "increasePercent": 0.05
+  },
+  {
+    "route": "/learn/abraham-across-traditions",
+    "baseline": {
+      "bytes": 181726,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 182959,
+      "layoutShift": 0
+    },
+    "increasePercent": 0.68
+  },
+  {
+    "route": "/timeline",
+    "baseline": {
+      "bytes": 235759,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 235806,
+      "layoutShift": 0
+    },
+    "increasePercent": 0.02
+  },
+  {
+    "route": "/comparisons",
+    "baseline": {
+      "bytes": 197107,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 197196,
+      "layoutShift": 0
+    },
+    "increasePercent": 0.05
+  },
+  {
+    "route": "/family-tree",
+    "baseline": {
+      "bytes": 199482,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 191087,
+      "layoutShift": 0
+    },
+    "increasePercent": -4.21
+  },
+  {
+    "route": "/glossary",
+    "baseline": {
+      "bytes": 182455,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 191155,
+      "layoutShift": 0
+    },
+    "increasePercent": 4.77
+  },
+  {
+    "route": "/search?q=Abraham",
+    "baseline": {
+      "bytes": 194745,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 197113,
+      "layoutShift": 0
+    },
+    "increasePercent": 1.22
+  },
+  {
+    "route": "/kids/stories",
+    "baseline": {
+      "bytes": 185437,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 187786,
+      "layoutShift": 0
+    },
+    "increasePercent": 1.27
+  },
+  {
+    "route": "/kids/games",
+    "baseline": {
+      "bytes": 184985,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 185168,
+      "layoutShift": 0
+    },
+    "increasePercent": 0.1
+  },
+  {
+    "route": "/sources/torah/read?book=Genesis&chapter=22",
+    "baseline": {
+      "bytes": 190226,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 190294,
+      "layoutShift": 0
+    },
+    "increasePercent": 0.04
+  },
+  {
+    "route": "/sources/quran/read?book=Al-Ikhlas&chapter=112",
+    "baseline": {
+      "bytes": 186589,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 186659,
+      "layoutShift": 0
+    },
+    "increasePercent": 0.04
+  }
+]

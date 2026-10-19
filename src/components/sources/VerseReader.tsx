@@ -25,6 +25,7 @@ type VerseWithLinks = Verse & {
 interface Props {
   verses: VerseWithLinks[]
   sourceSlug?: string
+  initialEdition?: string
   sourceTitle?: string
 }
 
@@ -35,7 +36,7 @@ const LABEL_DISPLAY: Record<LabelKey, string> = {
   ORIGINAL: 'Original', CLASSIC: 'Classic', MODERN: 'Modern', SCHOLARLY: 'Scholarly',
 }
 
-export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture' }: Props) {
+export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture', initialEdition }: Props) {
   const [expandedVerseId, setExpandedVerseId] = useState<number | null>(null)
   const [sideBySide, setSideBySide] = useState(false)
 
@@ -50,10 +51,10 @@ export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture' }: P
   const [sessionPreferences, setSessionPreferences] = useState<typeof DEFAULT_READING | null>(null)
   const preferences = sessionPreferences ?? storedPreferences
   const [preferenceMessage, setPreferenceMessage] = useState('')
-  const selectedTranslation = activeEdition(preferences.edition, allTranslations)
+  const selectedTranslation = activeEdition(sessionPreferences ? preferences.edition : initialEdition ?? preferences.edition, allTranslations)
   function updatePreferences(next: typeof preferences) {
     const ok = save(next)
-    setSessionPreferences(ok ? null : next)
+    setSessionPreferences(next)
     setPreferenceMessage(ok ? 'Reading preferences saved on this device.' : 'Preferences apply for this visit. Device storage is unavailable.')
   }
 

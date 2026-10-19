@@ -6,7 +6,9 @@ import { AGE_BAND_RULES } from '@/lib/kids/readability'
 // invalidate the matching tag via revalidateContent().
 export const revalidate = 3600
 
-export default async function KidsStoriesPage() {
+export default async function KidsStoriesPage({ searchParams }: { searchParams: Promise<{ age?: string }> }) {
+  const { age } = await searchParams
+  const selected = age === 'AGE_6_8' || age === 'AGE_9_12' ? age : ''
   // Both flags are required: `isPublished` is the release switch and
   // `status` is the review outcome. The database also enforces the pairing.
   const stories = await prisma.kidsStory.findMany({
@@ -24,13 +26,14 @@ export default async function KidsStoriesPage() {
         Short stories about what the Torah, the Bible, and the Quran say.
       </p>
 
+      <nav aria-label="Choose an age band" className="mt-6 flex flex-wrap gap-3">{[['', 'All stories'], ['AGE_6_8', 'Ages 6–8'], ['AGE_9_12', 'Ages 9–12']].map(([value, label]) => <Link key={value} aria-current={selected === value ? 'page' : undefined} className={`rounded-xl border-2 px-5 py-3 text-lg font-semibold ${selected === value ? 'border-primary-900 bg-primary-900 text-white' : 'border-primary-200 bg-white text-primary-900'}`} href={value ? `/kids/stories?age=${value}` : '/kids/stories'}>{label}</Link>)}</nav>
       {stories.length === 0 && (
         <p className="mt-8 rounded-xl border border-primary-200 bg-white p-6 text-primary-700">
           There are no stories here yet. Check back soon.
         </p>
       )}
 
-      {bands.map((band) => {
+      {bands.filter((band) => !selected || selected === band).map((band) => {
         const inBand = stories.filter((s) => s.ageBand === band)
         if (inBand.length === 0) return null
 

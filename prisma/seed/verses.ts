@@ -11,6 +11,9 @@ type VerseData = {
 }
 
 const versesData: VerseData[] = [
+  // Reference coverage only: the policy supplies a labelled project reader note,
+  // never a fabricated scripture excerpt or an unlicensed translation.
+  { sourceKey: 'NEW_TESTAMENT', book: 'John', bookNumber: 4, chapter: 3, verse: 16, translations: [] },
   // ── Torah / Genesis ──────────────────────────────────────────────────────
   {
     sourceKey: 'TORAH', book: 'Genesis', bookNumber: 1, chapter: 1, verse: 1,

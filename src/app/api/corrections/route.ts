@@ -2,12 +2,16 @@ import { isSameOrigin } from '@/lib/same-origin'
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { correctionSchema } from '@/lib/schemas/corrections'
-import { rateLimit, requestKey } from '@/lib/rate-limit'
+import { requestKey } from '@/lib/rate-limit'
+import { correctionRateLimit } from '@/lib/correction-rate-limit'
 
 /** Public write only. Reports are never returned through a public endpoint. */
 export async function POST(req: Request) {
   if (!isSameOrigin(req)) return NextResponse.json({ error: 'Please submit from this site.' }, { status: 403 })
-  const limit = rateLimit(`corrections:${requestKey(req)}`, { limit: 5, windowMs: 10 * 60 * 1000 })
+  let limit
+  try { limit = await correctionRateLimit(requestKey(req)) } catch {
+    return NextResponse.json({ error: 'We could not save your report. Please try again.' }, { status: 503 })
+  }
   if (!limit.ok) return NextResponse.json({ error: 'Too many reports. Please try again later.' }, { status: 429, headers: { 'Retry-After': String(limit.retryAfterSeconds) } })
   let body: unknown
   try {

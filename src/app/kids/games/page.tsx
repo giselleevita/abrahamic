@@ -35,12 +35,13 @@ export default function KidsGamesPage() {
       </p>
 
       <div className="stagger mt-6 grid gap-4 sm:grid-cols-2">
-        {GAMES.map((game) => (
+        {GAMES.map((game, index) => (
           <Link
             key={game.slug}
             href={`/kids/games/${game.slug}`}
-            className="rounded-xl border-2 border-primary-200 bg-white p-6 transition-colors hover:border-gold-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
+            className="rounded-2xl border-2 border-primary-200 bg-white p-6 sm:p-8 transition-colors hover:border-gold-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
           >
+            <span className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-gold-100 font-serif text-xl font-bold text-primary-900" aria-hidden="true">{index + 1}</span>
             <h2 className="font-serif text-2xl font-bold text-primary-950">{game.title}</h2>
             <p className="mt-2 leading-relaxed text-primary-700">{game.blurb}</p>
             <p className="mt-3 font-semibold text-gold-700">Play →</p>

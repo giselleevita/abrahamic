@@ -1,3 +1,8 @@
+import { ScriptText } from '@/components/ui/ScriptText'
+import { SearchForm } from '@/components/search/SearchForm'
+import { SearchFilters } from '@/components/search/SearchFilters'
+import { searchOptions } from '@/lib/search-options'
+import { exactPassages } from '@/lib/search-references'
 import { verseReaderHref } from '@/lib/verse-links'
 import { Citation } from '@/components/ui/Citation'
 import type { Metadata } from 'next'
@@ -17,12 +22,14 @@ export const metadata: Metadata = { title: 'Search' }
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>
+  searchParams: Promise<{ q?: string; tradition?: string; type?: string; source?: string }>
 }) {
-  const { q } = await searchParams
-  const query = q?.trim() ?? ''
+  const params = await searchParams
+  const { q } = params
+  const filters = searchOptions(params)
+  const query = typeof q === 'string' ? q.trim().slice(0, 300) : ''
 
-  const form = <form action="/search" role="search" className="mb-8 flex flex-wrap gap-3"><label className="sr-only" htmlFor="results-search">Search the whole site</label><input id="results-search" name="q" type="search" defaultValue={query} minLength={2} placeholder="Search people, beliefs, or verses" className="editorial-control min-w-0 flex-1 px-4 py-3" /><button className="editorial-button" type="submit">Search</button></form>
+  const form = <><SearchForm key={JSON.stringify(params)} query={query} filters={filters} /><SearchFilters /></>
   if (query.length < 2) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
@@ -32,17 +39,18 @@ export default async function SearchPage({
     )
   }
 
-  const results = await search(query)
+  const [results, passages] = await Promise.all([search(query, 10, filters), exactPassages(query, filters)])
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <PageIntro eyebrow="Explore"
         title="Search"
-        description={`${results.total} result${results.total !== 1 ? 's' : ''} for “${query}”, ranked by relevance.`}
+        description={`${results.total + passages.length} displayed result${results.total + passages.length !== 1 ? 's' : ''} for “${query}”, ranked by relevance.`}
       />
 
       {form}
-      {results.total === 0 && (
+      {passages.length > 0 && <section className="mb-10" aria-label="Exact passages"><h2 className="mb-3 font-serif text-2xl text-primary-950">Exact passages</h2><p className="mb-4 text-sm text-primary-700">Choose a source and inspect its available editions. Numbering is preserved from each source.</p><div className="space-y-3">{passages.map((passage) => <Surface key={passage.href} className="p-5"><Link href={passage.href} className="underline underline-offset-4"><p className="font-semibold">{passage.label}</p></Link><p className="mt-1 text-sm text-primary-700">{passage.numbering}</p><div className="mt-3 flex flex-wrap gap-2">{passage.editions.length ? passage.editions.map((edition) => <Link key={edition} className="reading-action" href={passage.href.replace('#', `&edition=${encodeURIComponent(edition)}#`)}>{edition === 'Reader note (original)' ? 'Project explanation: ' : 'Edition: '}{edition}</Link>) : <p>Reference only; no permitted excerpt is available.</p>}</div></Surface>)}</div></section>}
+      {results.total === 0 && passages.length === 0 && (
         <Callout tone="note">
           Nothing matched “{query}”. Try a different word, or browse{' '}
           <Link href="/concepts" className="underline">concepts</Link> and{' '}
@@ -73,7 +81,7 @@ export default async function SearchPage({
           <div className="space-y-2">
             {results.verses.map((verse) => (
               <Surface
-                key={verse.id}
+                key={`${verse.id}-${verse.translationName}`}
                 href={verseReaderHref(verse.sourceSlug ?? verse.sourceKey.toLowerCase(), verse)}
                 className="p-4"
               >
@@ -87,9 +95,7 @@ export default async function SearchPage({
                     {verse.book} {verse.chapter}:{verse.verse}
                   </span>
                 </div>
-                <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-700">
-                  {verse.text}
-                </p><p className="mt-2 text-xs text-primary-700">Edition: {verse.translationName}</p>
+                <ScriptText text={verse.text} className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-700" /><p className="mt-2 text-xs text-primary-700">Edition: {verse.translationName}</p>
               </Surface>
             ))}
           </div>

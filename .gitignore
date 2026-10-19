@@ -50,3 +50,5 @@ next-env.d.ts
 
 # Browser review artifacts
 /output/playwright/
+
+/output/release/

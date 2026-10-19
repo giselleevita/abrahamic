@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@/generated/prisma/client'
 
-// Map of relationship keys to verse references: "Genesis:5:3" format
+// Recorded project references. Citation wiring does not establish editorial approval.
 const relationshipVerses: Record<string, { source: 'TORAH' | 'HEBREW_BIBLE' | 'QURAN' | 'NEW_TESTAMENT'; book: string; chapter: number; verse: number } | null> = {
   'adam-seth': { source: 'TORAH', book: 'Genesis', chapter: 5, verse: 3 },
   'seth-enosh': { source: 'TORAH', book: 'Genesis', chapter: 5, verse: 6 },
@@ -214,6 +214,7 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
     { from: 'terah', to: 'sarah', type: 'CHILD', notes: 'Daughter (some sources)' },
   ]
 
+  const sources = await prisma.source.findMany({ select: { id: true, key: true } })
   for (const rel of relationships) {
     const fromFigure = await prisma.figure.findUnique({ where: { slug: rel.from } })
     const toFigure = await prisma.figure.findUnique({ where: { slug: rel.to } })
@@ -226,11 +227,13 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
       if (verseRef) {
         verse = await prisma.verse.findUnique({
           where: {
-            referenceKey: `${verseRef.source}:${verseRef.book}:${verseRef.chapter}:${verseRef.verse}`,
+            referenceKey: `${verseRef.source}.${verseRef.book}.${verseRef.chapter}.${verseRef.verse}`,
           },
         })
       }
 
+      const sourceId = verseRef ? sources.find((source) => source.key === verseRef.source)?.id : undefined
+      const notes = [rel.notes, verseRef && !verse ? `Recorded reference: ${verseRef.book} ${verseRef.chapter}:${verseRef.verse} (passage not loaded in this demonstration).` : null].filter(Boolean).join(' ') || null
       await prisma.figureRelation.upsert({
         where: {
           fromFigureId_toFigureId_relationType: {
@@ -240,19 +243,21 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
           },
         },
         update: {
-          notes: rel.notes || null,
-          verseId: verse?.id || null,
+          notes,
+          sourceId,
+          verseId: verse?.id,
         },
         create: {
           fromFigureId: fromFigure.id,
           toFigureId: toFigure.id,
           relationType: rel.type as 'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING' | 'DESCENDANT',
-          notes: rel.notes || null,
-          verseId: verse?.id || null,
+          notes,
+          sourceId,
+          verseId: verse?.id,
         },
       })
     }
   }
 
-  console.log('✓ Seeded figure relationships with citations')
+  console.log('✓ Seeded figure relationships with recorded source references')
 }

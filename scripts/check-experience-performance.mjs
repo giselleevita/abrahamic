@@ -7,7 +7,7 @@ if (!baseline || !updated) throw new Error('Supply baseline and updated producti
 const browser = await chromium.launch({ headless: true })
 const results = []
 try {
-  for (const route of ['/', '/learn/abraham-across-traditions', '/timeline', '/comparisons']) {
+  for (const route of ['/', '/learn/abraham-across-traditions', '/timeline', '/comparisons', '/family-tree', '/glossary', '/search?q=Abraham', '/kids/stories', '/kids/games', '/sources/torah/read?book=Genesis&chapter=22', '/sources/quran/read?book=Al-Ikhlas&chapter=112']) {
     const measurements = []
     for (const origin of [baseline, updated]) {
       const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })

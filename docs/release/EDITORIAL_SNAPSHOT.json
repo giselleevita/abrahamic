@@ -1,0 +1,288 @@
+{
+  "generatedAt": "2026-10-19T12:45:17.664Z",
+  "scope": "Seeded local demonstration records; project publication flags are not independent scholarly review. No scripture excerpts included.",
+  "course": {
+    "slug": "abraham-across-traditions",
+    "title": "Abraham Across Traditions",
+    "isPublished": true,
+    "chapters": [
+      {
+        "slug": "journey-abraham-meet",
+        "title": "Meet Abraham",
+        "summary": "Begin with the shared figure called Avraham, Abraham, and Ibrahim, and see why all three traditions remember him.",
+        "learningObjective": "Recognise Abraham as a shared figure while keeping each tradition’s account distinct.",
+        "takeaway": "The traditions share Abraham as a central ancestor and model of faith, but they develop his significance differently."
+      },
+      {
+        "slug": "journey-abraham-judaism",
+        "title": "Avraham in Judaism",
+        "summary": "Explore covenant, land, descendants, circumcision, and Abraham’s place in Jewish memory.",
+        "learningObjective": "Describe the Jewish account of Abraham’s covenant without importing later Christian or Islamic interpretations.",
+        "takeaway": "In Judaism, Avraham is the first patriarch and the recipient of a covenant carried through Isaac and Jacob."
+      },
+      {
+        "slug": "journey-abraham-christianity",
+        "title": "Abraham in Christianity",
+        "summary": "See how the New Testament presents Abraham as an example of faith and reads the promise through Christ.",
+        "learningObjective": "Identify the specifically Christian interpretation of Abraham in Paul’s letters.",
+        "takeaway": "Christianity retains the scriptural Abraham and interprets inheritance of the promise through faith in Christ."
+      },
+      {
+        "slug": "journey-abraham-islam",
+        "title": "Ibrahim in Islam",
+        "summary": "Meet Ibrahim as prophet, hanif, friend of God, leader, and model of submission in the Quran and Islamic tradition.",
+        "learningObjective": "Explain Ibrahim’s Quranic identity in explicitly Islamic terms.",
+        "takeaway": "In Islam, Ibrahim is a prophet of pure monotheism whose submission, family, and connection to the Kaaba are foundational."
+      },
+      {
+        "slug": "journey-abraham-distinct",
+        "title": "One figure, distinct traditions",
+        "summary": "Place the traditions side by side without flattening their disagreements about covenant, lineage, and sacrifice.",
+        "learningObjective": "Distinguish shared narrative from tradition-specific interpretation and genuine contradiction.",
+        "takeaway": "Similarity does not mean sameness: covenant lineage and the near-sacrifice are important points of divergence."
+      },
+      {
+        "slug": "journey-abraham-review",
+        "title": "Review the evidence",
+        "summary": "Check what you learned with five sourced questions. The quiz asks what each tradition teaches, never which is right.",
+        "learningObjective": "Recall the attributed positions and locate their supporting evidence.",
+        "takeaway": "You can now recognise both the shared Abrahamic inheritance and the places where the traditions make distinct claims."
+      }
+    ]
+  },
+  "homepageComparisons": [
+    {
+      "id": 1,
+      "title": "Abraham's Covenant with God",
+      "summary": "All three traditions affirm that God entered into a special covenant with Abraham. The Torah establishes this as an everlasting covenant of land and lineage for the Jewish people. The New Testament, through Paul, reinterprets the covenant as fulfilled through faith rather than law. The Qur'an presents Ibrahim as an Imam for all humanity, with the covenant extending to righteous descendants. Each tradition affirms the covenant's divine origin and Abraham's central role, while understanding its scope and continuation differently.",
+      "sharedGround": null,
+      "keyDifferences": null,
+      "updatedAt": "2026-05-21T08:09:44.951Z",
+      "claims": [
+        {
+          "claim": {
+            "id": 1,
+            "statement": "God establishes an everlasting covenant with Abraham and his descendants, promising them the land of Canaan.",
+            "source": {
+              "title": "Torah",
+              "tradition": "JEWISH",
+              "slug": "torah"
+            },
+            "verses": [
+              {
+                "verse": {
+                  "referenceKey": "TORAH.Genesis.17.7",
+                  "book": "Genesis",
+                  "chapter": 17,
+                  "verse": 7,
+                  "versification": "CHRISTIAN"
+                }
+              },
+              {
+                "verse": {
+                  "referenceKey": "TORAH.Genesis.17.8",
+                  "book": "Genesis",
+                  "chapter": 17,
+                  "verse": 8,
+                  "versification": "CHRISTIAN"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "claim": {
+            "id": 3,
+            "statement": "Paul states that the promise given to Abraham came through the righteousness of faith, not through the Law.",
+            "source": {
+              "title": "New Testament",
+              "tradition": "CHRISTIAN",
+              "slug": "new-testament"
+            },
+            "verses": [
+              {
+                "verse": {
+                  "referenceKey": "NEW_TESTAMENT.Romans.4.13",
+                  "book": "Romans",
+                  "chapter": 4,
+                  "verse": 13,
+                  "versification": "CHRISTIAN"
+                }
+              },
+              {
+                "verse": {
+                  "referenceKey": "NEW_TESTAMENT.Galatians.3.6",
+                  "book": "Galatians",
+                  "chapter": 3,
+                  "verse": 6,
+                  "versification": "CHRISTIAN"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "claim": {
+            "id": 4,
+            "statement": "God makes Ibrahim an Imam (leader) for all people after testing him with trials, and the covenant extends through his righteous descendants.",
+            "source": {
+              "title": "Qur'an",
+              "tradition": "ISLAMIC",
+              "slug": "quran"
+            },
+            "verses": [
+              {
+                "verse": {
+                  "referenceKey": "QURAN.Al-Baqarah.2.124",
+                  "book": "Al-Baqarah",
+                  "chapter": 2,
+                  "verse": 124,
+                  "versification": "CHRISTIAN"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "The Divine Call to Abraham",
+      "summary": "The Torah explicitly narrates God's call to Abraham to leave his homeland and go to a new land. Both Paul's letters and the Qur'an reference this call, presenting Abraham as a model of obedience to God. The three traditions share the foundational narrative of Abraham's departure as an act of faith.",
+      "sharedGround": null,
+      "keyDifferences": null,
+      "updatedAt": "2026-05-21T08:09:44.961Z",
+      "claims": [
+        {
+          "claim": {
+            "id": 2,
+            "statement": "God calls Abraham (then Abram) to leave his country, kindred, and father's house for a land that God will show him.",
+            "source": {
+              "title": "Torah",
+              "tradition": "JEWISH",
+              "slug": "torah"
+            },
+            "verses": [
+              {
+                "verse": {
+                  "referenceKey": "TORAH.Genesis.12.1",
+                  "book": "Genesis",
+                  "chapter": 12,
+                  "verse": 1,
+                  "versification": "CHRISTIAN"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "claim": {
+            "id": 3,
+            "statement": "Paul states that the promise given to Abraham came through the righteousness of faith, not through the Law.",
+            "source": {
+              "title": "New Testament",
+              "tradition": "CHRISTIAN",
+              "slug": "new-testament"
+            },
+            "verses": [
+              {
+                "verse": {
+                  "referenceKey": "NEW_TESTAMENT.Romans.4.13",
+                  "book": "Romans",
+                  "chapter": 4,
+                  "verse": 13,
+                  "versification": "CHRISTIAN"
+                }
+              },
+              {
+                "verse": {
+                  "referenceKey": "NEW_TESTAMENT.Galatians.3.6",
+                  "book": "Galatians",
+                  "chapter": 3,
+                  "verse": 6,
+                  "versification": "CHRISTIAN"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Salvation — Faith, Works, or Submission?",
+      "summary": "How is a human being saved, redeemed, or brought into right relationship with God? The three traditions give fundamentally different answers. Paul's landmark declaration \"a person is justified by faith apart from works of the law\" is central to Protestant Christianity and remains a point of debate with Catholic and Orthodox Christianity, both of whom emphasize cooperation with grace. Judaism does not use \"salvation\" in the Christian sense — the question is how to live rightly according to Torah and seek God's forgiveness through repentance. Islam teaches that salvation comes through faith (iman), submission (islam), and excellence (ihsan) — but it is ultimately God's mercy (rahma) that saves, since no human's deeds are sufficient without it.",
+      "sharedGround": null,
+      "keyDifferences": null,
+      "updatedAt": "2026-05-21T08:09:45.081Z",
+      "claims": [
+        {
+          "claim": {
+            "id": 60,
+            "statement": "Paul teaches that a person is justified by faith apart from works of the law — salvation is a gift of grace through faith in Christ, not earned through observance of the Mosaic commandments.",
+            "source": {
+              "title": "New Testament",
+              "tradition": "CHRISTIAN",
+              "slug": "new-testament"
+            },
+            "verses": [
+              {
+                "verse": {
+                  "referenceKey": "NEW_TESTAMENT.Romans.3.28",
+                  "book": "Romans",
+                  "chapter": 3,
+                  "verse": 28,
+                  "versification": "CHRISTIAN"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "claim": {
+            "id": 61,
+            "statement": "In Christ there is neither Jew nor Greek, slave nor free, male nor female — all are one in Christ Jesus, and if you belong to Christ you are Abraham's offspring, heirs according to the promise.",
+            "source": {
+              "title": "New Testament",
+              "tradition": "CHRISTIAN",
+              "slug": "new-testament"
+            },
+            "verses": [
+              {
+                "verse": {
+                  "referenceKey": "NEW_TESTAMENT.Galatians.3.28",
+                  "book": "Galatians",
+                  "chapter": 3,
+                  "verse": 28,
+                  "versification": "CHRISTIAN"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "claim": {
+            "id": 62,
+            "statement": "There is no compulsion in religion — the right path has been made clear from the wrong; this Quranic principle establishes freedom of belief as a divine decree, complicating later juridical rulings on apostasy.",
+            "source": {
+              "title": "Qur'an",
+              "tradition": "ISLAMIC",
+              "slug": "quran"
+            },
+            "verses": [
+              {
+                "verse": {
+                  "referenceKey": "QURAN.Al-Baqarah.2.256",
+                  "book": "Al-Baqarah",
+                  "chapter": 2,
+                  "verse": 256,
+                  "versification": "CHRISTIAN"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

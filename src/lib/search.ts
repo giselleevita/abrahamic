@@ -1,20 +1,8 @@
+import { Prisma } from '@/generated/prisma/client'
+import { searchOptions, type SearchOptions } from '@/lib/search-options'
 import prisma from '@/lib/prisma'
-import { filterPublicDemoTranslations } from '@/lib/public-demo-policy'
+import { REMOVED_TRANSLATION_NAMES, PUBLIC_DEMO_TRANSLATION_NAMES, PERMITTED_LICENSE_CODES, filterPublicDemoTranslations } from '@/lib/public-demo-policy'
 import type { SourceKey, ConceptCategory, TimelineEra, Tradition } from '@/generated/prisma/client'
-
-/**
- * Ranked full-text search.
- *
- * Replaces `ILIKE '%q%'` across six unindexed tables. That approach could not
- * survive the corpus: a rare or absent term forced a full sequential scan
- * (~55ms at the database, 61–111ms end-to-end at 37k rows), and results came
- * back in arbitrary order because there was nothing to rank by.
- *
- * Queries run against generated tsvector columns with GIN indexes, so the same
- * absent-term query costs ~0.2ms. Short names (figures, themes) use trigram
- * similarity instead, which also tolerates the misspellings people actually
- * type for names like "Melchizedek".
- */
 
 export interface VerseHit {
   id: number
@@ -26,6 +14,7 @@ export interface VerseHit {
   sourceTitle: string
   sourceSlug: string
   versification: string
+  licenseCode?: string | null
   translationName: string
   text: string
   rank: number
@@ -91,12 +80,17 @@ const EMPTY: SearchResults = {
  * exclusion — and, importantly, never throws on malformed input the way
  * `to_tsquery` does.
  */
-export async function search(rawQuery: string, limit = 10): Promise<SearchResults> {
-  const query = rawQuery.trim()
+export async function search(rawQuery: string, limit = 10, rawFilters: SearchOptions = {}): Promise<SearchResults> {
+  const query = rawQuery.trim().slice(0, 300)
+  const filters = searchOptions(rawFilters)
+  limit = Math.max(1, Math.min(50, Math.floor(limit)))
+  const source = (alias: string) => Prisma.sql`${filters.source ? Prisma.sql`AND ${Prisma.raw(alias)}.key::text = ${filters.source}` : Prisma.empty} ${filters.tradition ? Prisma.sql`AND ${Prisma.raw(alias)}.tradition::text = ${filters.tradition}` : Prisma.empty}`
+  const selected = <T>(type: keyof typeof EMPTY, run: () => PromiseLike<T[]>): PromiseLike<T[]> => !filters.type || filters.type === type ? run() : Promise.resolve([])
+  const permitted = Prisma.sql`AND t.name NOT IN (${Prisma.join([...REMOVED_TRANSLATION_NAMES])}) AND (t."licenseCode" IN (${Prisma.join([...PERMITTED_LICENSE_CODES])}) OR t.name IN (${Prisma.join([...PUBLIC_DEMO_TRANSLATION_NAMES])}))`
   if (query.length < 2) return EMPTY
 
   const [verses, claims, figures, themes, concepts, timelineEvents] = await Promise.all([
-    prisma.$queryRaw<VerseHit[]>`
+    selected('verses', () => prisma.$queryRaw<VerseHit[]>`
       SELECT
         v.id,
         v."referenceKey" AS "referenceKey",
@@ -105,17 +99,18 @@ export async function search(rawQuery: string, limit = 10): Promise<SearchResult
         s.title AS "sourceTitle",
         s.slug AS "sourceSlug",
         t.name AS "translationName",
-        t.text,
+        t.text, t."licenseCode",
         ts_rank(t.search_vector, websearch_to_tsquery('english', ${query})) AS rank
       FROM verse_translations t
       JOIN verses  v ON v.id = t."verseId"
       JOIN sources s ON s.id = v."sourceId"
       WHERE t.search_vector @@ websearch_to_tsquery('english', ${query})
+      ${source('s')} ${permitted}
       ORDER BY rank DESC, v."sourceId", v.book, v.chapter, v.verse
       LIMIT ${limit}
-    `,
+    `),
 
-    prisma.$queryRaw<ClaimHit[]>`
+    selected('claims', () => prisma.$queryRaw<ClaimHit[]>`
       SELECT
         c.id, c.statement,
         s.key   AS "sourceKey",
@@ -124,14 +119,15 @@ export async function search(rawQuery: string, limit = 10): Promise<SearchResult
       FROM claims c
       JOIN sources s ON s.id = c."sourceId"
       WHERE c."isPublished" = true
+        ${source('s')}
         AND c.search_vector @@ websearch_to_tsquery('english', ${query})
       ORDER BY rank DESC
       LIMIT ${limit}
-    `,
+    `),
 
     // Trigram rather than FTS: these are short proper nouns, and users misspell
     // them. similarity() also gives a usable ordering that FTS would not.
-    prisma.$queryRaw<FigureHit[]>`
+    selected('figures', () => prisma.$queryRaw<FigureHit[]>`
       SELECT DISTINCT ON (f.slug)
         f.slug, f."canonicalName" AS "canonicalName",
         GREATEST(
@@ -140,45 +136,53 @@ export async function search(rawQuery: string, limit = 10): Promise<SearchResult
         ) AS similarity
       FROM figures f
       LEFT JOIN figure_aliases a ON a."figureId" = f.id
-      WHERE f."canonicalName" % ${query} OR a.name % ${query}
+      WHERE (f."canonicalName" % ${query} OR a.name % ${query})
+        AND EXISTS (SELECT 1 FROM claim_figures cf JOIN claims c ON c.id = cf."claimId" JOIN sources s ON s.id = c."sourceId" WHERE cf."figureId" = f.id AND c."isPublished" = true ${filters.source ? Prisma.sql`AND s.key::text = ${filters.source}` : Prisma.empty})
+        ${filters.tradition ? Prisma.sql`AND EXISTS (SELECT 1 FROM figure_aliases fa WHERE fa."figureId" = f.id AND fa.tradition::text = ${filters.tradition})` : Prisma.empty}
+        AND (similarity(f."canonicalName", ${query}) >= ${NAME_SIMILARITY_FLOOR} OR similarity(a.name, ${query}) >= ${NAME_SIMILARITY_FLOOR})
       ORDER BY f.slug, similarity DESC
       LIMIT ${limit}
-    `,
+    `),
 
-    prisma.$queryRaw<ThemeHit[]>`
+    selected('themes', () => prisma.$queryRaw<ThemeHit[]>`
       SELECT slug, name, similarity(name, ${query}) AS similarity
-      FROM themes
-      WHERE name % ${query}
+      FROM themes t
+      WHERE name % ${query} AND similarity(name, ${query}) >= ${NAME_SIMILARITY_FLOOR}
+        AND EXISTS (SELECT 1 FROM claim_themes ct JOIN claims c ON c.id = ct."claimId" JOIN sources s ON s.id = c."sourceId" WHERE ct."themeId" = t.id AND c."isPublished" = true ${source('s')})
       ORDER BY similarity DESC
       LIMIT ${limit}
-    `,
+    `),
 
-    prisma.$queryRaw<ConceptHit[]>`
+    selected('concepts', () => prisma.$queryRaw<ConceptHit[]>`
       SELECT slug, name, category, summary,
              ts_rank(search_vector, websearch_to_tsquery('english', ${query})) AS rank
-      FROM concepts
+      FROM concepts co
       WHERE "isPublished" = true
+        ${filters.tradition ? Prisma.sql`AND EXISTS (SELECT 1 FROM concept_traditions ct WHERE ct."conceptId" = co.id AND ct.tradition::text = ${filters.tradition})` : Prisma.empty}
+        ${filters.source ? Prisma.sql`AND EXISTS (SELECT 1 FROM concept_claims cc JOIN claims c ON c.id = cc."claimId" JOIN sources s ON s.id = c."sourceId" WHERE cc."conceptId" = co.id AND c."isPublished" = true AND s.key::text = ${filters.source})` : Prisma.empty}
         AND search_vector @@ websearch_to_tsquery('english', ${query})
       ORDER BY rank DESC
       LIMIT ${limit}
-    `,
+    `),
 
-    prisma.$queryRaw<TimelineHit[]>`
+    selected('timelineEvents', () => prisma.$queryRaw<TimelineHit[]>`
       SELECT slug, name, era, summary,
              ts_rank(search_vector, websearch_to_tsquery('english', ${query})) AS rank
-      FROM timeline_events
+      FROM timeline_events e
       WHERE "isPublished" = true
+        ${filters.tradition ? Prisma.sql`AND EXISTS (SELECT 1 FROM timeline_event_traditions et WHERE et."eventId" = e.id AND et.tradition::text = ${filters.tradition})` : Prisma.empty}
+        ${filters.source ? Prisma.sql`AND EXISTS (SELECT 1 FROM timeline_event_verses ev JOIN verses v ON v.id = ev."verseId" JOIN sources s ON s.id = v."sourceId" WHERE ev."eventId" = e.id AND s.key::text = ${filters.source})` : Prisma.empty}
         AND search_vector @@ websearch_to_tsquery('english', ${query})
       ORDER BY rank DESC
       LIMIT ${limit}
-    `,
+    `),
   ])
 
   // $queryRaw bypasses the Prisma client extension that enforces the public-demo
   // translation policy, so it is reapplied here explicitly. Without this, raw
   // search would be the one hole in an otherwise airtight guard.
   const publicVerses = verses.filter((v) =>
-    filterPublicDemoTranslations([{ name: v.translationName }]).length > 0,
+    filterPublicDemoTranslations([{ name: v.translationName, licenseCode: v.licenseCode }]).length > 0,
   )
 
   const supports = claims.length ? await prisma.claim.findMany({

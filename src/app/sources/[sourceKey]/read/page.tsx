@@ -17,7 +17,7 @@ export async function generateMetadata({
   searchParams,
 }: {
   params: Promise<{ sourceKey: string }>
-  searchParams: Promise<{ book?: string; chapter?: string }>
+  searchParams: Promise<{ book?: string; chapter?: string; edition?: string }>
 }): Promise<Metadata> {
   const { sourceKey } = await params
   const { book, chapter } = await searchParams
@@ -31,10 +31,10 @@ export default async function VerseReaderPage({
   searchParams,
 }: {
   params: Promise<{ sourceKey: string }>
-  searchParams: Promise<{ book?: string; chapter?: string }>
+  searchParams: Promise<{ book?: string; chapter?: string; edition?: string }>
 }) {
   const { sourceKey } = await params
-  const { book, chapter } = await searchParams
+  const { book, chapter, edition } = await searchParams
 
   const source = await prisma.source.findUnique({ where: { slug: sourceKey } })
   if (!source) notFound()
@@ -171,7 +171,7 @@ export default async function VerseReaderPage({
           </div>
 
           {masoretic.length > 0 && <nav aria-label="Editions on this page" className="mb-6 flex flex-wrap gap-2 text-sm"><a href="#translated-edition" className="editorial-control px-4 py-2 font-semibold">Translated edition</a><a href="#hebrew-edition" className="editorial-control px-4 py-2 font-semibold">Hebrew edition ↓</a></nav>}
-          {verses.length > 0 ? <section id="translated-edition" className="editorial-card scroll-mt-24 p-5 sm:p-7"><h2 className="editorial-title mb-2 text-2xl">Available editions</h2><p className="mb-6 text-sm leading-relaxed text-[#51483c]">Compare editions of this same numbered passage. Linked passages from other traditions are references, not equivalent translations.</p><VerseReader key={`${sourceKey}:${book}:${activeChapter}`} sourceSlug={source.slug} sourceTitle={source.title} verses={filterVersesWithTranslations(verses) as any} /></section> : <p id="translated-edition" className="editorial-card p-5 text-sm text-[#51483c]">No translated verses are available for this chapter in the current numbering. The Hebrew edition may use a different chapter division.</p>}
+          {verses.length > 0 ? <section id="translated-edition" className="editorial-card scroll-mt-24 p-5 sm:p-7"><h2 className="editorial-title mb-2 text-2xl">Available editions</h2><p className="mb-6 text-sm leading-relaxed text-[#51483c]">Compare editions of this same numbered passage. Linked passages from other traditions are references, not equivalent translations.</p><VerseReader initialEdition={edition} key={`${sourceKey}:${book}:${activeChapter}`} sourceSlug={source.slug} sourceTitle={source.title} verses={filterVersesWithTranslations(verses) as any} /></section> : <p id="translated-edition" className="editorial-card p-5 text-sm text-[#51483c]">No translated verses are available for this chapter in the current numbering. The Hebrew edition may use a different chapter division.</p>}
 
           {masoretic.length > 0 && (
             <section id="hebrew-edition" className="editorial-card mt-10 scroll-mt-24 p-5 sm:p-7">
@@ -183,7 +183,7 @@ export default async function VerseReaderPage({
                 Some chapters and verses differ from the English division above, so the
                 two editions are shown separately rather than paired without a verified mapping.
               </p>
-              <div className="mt-5"><VerseReader key={`hebrew:${sourceKey}:${book}:${activeChapter}`} sourceSlug={source.slug} sourceTitle={`${source.title} · Masoretic numbering`} verses={filterVersesWithTranslations(masoretic).map((verse) => ({ ...verse, linksAsA: [], linksAsB: [] }))} /></div>
+              <div className="mt-5"><VerseReader initialEdition={edition} key={`hebrew:${sourceKey}:${book}:${activeChapter}`} sourceSlug={source.slug} sourceTitle={`${source.title} · Masoretic numbering`} verses={filterVersesWithTranslations(masoretic).map((verse) => ({ ...verse, linksAsA: [], linksAsB: [] }))} /></div>
             </section>
           )}
 

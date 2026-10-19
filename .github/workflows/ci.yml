@@ -13,6 +13,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      ADMIN_EMAIL: editorial-ci@example.test
+      E2E_ADMIN_EMAIL: editorial-ci@example.test
+      E2E_ADMIN_PASSWORD: synthetic-ci-editorial-password
+      RATE_LIMIT_SECRET: synthetic-ci-quota-secret-at-least-32-characters
 
     services:
       postgres:
@@ -39,6 +44,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Configure synthetic editorial credentials
+        run: node -e "const fs=require('fs');const bcrypt=require('bcryptjs');fs.appendFileSync(process.env.GITHUB_ENV, 'ADMIN_PASSWORD_HASH='+bcrypt.hashSync(process.env.E2E_ADMIN_PASSWORD,10)+'\n')"
 
       - name: Generate Prisma client
         run: npx prisma generate
@@ -72,6 +80,9 @@ jobs:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
 
+      - name: Verify preview isolation guard
+        run: node --test scripts/preview-guard.test.mjs
+
       - name: Build
         run: npx next build
         env:
@@ -83,10 +94,20 @@ jobs:
       - name: Install browser for journey test
         run: npx playwright install --with-deps chromium
 
-      - name: Run desktop and 320px journey flows
+      - name: Run desktop, tablet and 320px flows
         run: npm run test:e2e
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           NEXTAUTH_SECRET: "ci-secret-not-for-production-use"
           NEXTAUTH_URL: "http://localhost:3100"
+
+      - name: Preserve browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-failure-evidence
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
