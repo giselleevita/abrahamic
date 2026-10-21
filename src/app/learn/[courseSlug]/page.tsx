@@ -1,3 +1,4 @@
+import { PickQuestion } from '@/components/learn/PickQuestion'
 import type { Metadata } from "next";
 import { StoryScene } from '@/components/experience/Motion'
 import Image from "next/image";
@@ -69,6 +70,7 @@ export default async function CoursePage({ params }: { params: Params }) {
               {steps.length} steps
             </h2>
           </div>
+          <PickQuestion courseSlug={course.slug} chapterSlugs={course.chapters.map((c) => c.slug)} />
           <JourneyStepList steps={steps} />
         </section>
         <aside className="h-fit space-y-5 lg:sticky lg:top-24">

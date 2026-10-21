@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { TRADITION_LABEL } from '@/lib/constants'
+import { PronounceButton } from '@/components/ui/PronounceButton'
 import type { Tradition } from '@/generated/prisma/client'
 
 type Person = {
@@ -60,7 +61,7 @@ export function NameExplorer({ people }: { people: Person[] }) {
                     <p className="text-xs font-bold uppercase tracking-wider text-[#80571b]">{TRADITION_LABEL[t]}</p>
                     {a ? (
                       <>
-                        <p className={`mt-1 text-lg font-bold ${fold(a.name).includes(q) ? 'text-[#b7791f]' : 'text-slate-950'}`}>{a.name}</p>
+                        <p className={`mt-1 flex items-center gap-2 text-lg font-bold ${fold(a.name).includes(q) ? 'text-[#b7791f]' : 'text-slate-950'}`}>{a.name}<PronounceButton name={a.name} tradition={t} /></p>
                         {a.notes && <p className="mt-1 text-sm leading-6 text-slate-700">{a.notes}</p>}
                       </>
                     ) : (

@@ -1,4 +1,5 @@
 import { ScriptText } from '@/components/ui/ScriptText'
+import { GuidedQuestions } from '@/components/search/GuidedQuestions'
 import { SearchForm } from '@/components/search/SearchForm'
 import { SearchFilters } from '@/components/search/SearchFilters'
 import { searchOptions } from '@/lib/search-options'
@@ -35,6 +36,7 @@ export default async function SearchPage({
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <PageIntro eyebrow="Explore" title="Search" />
         {form}<p className="text-primary-700">Enter at least two characters to search.</p><div className="mt-5 flex flex-wrap gap-3">{['Abraham', 'prayer', 'creation'].map((term) => <Link key={term} href={`/search?q=${term}`} className="reading-action">{term}</Link>)}</div>
+      <GuidedQuestions />
       </div>
     )
   }

@@ -1,3 +1,5 @@
+import { NoteButton } from '@/components/experience/NoteButton'
+import { PronounceButton } from '@/components/ui/PronounceButton'
 import { TrailRecorder } from '@/components/experience/TrailRecorder'
 import { FigureQuizSection } from '@/components/figures/FigureQuizSection'
 import { NextUp } from '@/components/layout/NextUp'
@@ -149,7 +151,7 @@ export default async function FigurePage({ params }: { params: Promise<{ slug: s
           {figure.aliases.map((alias) => (
             <div key={alias.id} className="rounded-lg border border-stone-200 bg-white p-3">
               <Badge className={TRADITION_BG[alias.tradition]}>{alias.tradition}</Badge>
-              <p className="mt-2 text-base font-semibold text-stone-900">{alias.name}</p>
+              <p className="mt-2 flex items-center gap-2 text-base font-semibold text-stone-900">{alias.name}<PronounceButton name={alias.name} tradition={alias.tradition} /></p>
               {alias.language && (
                 <p className="text-xs text-stone-400">{alias.language}</p>
               )}
@@ -274,6 +276,7 @@ export default async function FigurePage({ params }: { params: Promise<{ slug: s
         </section>
       )}
       <FigureQuizSection figure={{ id: figure.id, canonicalName: figure.canonicalName }} />
+      <NoteButton href={`/figures/${figure.slug}`} label={figure.canonicalName} />
       <TrailRecorder item={{ href: `/figures/${figure.slug}`, label: figure.canonicalName, kind: 'figure' }} />
       <NextUp current={{ kind: 'figure', id: figure.id }} />
     </div>

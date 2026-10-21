@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { StickerAlbum } from '@/components/kids/StickerAlbum'
 import { KIDS_GAMES } from '@/lib/kids/games'
 
 export const metadata = { title: 'Games · Abrahamic for Kids' }
@@ -26,6 +27,8 @@ export default function KidsGamesPage() {
           </Link>
         ))}
       </div>
+
+      <StickerAlbum />
 
       <p className="mt-8 rounded-xl border border-primary-200 bg-white p-5 text-sm leading-relaxed text-primary-700">
         Your scores are kept only on this device. Nothing is sent anywhere, and you never

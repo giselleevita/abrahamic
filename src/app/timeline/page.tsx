@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import prisma from '@/lib/prisma'
 import type { TimelineEra, TraditionPresence } from '@/generated/prisma/client'
+import { StoryPlayer } from '@/components/timeline/StoryPlayer'
 import VisualTimeline from '@/components/timeline/VisualTimeline'
 import { PageIntro } from '@/components/layout/PageIntro'
 
@@ -108,6 +109,21 @@ export default async function TimelinePage() {
           </span>
         </div>
       </details>
+
+      <StoryPlayer
+        events={groups.flatMap((g) =>
+          g.events.map((e) => ({
+            slug: e.slug,
+            name: e.name,
+            summary: e.summary,
+            era: g.era,
+            eraLabel: g.label,
+            imageSrc: g.imageSrc,
+            imageAlt: g.imageAlt,
+            traditions: e.traditions.map((t) => ({ tradition: t.tradition, presence: t.presence })),
+          })),
+        )}
+      />
 
       {/* Visual timeline */}
       <VisualTimeline groups={groups} />

@@ -1,3 +1,4 @@
+import { NoteButton } from '@/components/experience/NoteButton'
 import { ListenButton } from '@/components/ui/ListenButton'
 import { TrailRecorder } from '@/components/experience/TrailRecorder'
 import { GlossaryText } from '@/components/glossary/GlossaryText'
@@ -152,6 +153,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
             : []),
         ]}
       />
+      <NoteButton href={`/concepts/${concept.slug}`} label={concept.name} />
       <TrailRecorder item={{ href: `/concepts/${concept.slug}`, label: concept.name, kind: 'concept' }} />
       <NextUp current={{ kind: 'concept', id: concept.id }} />
     </div>

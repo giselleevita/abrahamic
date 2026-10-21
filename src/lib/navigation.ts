@@ -45,10 +45,22 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    id: 'play',
+    label: 'Play',
+    items: [
+      { href: '/daily', label: 'Daily challenge', description: 'Three quick questions, new every day.' },
+      { href: '/evidence', label: 'Evidence board', description: 'Sort statements into the tradition they come from.' },
+      { href: '/build-story', label: 'Build the story', description: 'Pin events to places, then put them in order.' },
+      { href: '/album', label: 'Streak and badges', description: 'Your progress, kept on this device.' },
+    ],
+  },
+  {
     id: 'compare',
     label: 'Compare',
     items: [
       { href: '/comparisons', label: 'Comparisons', description: 'Side-by-side, with sources attached.' },
+      { href: '/compare-people', label: 'Compare two people', description: 'Pick any two and see what they share.' },
+      { href: '/web', label: 'Web of ideas', description: 'How beliefs and people connect.' },
       { href: '/verse-links', label: 'Cross-references', description: 'Linked passages between scriptures.' },
     ],
   },
@@ -58,6 +70,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: '/sources', label: 'Sources', description: 'Torah, Hebrew Bible, New Testament, Quran.' },
       { href: '/videos', label: 'Videos', description: 'Editorially reviewed explainers with privacy-friendly embeds.' },
+      { href: '/notebook', label: 'My notebook', description: 'Your private notes and reading list, kept on this device.' },
       { href: '/saved', label: 'Saved', description: 'Passages and comparisons saved on this device.' },
       { href: '/glossary', label: 'Glossary', description: 'Plain-language definitions of the terms used.' },
     ],
