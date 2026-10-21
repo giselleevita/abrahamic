@@ -14,6 +14,7 @@ import { seedVerseLinks } from './verseLinks'
 import { seedCourses } from './courses'
 import { seedJourneys } from './journeys'
 import { seedKidsStories } from './kidsStories'
+import { seedVideos } from './videos'
 
 async function main() {
   console.log('🌱 Seeding database...\n')
@@ -30,6 +31,7 @@ async function main() {
   await seedTimeline(prisma)
   await seedVerseLinks(prisma)   // ← must run after verses are seeded
   await seedKidsStories(prisma)  // ← must run after claims and figures
+  await seedVideos(prisma)       // ← unpublished candidates; needs figures and concepts
   await seedCourses(prisma)      // ← must run last; curates all of the above
   await seedJourneys(prisma)
   console.log('\n✅ Seed complete')
