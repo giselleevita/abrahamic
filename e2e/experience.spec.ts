@@ -75,9 +75,13 @@ test('public pages fit the viewport and support keyboard entry', async ({ page }
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused()
 })
 
-test('anonymous corrections stay private and an editor can resolve them', async ({ page, request }) => {
+test('anonymous corrections stay private and an editor can resolve them', async ({ page, request }, testInfo) => {
   test.skip(!process.env.E2E_ADMIN_EMAIL || !process.env.E2E_ADMIN_PASSWORD, 'Set synthetic local editorial credentials to verify the inbox.')
-  const description = `Browser verification report ${Date.now()}: verify this source reference.`
+  // A unique description per project and run keeps parallel projects from matching each other's
+  // report, and a unique client key keeps repeated runs under the 5-per-10-minutes quota.
+  const unique = `${testInfo.project.name}-${Date.now()}-${testInfo.workerIndex}`
+  const description = `Browser verification report ${unique}: verify this source reference.`
+  await page.context().setExtraHTTPHeaders({ 'x-forwarded-for': unique })
   await openComparison(page)
   await page.getByText('Suggest a correction', { exact: true }).click()
   await page.getByLabel('What needs correcting?').fill(description)
