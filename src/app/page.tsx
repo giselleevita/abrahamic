@@ -74,6 +74,18 @@ export default async function HomePage() {
         ].map(({ href, title, subtitle, image, Icon }) => <Link key={href} href={href} className="premium-destination"><Image src={`/timeline/${image}.jpg`} alt="" fill sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw" className="object-cover" /><div className="destination-shade" /><div className="destination-top"><Icon size={24} aria-hidden /><ArrowUpRight size={22} aria-hidden /></div><div className="destination-copy"><p>{subtitle}</p><h3>{title}</h3></div></Link>)}</div>
       </section>
 
+      <section aria-labelledby="kids-promo-title" className="my-14 overflow-hidden rounded-3xl border-4 border-amber-300 bg-gradient-to-br from-amber-100 via-rose-100 to-sky-100 p-6 sm:p-10">
+        <div className="grid items-center gap-6 sm:grid-cols-[1fr_auto]">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wider text-amber-900">🎈 New · For ages 6–12</p>
+            <h2 id="kids-promo-title" className="mt-2 font-serif text-3xl font-bold text-slate-950 sm:text-4xl">Is a young explorer with you?</h2>
+            <p className="mt-3 max-w-xl text-lg leading-8 text-slate-800">Kid-friendly stories, four colourful games, and a short video about the three books, reviewed by an editor and with no sign-in.</p>
+            <Link href="/kids" className="mt-5 inline-block rounded-2xl bg-slate-950 px-6 py-3 text-lg font-bold text-white hover:bg-slate-800">Visit the kids&apos; corner →</Link>
+          </div>
+          <p aria-hidden="true" className="text-6xl sm:text-7xl">🧩🌳🔍</p>
+        </div>
+      </section>
+
       <section className="premium-search-section" aria-labelledby="search-title"><p className="editorial-eyebrow">There is always another question</p><h2 id="search-title">What are you<br /><em>curious about?</em></h2><form action="/search" role="search"><label className="sr-only" htmlFor="home-search">Search the site</label><Search size={23} aria-hidden /><input id="home-search" type="search" name="q" minLength={2} required placeholder="Try Abraham, prayer, or creation" /><button type="submit" aria-label="Search" className="editorial-button"><ArrowUpRight size={22} aria-hidden /></button></form>{topics.length > 0 && <div className="premium-search-suggestions"><span>Or explore</span>{topics.map((topic) => <Link href={`/themes/${topic.slug}`} key={topic.slug}>{topic.name}<ArrowUpRight size={12} aria-hidden /></Link>)}</div>}</section>
     </div>
   </div>

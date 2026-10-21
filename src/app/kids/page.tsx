@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { AGE_BAND_RULES } from '@/lib/kids/readability'
+import { KIDS_GAMES } from '@/lib/kids/games'
 import { YouTubeFacade } from '@/components/video/YouTubeFacade'
 
 // Cached content. Editors' changes appear immediately: mutating routes
@@ -56,19 +57,15 @@ export default async function KidsHomePage() {
       <section className="mt-10" aria-labelledby="kids-games-heading">
         <h2 id="kids-games-heading" className="font-serif text-2xl font-bold text-primary-950">Pick a game</h2>
         <div className="stagger mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {[
-            ['name-match', '🧩', 'Many Names', 'bg-sky-100 border-sky-300'],
-            ['who-tells-it', '🔍', 'Who Tells It?', 'bg-rose-100 border-rose-300'],
-            ['timeline-sorter', '⏳', 'Put It In Order', 'bg-emerald-100 border-emerald-300'],
-            ['family-chain', '🌳', 'Who Came First?', 'bg-violet-100 border-violet-300'],
-          ].map(([slug, icon, label, tone]) => (
+          {KIDS_GAMES.map((game) => (
             <Link
-              key={slug}
-              href={`/kids/games/${slug}`}
-              className={`flex min-h-32 flex-col items-center justify-center gap-2 rounded-2xl border-2 p-4 text-center text-lg font-bold text-primary-950 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${tone}`}
+              key={game.slug}
+              href={`/kids/games/${game.slug}`}
+              className={`flex min-h-36 flex-col items-center justify-center gap-1 rounded-3xl border-4 p-4 text-center text-lg font-bold text-primary-950 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${game.card}`}
             >
-              <span aria-hidden="true" className="text-4xl">{icon}</span>
-              {label}
+              <span aria-hidden="true" className="text-4xl">{game.emoji}</span>
+              {game.short}
+              <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-bold text-primary-900">{game.ages}</span>
             </Link>
           ))}
         </div>

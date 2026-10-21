@@ -3,6 +3,7 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import Link from 'next/link'
 import { useKidsProgress } from '@/lib/kids/progress'
+import { KIDS_GAME_BY_SLUG } from '@/lib/kids/games'
 
 /**
  * Shared chrome for every kids game: title, keyboard instructions, a live
@@ -25,13 +26,6 @@ interface GameShellProps {
   announcement: string
   onRestart: () => void
   children: ReactNode
-}
-
-const GAME_EMOJI: Record<string, string> = {
-  'name-match': '🧩',
-  'who-tells-it': '🔍',
-  'timeline-sorter': '⏳',
-  'family-chain': '🌳',
 }
 
 function cheer(score: number): { headline: string; stars: number } {
@@ -68,6 +62,7 @@ export function GameShell({
   }, [score, record, gameId])
 
   const best = progress.games[gameId]?.bestScore
+  const info = KIDS_GAME_BY_SLUG[gameId]
 
   return (
     <div>
@@ -78,11 +73,23 @@ export function GameShell({
         <span aria-hidden="true">←</span> All games
       </Link>
 
-      <h1 className="font-serif text-3xl font-bold text-primary-950 sm:text-4xl">
-        <span aria-hidden="true" className="kids-bounce mr-2">{GAME_EMOJI[gameId] ?? '🎮'}</span>
-        {title}
-      </h1>
-      <p className="mt-2 text-lg leading-relaxed text-primary-800">{howToPlay}</p>
+      <header className={`rounded-3xl border-4 bg-gradient-to-br p-5 sm:p-7 ${info?.banner ?? 'from-amber-100 to-amber-50 border-gold-500'}`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="font-serif text-3xl font-bold text-primary-950 sm:text-4xl">
+            <span aria-hidden="true" className="kids-bounce mr-2">{info?.emoji ?? '🎮'}</span>
+            {title}
+          </h1>
+          {info && (
+            <span className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-primary-900 shadow-sm">
+              {info.ages}
+            </span>
+          )}
+        </div>
+        <p className="mt-3 rounded-2xl bg-white/80 p-4 text-lg leading-relaxed text-primary-900">
+          <span aria-hidden="true">👉 </span>
+          {howToPlay}
+        </p>
+      </header>
 
       <details className="mt-4 rounded-xl border border-primary-200 bg-white p-4">
         <summary className="cursor-pointer text-sm font-semibold text-primary-800">

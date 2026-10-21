@@ -58,6 +58,14 @@ export function NavLinks() {
         )
       })}
 
+      <Link
+        prefetch={false}
+        href="/kids"
+        className="ml-1 rounded-full bg-gradient-to-r from-amber-300 to-rose-300 px-4 py-2 text-sm font-bold text-slate-950 shadow-sm transition-transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-amber-200 motion-reduce:transition-none"
+      >
+        <span aria-hidden="true">🎈 </span>For kids
+      </Link>
+
       <div ref={containerRef} className="relative">
         <button
           ref={triggerRef}
