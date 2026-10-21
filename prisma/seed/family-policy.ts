@@ -5,7 +5,7 @@ export const MOTHER_REFERENCES = [
   { from: 'sarah', to: 'isaac', key: 'sarah-isaac', book: 'Genesis', chapter: 21, verse: 3, source: 'TORAH' as const, note: 'Mother of Isaac' },
   { from: 'rebekah', to: 'jacob', key: 'rebekah-jacob', book: 'Genesis', chapter: 25, verse: 26, source: 'TORAH' as const, note: 'Mother of Jacob' },
   { from: 'rebekah', to: 'esau', key: 'rebekah-esau', book: 'Genesis', chapter: 25, verse: 25, source: 'TORAH' as const, note: 'Mother of Esau' },
-  { from: 'mary-of-nazareth', to: 'jesus', key: 'mary-of-nazareth-jesus', book: 'Luke', chapter: 2, verse: 7, source: 'NEW_TESTAMENT' as const, note: 'Mother' },
+  { from: 'mary', to: 'jesus', key: 'mary-jesus', book: 'Luke', chapter: 2, verse: 7, source: 'NEW_TESTAMENT' as const, note: 'Mother' },
 ]
 /** Correct only repository-owned seed definitions; unresolved entries remain stored but withheld. */
 export function normalizeFamilyEntry(entry: Entry): Entry {

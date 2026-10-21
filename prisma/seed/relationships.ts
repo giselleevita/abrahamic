@@ -200,7 +200,7 @@ export const familySeedEntries = [
 
     // Jesus' relationships
     { from: 'jesus', to: 'james-the-less', type: 'SIBLING', notes: 'Brother (according to some traditions)' },
-    { from: 'mary-of-nazareth', to: 'jesus', type: 'SPOUSE', notes: 'Mother' },
+    { from: 'mary', to: 'jesus', type: 'SPOUSE', notes: 'Mother' },
 
     // Apostles
     { from: 'jesus', to: 'peter', type: 'CHILD', notes: 'Spiritual relationship' },

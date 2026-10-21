@@ -1,12 +1,28 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
-import { BIG_LINKS, BIG_NODES, type BigLink, type BigNode } from '@/lib/big-picture'
+import {
+  BIG_LINKS,
+  BIG_NODES,
+  LAYERS,
+  PROPHET_NOTES,
+  PROPHET_ORDER,
+  PROPHET_PANEL,
+  type BigLayer,
+  type BigLink,
+  type BigNode,
+} from '@/lib/big-picture'
 
 const FIG_W = 132
 const FIG_H = 46
 const REL_W = 190
 const REL_H = 62
+const CMP_W = 108
+const CMP_H = 44
 
-const size = (n: BigNode) => (n.kind === 'religion' ? { w: REL_W, h: REL_H } : { w: FIG_W, h: FIG_H })
+const size = (n: BigNode) =>
+  n.kind === 'religion' ? { w: REL_W, h: REL_H } : n.compact ? { w: CMP_W, h: CMP_H } : { w: FIG_W, h: FIG_H }
 
 function geometry(link: BigLink, byId: Map<string, BigNode>) {
   const a = byId.get(link.from)!
@@ -29,14 +45,19 @@ function geometry(link: BigLink, byId: Map<string, BigNode>) {
 
 const KIND_LABEL: Record<BigLink['kind'], string> = {
   recorded: 'Recorded family link',
+  kin: 'Recorded relative',
   tradition: 'A tradition’s own account',
   honoured: 'Honoured by a later tradition',
   gap: 'Generations not drawn',
 }
 
 export function BigPictureDiagram() {
+  const [on, setOn] = useState<Record<BigLayer, boolean>>({ women: true, kin: true, prophets: true })
+  const visible = (n: BigNode) => !n.layer || on[n.layer]
+  const nodes = BIG_NODES.filter(visible)
+  const shown = new Set(nodes.map((n) => n.id))
   const byId = new Map(BIG_NODES.map((n) => [n.id, n]))
-  const drawn = BIG_LINKS.filter((l) => l.kind !== 'honoured')
+  const drawn = BIG_LINKS.filter((l) => l.kind !== 'honoured' && shown.has(l.from) && shown.has(l.to))
   const honoured = (religionId: string) =>
     BIG_LINKS.filter((l) => l.kind === 'honoured' && l.to === religionId).map((l) => byId.get(l.from)!.label)
 
@@ -54,13 +75,29 @@ export function BigPictureDiagram() {
         </p>
       </div>
 
+      <fieldset className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-2xl border border-primary-200 bg-white px-4 py-3">
+        <legend className="px-1 text-sm font-semibold text-primary-900">Show on the diagram</legend>
+        {LAYERS.map((layer) => (
+          <label key={layer.id} className="flex cursor-pointer items-center gap-2 text-sm text-primary-800">
+            <input
+              type="checkbox"
+              checked={on[layer.id]}
+              onChange={(e) => setOn((prev) => ({ ...prev, [layer.id]: e.target.checked }))}
+              className="h-4 w-4 accent-[#173b68]"
+            />
+            <span className="font-semibold">{layer.label}</span>
+            <span className="text-primary-600">({layer.hint})</span>
+          </label>
+        ))}
+      </fieldset>
+
       <figure className="rounded-3xl border border-[#d7c5ad] bg-gradient-to-b from-[#fbf6ec] to-white p-3 sm:p-6">
         <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Overview diagram of how the three traditions are connected, scrollable">
           <svg
             role="group"
-            aria-label="Diagram: Adam, Noah and Abraham lead to Isaac and Ishmael, and onward to the origins of Judaism, Christianity and Islam. A text list of every connection follows."
-            viewBox="0 0 900 860"
-            className="mx-auto block h-auto w-full min-w-[720px] max-w-[900px]"
+            aria-label="Diagram: Adam, Enoch, Noah and Abraham lead to Isaac and Ishmael, and onward to the origins of Judaism, Christianity and Islam. A text list of every connection follows."
+            viewBox="0 0 1050 975"
+            className="mx-auto block h-auto w-full min-w-[820px] max-w-[1050px]"
           >
             <defs>
               <marker id="bp-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -68,15 +105,29 @@ export function BigPictureDiagram() {
               </marker>
             </defs>
 
+            {on.prophets && (
+              <g>
+                <rect x={PROPHET_PANEL.x} y={PROPHET_PANEL.y} width={PROPHET_PANEL.w} height={PROPHET_PANEL.h} rx={18} fill="#f3eadb" stroke="#d7c5ad" strokeWidth="2" />
+                <text x={PROPHET_PANEL.x + PROPHET_PANEL.w / 2} y={PROPHET_PANEL.y + 20} textAnchor="middle" fontSize="11" fontWeight="700" fill="#80571b">
+                  {PROPHET_PANEL.title}
+                </text>
+                <text x={PROPHET_PANEL.x + PROPHET_PANEL.w / 2} y={PROPHET_PANEL.y + 34} textAnchor="middle" fontSize="9" fill="#6e6259">
+                  {PROPHET_PANEL.note}
+                </text>
+              </g>
+            )}
+
             <g fill="none" strokeLinecap="round">
               {drawn.map((l) => {
                 const g = geometry(l, byId)
                 const style =
                   l.kind === 'recorded'
                     ? { stroke: '#173b68', strokeWidth: 3 }
-                    : l.kind === 'tradition'
-                      ? { stroke: '#8a6a3b', strokeWidth: 2.5, strokeDasharray: '8 6', markerEnd: 'url(#bp-arrow)' }
-                      : { stroke: '#a89d91', strokeWidth: 2, strokeDasharray: '2 7' }
+                    : l.kind === 'kin'
+                      ? { stroke: '#3f7d5c', strokeWidth: 3 }
+                      : l.kind === 'tradition'
+                        ? { stroke: '#8a6a3b', strokeWidth: 2.5, strokeDasharray: '8 6', markerEnd: 'url(#bp-arrow)' }
+                        : { stroke: '#a89d91', strokeWidth: 2, strokeDasharray: '2 7' }
                 return <path key={`${l.from}-${l.to}`} d={g.d} {...style} />
               })}
             </g>
@@ -92,23 +143,14 @@ export function BigPictureDiagram() {
               })}
             </g>
 
-            {BIG_NODES.map((n) => {
+            {nodes.map((n) => {
               const { w, h } = size(n)
               const isRel = n.kind === 'religion'
               const body = (
                 <g className={n.slug ? 'family-node' : undefined}>
-                  <title>{n.slug ? `${n.label} — read about this person` : n.label}</title>
-                  <rect
-                    x={n.x - w / 2}
-                    y={n.y - h / 2}
-                    width={w}
-                    height={h}
-                    rx={isRel ? 20 : 16}
-                    fill={isRel ? '#173b68' : '#ffffff'}
-                    stroke="#173b68"
-                    strokeWidth="2"
-                  />
-                  <text x={n.x} y={n.y + (n.sub ? -3 : 6)} textAnchor="middle" fontSize={isRel ? 19 : 16} fontWeight="700" fill={isRel ? '#fff9ed' : '#173b68'}>
+                  <title>{n.slug ? `${n.label}: read about this person` : n.label}</title>
+                  <rect x={n.x - w / 2} y={n.y - h / 2} width={w} height={h} rx={isRel ? 20 : 16} fill={isRel ? '#173b68' : '#ffffff'} stroke="#173b68" strokeWidth="2" />
+                  <text x={n.x} y={n.y + (n.sub ? -3 : 6)} textAnchor="middle" fontSize={isRel ? 19 : n.compact ? (n.label.length > 8 ? 11 : 14) : 16} fontWeight="700" fill={isRel ? '#fff9ed' : '#173b68'}>
                     {n.label}
                   </text>
                   {n.sub && (
@@ -127,12 +169,13 @@ export function BigPictureDiagram() {
               )
             })}
 
-            {BIG_NODES.filter((n) => n.kind === 'religion').map((n) => {
+            {nodes.filter((n) => n.kind === 'religion').map((n) => {
               const names = honoured(n.id)
               if (!names.length) return null
               return (
-                <text key={`h-${n.id}`} x={n.x} y={n.y + REL_H / 2 + 20} textAnchor="middle" fontSize="12" fontStyle="italic" fill="#534841">
-                  Also honours {names.join(', ')}
+                <text key={`h-${n.id}`} x={n.x} y={n.y + REL_H / 2 + 18} textAnchor="middle" fontSize="12" fontStyle="italic" fill="#534841">
+                  <tspan x={n.x}>Also honours</tspan>
+                  <tspan x={n.x} dy="15">{names.join(', ')}</tspan>
                 </text>
               )
             })}
@@ -141,6 +184,7 @@ export function BigPictureDiagram() {
 
         <figcaption className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-primary-700" aria-label="Key">
           <span className="inline-flex items-center gap-2"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#173b68" strokeWidth="3" /></svg>Recorded family link</span>
+          <span className="inline-flex items-center gap-2"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#3f7d5c" strokeWidth="3" /></svg>Recorded relative (not descent)</span>
           <span className="inline-flex items-center gap-2"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#8a6a3b" strokeWidth="2.5" strokeDasharray="8 6" /></svg>A tradition’s own account</span>
           <span className="inline-flex items-center gap-2"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#a89d91" strokeWidth="2" strokeDasharray="2 7" /></svg>Generations not drawn</span>
         </figcaption>
@@ -157,6 +201,15 @@ export function BigPictureDiagram() {
               {l.source}
             </li>
           ))}
+          <li>
+            <span className="font-semibold">Prophets and forerunners</span>{' '}
+            <span className="rounded-full bg-primary-100 px-2 py-0.5 text-xs">Listed in timeline order, no family lines</span>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {PROPHET_ORDER.map((id) => (
+                <li key={id}>{PROPHET_NOTES[id]}</li>
+              ))}
+            </ul>
+          </li>
         </ul>
       </details>
     </section>
