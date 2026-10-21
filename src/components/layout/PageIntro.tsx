@@ -34,7 +34,7 @@ export function PageIntro({
 }) {
   return (
     <header className="page-intro relative mb-10 border-b border-[#e5d9c8] pb-7">
-      {artwork && <figure className="mb-7"><StoryScene className="relative h-44 overflow-hidden rounded-2xl bg-[#173b68] sm:h-64"><Image src={artwork.src} alt={artwork.alt} fill sizes="(min-width:1024px) 1100px, 100vw" className="object-cover" /></StoryScene><figcaption className="mt-2 text-xs text-primary-700">Illustrative project artwork · <Link href="/licensing" className="editorial-link">source and licence</Link></figcaption></figure>}
+      {artwork && <figure className="mb-7"><StoryScene className="relative h-44 overflow-hidden rounded-2xl bg-[#173b68] sm:h-64"><Image src={artwork.src} alt={artwork.alt} fill sizes="(min-width:1024px) 1100px, 100vw" className="object-cover" /></StoryScene><figcaption className="mt-2 text-xs text-primary-700">Historical artwork, public domain · <Link href="/licensing" className="editorial-link">source and licence</Link></figcaption></figure>}
       <div className="relative">
         <nav aria-label="Breadcrumb" className="mb-6 text-sm font-medium text-slate-500">
           <ol className="flex flex-wrap items-center gap-x-1 gap-y-1">

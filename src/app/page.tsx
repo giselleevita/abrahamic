@@ -36,7 +36,7 @@ export default async function HomePage() {
 
   return <div className="premium-home editorial-page">
     <section className="premium-hero" aria-labelledby="home-title">
-      <StoryScene className="premium-hero-scene"><Image src={journey?.artworkPath ?? '/timeline/patriarchal.jpg'} alt={journey?.artworkAlt ?? 'Illustrated ancient desert encampment beneath a field of stars'} fill preload sizes="100vw" className="object-cover" /></StoryScene>
+      <StoryScene className="premium-hero-scene"><Image src={journey?.artworkPath ?? '/timeline/patriarchal.jpg'} alt={journey?.artworkAlt ?? 'Painting of a Bedouin encampment with tents and palms beside a well (Marie-Méloé Lafon, 1841)'} fill preload sizes="100vw" className="object-cover" /></StoryScene>
       <div className="premium-hero-shade" aria-hidden />
       <div className="premium-hero-orbit" aria-hidden><span /><span /><span /></div>
       <div className="premium-hero-inner">

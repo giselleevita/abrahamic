@@ -21,12 +21,12 @@ const ERA_CONFIG: Record<TimelineEra, {
   imageSrc: string
   imageAlt: string
 }> = {
-  PRIMORDIAL:  { gradient: 'from-indigo-100 to-blue-50', dotColor: 'bg-indigo-500', textAccent: 'text-indigo-700', label: 'Primordial — From Creation to the Flood', imageSrc: '/timeline/primordial.jpg', imageAlt: 'Illustrated cosmic dawn over mountains, water, and a flourishing landscape' },
-  PATRIARCHAL: { gradient: 'from-amber-100 to-yellow-50', dotColor: 'bg-amber-500', textAccent: 'text-amber-800', label: 'Patriarchal — Abraham, Isaac & Jacob', imageSrc: '/timeline/patriarchal.jpg', imageAlt: 'Illustrated ancient desert encampment beneath a field of stars' },
-  EXODUS:      { gradient: 'from-rose-100 to-red-50', dotColor: 'bg-rose-500', textAccent: 'text-rose-700', label: 'Exodus — Moses & the Law', imageSrc: '/timeline/exodus.jpg', imageAlt: 'Illustrated journey through the rocky Sinai landscape at sunrise' },
-  KINGDOM:     { gradient: 'from-violet-100 to-purple-50', dotColor: 'bg-violet-500', textAccent: 'text-violet-700', label: 'Kingdom — David, Solomon & the Prophets', imageSrc: '/timeline/kingdom.jpg', imageAlt: 'Illustrated ancient hill city with scrolls and olive trees' },
-  GOSPEL:      { gradient: 'from-sky-100 to-cyan-50', dotColor: 'bg-sky-500', textAccent: 'text-sky-700', label: 'Gospel Era — Jesus / Isa', imageSrc: '/timeline/gospel.jpg', imageAlt: 'Illustrated first-century lakeshore with boats, paths, and stone villages' },
-  EARLY_ISLAM: { gradient: 'from-emerald-100 to-teal-50', dotColor: 'bg-emerald-500', textAccent: 'text-emerald-700', label: 'Early Islam — Muhammad & the Quran', imageSrc: '/timeline/early-islam.jpg', imageAlt: 'Illustrated historic Arabian oasis city at dawn with a caravan trail' },
+  PRIMORDIAL:  { gradient: 'from-indigo-100 to-blue-50', dotColor: 'bg-indigo-500', textAccent: 'text-indigo-700', label: 'Primordial — From Creation to the Flood', imageSrc: '/timeline/primordial.jpg', imageAlt: "Painting of storm clouds clearing over a flooded landscape (Thomas Cole, 1829)" },
+  PATRIARCHAL: { gradient: 'from-amber-100 to-yellow-50', dotColor: 'bg-amber-500', textAccent: 'text-amber-800', label: 'Patriarchal — Abraham, Isaac & Jacob', imageSrc: '/timeline/patriarchal.jpg', imageAlt: "Painting of a Bedouin encampment with tents and palms beside a well (Marie-Méloé Lafon, 1841)" },
+  EXODUS:      { gradient: 'from-rose-100 to-red-50', dotColor: 'bg-rose-500', textAccent: 'text-rose-700', label: 'Exodus — Moses & the Law', imageSrc: '/timeline/exodus.jpg', imageAlt: "Lithograph of the Convent of St Catherine below the mountains of Sinai (David Roberts, 1839)" },
+  KINGDOM:     { gradient: 'from-violet-100 to-purple-50', dotColor: 'bg-violet-500', textAccent: 'text-violet-700', label: 'Kingdom — David, Solomon & the Prophets', imageSrc: '/timeline/kingdom.jpg', imageAlt: "Lithograph of Jerusalem seen from the south (David Roberts)" },
+  GOSPEL:      { gradient: 'from-sky-100 to-cyan-50', dotColor: 'bg-sky-500', textAccent: 'text-sky-700', label: 'Gospel Era — Jesus / Isa', imageSrc: '/timeline/gospel.jpg', imageAlt: "Lithograph of Tiberias on the Sea of Galilee (David Roberts, 1839)" },
+  EARLY_ISLAM: { gradient: 'from-emerald-100 to-teal-50', dotColor: 'bg-emerald-500', textAccent: 'text-emerald-700', label: 'Early Islam — Muhammad & the Quran', imageSrc: '/timeline/early-islam.jpg', imageAlt: "Gold Kufic script on a ninth-century Qur'an manuscript folio" },
 }
 
 const PRESENCE_CONFIG: Record<TraditionPresence, { icon: string; label: string; bg: string; text: string; border: string }> = {

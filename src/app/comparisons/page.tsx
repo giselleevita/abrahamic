@@ -35,7 +35,7 @@ export default async function ComparisonsPage({ searchParams }: { searchParams: 
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
-      <PageIntro artwork={{ src: "/timeline/kingdom.jpg", alt: "Illustrated ancient hill city with scrolls and olive trees" }} eyebrow="Compare" title="Side-by-side comparisons" description="Start with the short summary, then open a comparison to inspect each tradition's view and the sources behind it." />
+      <PageIntro artwork={{ src: "/timeline/kingdom.jpg", alt: "Lithograph of Jerusalem seen from the south (David Roberts)" }} eyebrow="Compare" title="Side-by-side comparisons" description="Start with the short summary, then open a comparison to inspect each tradition's view and the sources behind it." />
 
       <section aria-labelledby="filter-heading" className="mb-8 editorial-card p-5">
         <h2 id="filter-heading" className="text-base font-bold text-slate-900">Show me</h2>

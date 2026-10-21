@@ -21,7 +21,7 @@ export default async function FiguresPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-      <PageIntro artwork={{ src: "/timeline/patriarchal.jpg", alt: "Illustrated ancient desert encampment beneath a field of stars" }} eyebrow="Explore" title="People" description="Find important people and see how their names, stories, and roles appear across Judaism, Christianity, and Islam." />
+      <PageIntro artwork={{ src: "/timeline/patriarchal.jpg", alt: "Painting of a Bedouin encampment with tents and palms beside a well (Marie-Méloé Lafon, 1841)" }} eyebrow="Explore" title="People" description="Find important people and see how their names, stories, and roles appear across Judaism, Christianity, and Islam." />
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {figures.map((figure) => (
