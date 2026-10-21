@@ -165,3 +165,10 @@ svg a:focus-visible { outline: none; }
 }
 .glossary-term:hover::after, .glossary-term:focus-visible::after { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .glossary-term::after { transition: none; } }
+
+/* In-page links land below the sticky header, and the hero cue nudges downward. */
+html { scroll-padding-top: 6rem; }
+@keyframes scroll-cue { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+.scroll-cue { animation: scroll-cue 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .scroll-cue { animation: none; } }
+html[data-reduce-effects="true"] .scroll-cue { animation: none; }

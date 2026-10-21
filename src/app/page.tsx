@@ -56,7 +56,7 @@ export default async function HomePage() {
         </div>
         <div className="premium-scene-note"><span className="scene-crosshair" aria-hidden>+</span><div><p>A shared point of departure</p><span>Abraham · Avraham · Ibrahim</span></div><Sparkles size={20} aria-hidden /></div>
       </div>
-      <div className="premium-hero-bottom"><a href={perspectiveTopics.length ? '#perspectives' : '#discover'}><ArrowDown size={16} aria-hidden />Scroll to discover</a><span>Project artwork · <Link href={journey?.artworkSourceUrl ?? '/licensing'}>Source &amp; licence</Link></span></div>
+      <div className="premium-hero-bottom"><a href="#choose-path"><ArrowDown size={16} aria-hidden className="scroll-cue" />Scroll to discover</a><span>Project artwork · <Link href={journey?.artworkSourceUrl ?? '/licensing'}>Source &amp; licence</Link></span></div>
     </section>
 
     <div className="premium-introduction" id="discover"><p>Read with curiosity.<br /><em>Compare with care.</em></p><span>Every perspective has a context. Every claim has a source. Find your own way through the connections.</span><Link href="/editorial-method">Our approach <ArrowUpRight size={17} aria-hidden /></Link></div>

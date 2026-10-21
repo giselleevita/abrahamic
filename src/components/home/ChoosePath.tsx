@@ -11,7 +11,7 @@ const PATHS = [
 /** Five clear doors for a first-time visitor, ahead of the long-form sections. */
 export function ChoosePath() {
   return (
-    <section aria-labelledby="choose-path-title" className="mx-auto max-w-[1376px] px-6 py-14 sm:px-12">
+    <section id="choose-path" aria-labelledby="choose-path-title" className="mx-auto max-w-[1376px] px-6 py-14 sm:px-12">
       <p className="editorial-eyebrow">Where would you like to begin?</p>
       <h2 id="choose-path-title" className="mt-2 font-serif text-3xl text-slate-950 sm:text-4xl">Pick the way in that suits you</h2>
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
