@@ -37,6 +37,18 @@ const videos = [
     figureSlugs: ['abraham'],
     conceptSlugs: ['monotheism', 'prophethood'],
   },
+  {
+    youtubeId: '4ylbXjN7yjU',
+    title: 'World Religions for Kids | What Are the Major World Religions? | Twinkl USA',
+    channelName: 'Twinkl Teaching Resources - United States',
+    perspectiveTradition: null,
+    isKidsSafe: true,
+    durationSeconds: 159,
+    editorNote:
+      'A short introduction for children to the major world religions from an educational publisher. It gives a wide overview rather than comparing the three Abrahamic faiths in depth. Draft note: an editor should watch it before publishing.',
+    figureSlugs: [] as string[],
+    conceptSlugs: [] as string[],
+  },
 ]
 
 export async function seedVideos(prisma: PrismaClient) {
