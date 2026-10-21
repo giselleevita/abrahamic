@@ -34,6 +34,7 @@ export async function NextUp({ current }: { current: Current }) {
       ? { href: `/comparisons/${cmp.id}`, label: 'Compare another belief', title: cmp.title, icon: '⚖️' }
       : null,
     { href: '/family-tree#big-picture-title', label: 'See the big picture', title: 'How the traditions connect', icon: '🌳' },
+    { href: '/map', label: 'See where it happened', title: 'Map of the stories', icon: '🗺️' },
     { href: '/timeline', label: 'Follow the timeline', title: 'From creation to early Islam', icon: '⏳' },
   ].filter(Boolean) as { href: string; label: string; title: string; icon: string }[]
 

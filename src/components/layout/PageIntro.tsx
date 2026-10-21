@@ -1,3 +1,4 @@
+import { ListenButton } from '@/components/ui/ListenButton'
 import Image from 'next/image'
 import { StoryScene } from '@/components/experience/Motion'
 import type { ReactNode } from 'react'
@@ -70,6 +71,7 @@ export function PageIntro({
           <p className="mt-4 max-w-3xl rounded-2xl border border-[#d7c5ad] bg-[#fbf6ec] px-5 py-3 text-base leading-7 text-[#3d3326]">
             <span aria-hidden="true">💬 </span>
             <strong>In plain words:</strong> {plainWords}
+            <span className="ml-3 inline-block align-middle"><ListenButton text={plainWords} label="Listen" /></span>
           </p>
         )}
         {children && <div className="mt-5">{children}</div>}

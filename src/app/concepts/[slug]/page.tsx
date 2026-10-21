@@ -1,3 +1,5 @@
+import { ListenButton } from '@/components/ui/ListenButton'
+import { TrailRecorder } from '@/components/experience/TrailRecorder'
 import { GlossaryText } from '@/components/glossary/GlossaryText'
 import { NextUp } from '@/components/layout/NextUp'
 import type { Metadata } from 'next'
@@ -76,7 +78,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
   const overviewContent = (
     <div className="space-y-8">
       {concept.summary && (
-        <p className="text-lg leading-relaxed text-stone-700"><GlossaryText text={concept.summary} /></p>
+        <div><p className="text-lg leading-relaxed text-stone-700"><GlossaryText text={concept.summary} /></p><p className="mt-3"><ListenButton text={`${concept.name}. ${concept.summary}`} label="Listen to this summary" /></p></div>
       )}
 
       <div>
@@ -150,6 +152,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
             : []),
         ]}
       />
+      <TrailRecorder item={{ href: `/concepts/${concept.slug}`, label: concept.name, kind: 'concept' }} />
       <NextUp current={{ kind: 'concept', id: concept.id }} />
     </div>
   )

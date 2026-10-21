@@ -13,6 +13,13 @@ export function ComparisonLens({ views }: { views: { id: number; tradition: Trad
       <button type="button" aria-pressed={focus === 'ALL'} onClick={() => setFocus('ALL')}>All perspectives</button>
       {traditions.map((tradition) => <button key={tradition} type="button" aria-pressed={focus === tradition} onClick={() => setFocus(tradition)}>{TRADITION_LABEL[tradition]}</button>)}
     </div>
+    {focus !== 'ALL' && traditions.length > 1 && (
+      <p className="mb-3">
+        <button type="button" className="reading-action" onClick={() => setFocus(traditions[(traditions.indexOf(focus) + 1) % traditions.length])}>
+          Next perspective: {TRADITION_LABEL[traditions[(traditions.indexOf(focus) + 1) % traditions.length]]} →
+        </button>
+      </p>
+    )}
     <p className="sr-only" role="status">Showing {focus === 'ALL' ? 'all perspectives' : TRADITION_LABEL[focus]}</p>
     <div className={`grid items-start gap-4 ${visible.length === 2 ? 'lg:grid-cols-2' : visible.length >= 3 ? 'lg:grid-cols-3' : 'max-w-2xl'}`}>{visible.map((view) => <div key={view.id}>{view.content}</div>)}</div>
   </div>

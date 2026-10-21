@@ -172,3 +172,7 @@ html { scroll-padding-top: 6rem; }
 .scroll-cue { animation: scroll-cue 1.6s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .scroll-cue { animation: none; } }
 html[data-reduce-effects="true"] .scroll-cue { animation: none; }
+
+.family-node-on rect { stroke: #b7791f; stroke-width: 4; }
+.family-node:focus-visible rect { stroke: #b7791f; stroke-width: 4; }
+g[role=button]:focus-visible { outline: none; }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type KeyboardEvent } from 'react'
 import Link from 'next/link'
 import {
   BIG_LINKS,
@@ -13,6 +13,8 @@ import {
   type BigLink,
   type BigNode,
 } from '@/lib/big-picture'
+import { TRADITION_LABEL } from '@/lib/constants'
+import type { Tradition } from '@/generated/prisma/client'
 
 const FIG_W = 132
 const FIG_H = 46
@@ -51,7 +53,10 @@ const KIND_LABEL: Record<BigLink['kind'], string> = {
   gap: 'Generations not drawn',
 }
 
-export function BigPictureDiagram() {
+export type BigProfile = { name: string; aliases: { tradition: Tradition; name: string; language: string | null; notes: string | null }[] }
+
+export function BigPictureDiagram({ profiles = {} }: { profiles?: Record<string, BigProfile> }) {
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [on, setOn] = useState<Record<BigLayer, boolean>>({ women: true, kin: true, prophets: true })
   const visible = (n: BigNode) => !n.layer || on[n.layer]
   const nodes = BIG_NODES.filter(visible)
@@ -95,7 +100,7 @@ export function BigPictureDiagram() {
         <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Overview diagram of how the three traditions are connected, scrollable">
           <svg
             role="group"
-            aria-label="Diagram: Adam, Enoch, Noah and Abraham lead to Isaac and Ishmael, and onward to the origins of Judaism, Christianity and Islam. A text list of every connection follows."
+            aria-label="Diagram: Adam, Enoch, Noah and Abraham lead to Isaac and Ishmael, and onward to the origins of Judaism, Christianity and Islam. Select a person for their names in each tradition. A text list of every connection follows."
             viewBox="0 0 1050 975"
             className="mx-auto block h-auto w-full min-w-[820px] max-w-[1050px]"
           >
@@ -148,7 +153,7 @@ export function BigPictureDiagram() {
               const isRel = n.kind === 'religion'
               const body = (
                 <g className={n.slug ? 'family-node' : undefined}>
-                  <title>{n.slug ? `${n.label}: read about this person` : n.label}</title>
+                  <title>{n.slug ? `${n.label}: select for names in each tradition` : n.label}</title>
                   <rect x={n.x - w / 2} y={n.y - h / 2} width={w} height={h} rx={isRel ? 20 : 16} fill={isRel ? '#173b68' : '#ffffff'} stroke="#173b68" strokeWidth="2" />
                   <text x={n.x} y={n.y + (n.sub ? -3 : 6)} textAnchor="middle" fontSize={isRel ? 19 : n.compact ? (n.label.length > 8 ? 11 : 14) : 16} fontWeight="700" fill={isRel ? '#fff9ed' : '#173b68'}>
                     {n.label}
@@ -160,12 +165,24 @@ export function BigPictureDiagram() {
                   )}
                 </g>
               )
-              return n.slug ? (
-                <Link key={n.id} href={`/figures/${n.slug}`} prefetch={false}>
+              if (!n.slug) return <g key={n.id}>{body}</g>
+              const on = selectedId === n.id
+              const pick = () => setSelectedId(on ? null : n.id)
+              return (
+                <g
+                  key={n.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={on}
+                  aria-label={`${n.label}: show names across the traditions`}
+                  onClick={pick}
+                  onKeyDown={(e: KeyboardEvent<SVGGElement>) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick() }
+                  }}
+                  className={on ? 'family-node family-node-on' : 'family-node'}
+                >
                   {body}
-                </Link>
-              ) : (
-                <g key={n.id}>{body}</g>
+                </g>
               )
             })}
 
@@ -189,6 +206,46 @@ export function BigPictureDiagram() {
           <span className="inline-flex items-center gap-2"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#a89d91" strokeWidth="2" strokeDasharray="2 7" /></svg>Generations not drawn</span>
         </figcaption>
       </figure>
+
+      {selectedId && (() => {
+        const node = byId.get(selectedId)
+        const profile = node?.slug ? profiles[node.slug] : undefined
+        if (!node) return null
+        return (
+          <aside aria-live="polite" className="rounded-3xl border-2 border-[#b7791f] bg-white p-6">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <h3 className="font-serif text-2xl text-slate-950">{profile?.name ?? node.label}</h3>
+              <button type="button" onClick={() => setSelectedId(null)} className="rounded-full border border-[#d7c5ad] px-3 py-1 text-sm font-semibold text-slate-700 hover:border-[#b7791f]">Close</button>
+            </div>
+            {profile && profile.aliases.length > 0 ? (
+              <ul className="mt-4 grid gap-3 md:grid-cols-3">
+                {(['JEWISH', 'CHRISTIAN', 'ISLAMIC'] as Tradition[]).map((t) => {
+                  const a = profile.aliases.find((x) => x.tradition === t)
+                  return (
+                    <li key={t} className="rounded-2xl border border-[#d7c5ad] bg-[#fbf6ec] p-4">
+                      <p className="text-xs font-bold uppercase tracking-wider text-[#80571b]">{TRADITION_LABEL[t]}</p>
+                      {a ? (
+                        <>
+                          <p className="mt-1 text-lg font-bold text-slate-950">{a.name}</p>
+                          {a.notes && <p className="mt-1 text-sm leading-6 text-slate-700">{a.notes}</p>}
+                        </>
+                      ) : (
+                        <p className="mt-1 text-sm text-slate-600">No separate entry on the site yet.</p>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <p className="mt-3 text-slate-700">Read about {node.label} on their page.</p>
+            )}
+            <p className="mt-4 flex flex-wrap gap-3 text-sm font-bold">
+              <Link href={`/figures/${node.slug}`} className="text-[#173b68] hover:underline">Read the full page →</Link>
+              <Link href="/map" className="text-[#173b68] hover:underline">See the places →</Link>
+            </p>
+          </aside>
+        )
+      })()}
 
       <details className="rounded-2xl border border-primary-200 bg-white p-5">
         <summary className="cursor-pointer text-base font-semibold text-primary-900">Read every connection as text, with its source</summary>

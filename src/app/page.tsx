@@ -6,6 +6,7 @@ import prisma from '@/lib/prisma'
 import { JourneyResumeCard } from '@/components/learn/JourneyProgress'
 import { StoryScene } from '@/components/experience/Motion'
 import { ChoosePath } from '@/components/home/ChoosePath'
+import { TrailStrip } from '@/components/home/TrailStrip'
 import { DidYouKnow } from '@/components/home/DidYouKnow'
 import { DeferredPerspectives, DeferredJourney, DeferredEras } from '@/components/discovery/DiscoveryIsland'
 
@@ -61,6 +62,7 @@ export default async function HomePage() {
 
     <div className="premium-introduction" id="discover"><p>Read with curiosity.<br /><em>Compare with care.</em></p><span>Every perspective has a context. Every claim has a source. Find your own way through the connections.</span><Link href="/editorial-method">Our approach <ArrowUpRight size={17} aria-hidden /></Link></div>
 
+    <TrailStrip />
     <ChoosePath />
     <DidYouKnow />
 

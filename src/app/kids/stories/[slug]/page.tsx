@@ -1,3 +1,4 @@
+import { ListenButton } from '@/components/ui/ListenButton'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
@@ -73,6 +74,8 @@ export default async function KidsStoryPage({
       <h1 className="mt-1 font-serif text-4xl font-bold leading-tight text-primary-950">
         {story.title}
       </h1>
+
+      <p className="mt-4"><ListenButton text={`${story.title}. ${story.body}`} label="Listen to this story" /></p>
 
       <div className="mt-6 space-y-4 text-xl leading-relaxed text-primary-900">
         {paragraphs.map((para, i) => (

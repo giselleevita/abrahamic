@@ -40,6 +40,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: '/themes', label: 'Themes', description: 'Prayer, law, prophecy, ethics and more.' },
       { href: '/concepts', label: 'Beliefs & concepts', description: 'How each tradition defines key ideas.' },
       { href: '/family-tree', label: 'Family tree', description: 'The big picture of how the traditions connect, and who was whose parent.' },
+      { href: '/names', label: 'Name explorer', description: 'Type a name and see the same person in all three traditions.' },
       { href: '/map', label: 'Map', description: 'Where the stories happened, from Ur to Medina.' },
     ],
   },

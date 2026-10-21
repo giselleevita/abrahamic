@@ -1,3 +1,5 @@
+import { TrailRecorder } from '@/components/experience/TrailRecorder'
+import { FigureQuizSection } from '@/components/figures/FigureQuizSection'
 import { NextUp } from '@/components/layout/NextUp'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -271,6 +273,8 @@ export default async function FigurePage({ params }: { params: Promise<{ slug: s
           </div>
         </section>
       )}
+      <FigureQuizSection figure={{ id: figure.id, canonicalName: figure.canonicalName }} />
+      <TrailRecorder item={{ href: `/figures/${figure.slug}`, label: figure.canonicalName, kind: 'figure' }} />
       <NextUp current={{ kind: 'figure', id: figure.id }} />
     </div>
   )
