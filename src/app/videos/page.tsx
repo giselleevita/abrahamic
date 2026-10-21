@@ -31,13 +31,30 @@ export default async function VideosPage() {
       />
 
       {videos.length === 0 ? (
-        <Callout tone="note">
-          No videos have been published yet.{' '}
-          <Link href="/concepts" className="underline">
-            Browse concepts instead
-          </Link>
-          .
-        </Callout>
+        <div className="editorial-card p-6 sm:p-8">
+          <h2 className="text-xl font-bold text-slate-950">Videos are coming after editorial review</h2>
+          <p className="mt-2 text-base leading-7 text-slate-600">
+            Nothing is published here until an editor has watched it and written a note on why it is
+            included. In the meantime, these sourced starting points are ready:
+          </p>
+          <ul className="mt-4 flex flex-wrap gap-3 text-sm font-semibold">
+            {[
+              ['/learn', 'Start the Abraham journey'],
+              ['/concepts', 'Browse beliefs & concepts'],
+              ['/comparisons', 'Read side-by-side comparisons'],
+              ['/timeline', 'Explore the timeline'],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="inline-block rounded-full border border-stone-300 px-4 py-2 text-[#173b68] hover:border-gold-700"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : (
         <div className="stagger grid gap-6 sm:grid-cols-2">
           {videos.map((video) => (
