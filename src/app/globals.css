@@ -149,3 +149,7 @@ html[data-reduce-effects="true"] *, html[data-reduce-effects="true"] *::before, 
   .kids-pop, .kids-wiggle, .kids-bounce { animation: none; }
   .kids-confetti { display: none; }
 }
+
+.family-node { cursor: pointer; }
+.family-node:hover rect, svg a:focus-visible .family-node rect { stroke: #b7791f; stroke-width: 3; }
+svg a:focus-visible { outline: none; }
