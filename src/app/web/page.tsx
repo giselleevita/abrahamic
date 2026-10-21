@@ -43,6 +43,7 @@ export default async function WebPage() {
         description="A map of how beliefs and people are connected through the sourced statements on this site."
         plainWords="Everything here is linked to something else. Select an idea or a person to light up what they connect to, then hop to the next."
       />
+      <p className="mb-4 text-sm text-slate-700">Built from themes, not the full list of ideas: a line means a theme and a person appear together in the same sourced statements. It shows where to look next, not that anyone agrees or disagrees.</p>
       <ConceptWeb nodes={nodeList} links={linkList} placed={forceLayout(nodeList, linkList, 1000, 680)} />
     </div>
   )

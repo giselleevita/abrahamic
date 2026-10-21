@@ -43,6 +43,7 @@ export default async function DailyPage() {
       ) : (
         <p className="rounded-2xl border border-[#d7c5ad] bg-white p-6">There are not enough names on the site to make a challenge yet.</p>
       )}
+      <p className="mt-4 text-sm text-slate-700">New questions begin at midnight UTC. Your streak counts your own local days, so close to midnight the two can differ by a day.</p>
       <p className="mt-6"><Link href="/album" className="font-bold text-[#173b68] hover:underline">See my streak and badges →</Link></p>
     </div>
   )
