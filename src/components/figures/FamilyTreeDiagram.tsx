@@ -68,7 +68,7 @@ export function FamilyTreeDiagram({ figures, edges }: { figures: TreeFigure[]; e
                   {tree.sideParents.map((s) => (
                     <Link key={`sidenode-${s.id}-${s.childId}`} href={`/figures/${s.slug}`} prefetch={false}>
                       <g className="family-node">
-                        <title>{s.canonicalName}, another recorded parent</title>
+                        <title>{`${s.canonicalName}, another recorded parent`}</title>
                         <rect x={s.x} y={s.y} width={CHIP_W} height={NODE_H - 4} rx={14} fill="#fffdf8" stroke="#a88a58" strokeWidth="2" strokeDasharray="5 4" />
                         <text x={s.x + CHIP_W / 2} y={s.y + (NODE_H - 4) / 2 + 5} textAnchor="middle" fontSize="14" fontWeight="600" fill="#3d3326">
                           {s.canonicalName}
