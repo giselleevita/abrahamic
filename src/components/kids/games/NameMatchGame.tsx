@@ -101,7 +101,7 @@ export function NameMatchGame({ pairs }: { pairs: NamePair[] }) {
                     onClick={() => setSelectedFigure(pair.figureId)}
                     className={`w-full rounded-xl border-2 px-4 py-3 text-left text-lg font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
                       isMatched
-                        ? 'cursor-default border-green-300 bg-green-50 text-green-900'
+                        ? 'kids-pop cursor-default border-green-300 bg-green-50 text-green-900'
                         : isSelected
                           ? 'border-gold-600 bg-gold-100 text-primary-950'
                           : 'border-primary-300 bg-white text-primary-900 hover:border-primary-500'
@@ -133,9 +133,9 @@ export function NameMatchGame({ pairs }: { pairs: NamePair[] }) {
                     }
                     className={`w-full rounded-xl border-2 px-4 py-3 text-left text-lg font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
                       isMatched
-                        ? 'cursor-default border-green-300 bg-green-50 text-green-900'
+                        ? 'kids-pop cursor-default border-green-300 bg-green-50 text-green-900'
                         : isWrong
-                          ? 'border-christian-500 bg-christian-50 text-christian-900'
+                          ? 'kids-wiggle border-christian-500 bg-christian-50 text-christian-900'
                           : selectedFigure === null
                             ? 'cursor-not-allowed border-primary-200 bg-primary-100 text-primary-500'
                             : 'border-primary-300 bg-white text-primary-900 hover:border-primary-500'

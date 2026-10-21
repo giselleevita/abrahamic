@@ -126,9 +126,9 @@ export function WhoTellsItGame({ questions }: { questions: PresenceQuestion[] })
                 onClick={() => choose(choice.value)}
                 className={`rounded-xl border-2 px-4 py-3 text-left text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
                   revealed && isAnswer
-                    ? 'border-green-500 bg-green-50 text-green-900'
+                    ? 'kids-pop border-green-500 bg-green-50 text-green-900'
                     : revealed && isChosen
-                      ? 'border-christian-500 bg-christian-50 text-christian-900'
+                      ? 'kids-wiggle border-christian-500 bg-christian-50 text-christian-900'
                       : revealed
                         ? 'border-primary-200 bg-white text-primary-500'
                         : 'border-primary-300 bg-white text-primary-900 hover:border-primary-500'

@@ -110,7 +110,7 @@ export function TimelineSorterGame({
                 }}
                 className={`flex items-center gap-4 rounded-xl border-2 px-4 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
                   inPlace
-                    ? 'border-green-400 bg-green-50'
+                    ? 'kids-pop border-green-400 bg-green-50'
                     : outOfPlace
                       ? 'border-gold-400 bg-gold-50'
                       : 'border-primary-300 bg-white'

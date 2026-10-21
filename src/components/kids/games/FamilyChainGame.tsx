@@ -84,7 +84,7 @@ export function FamilyChainGame({ chain }: { chain: ChainLink[] }) {
             <li key={i}>
               <div
                 className={`flex items-center gap-4 rounded-xl border-2 px-4 py-3 ${
-                  link ? 'border-green-400 bg-green-50' : 'border-dashed border-primary-300 bg-white'
+                  link ? 'kids-pop border-green-400 bg-green-50' : 'border-dashed border-primary-300 bg-white'
                 }`}
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-200 font-bold text-primary-800">

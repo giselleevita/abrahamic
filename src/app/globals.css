@@ -135,3 +135,17 @@ html[data-reduce-effects="true"] *, html[data-reduce-effects="true"] *::before, 
 .comparison-lens-controls button[aria-pressed=true] { background: #173b68; color: #fff9ee; }
 .comparison-lens-controls button:hover { box-shadow: inset 0 0 0 1px #9c8051; }
 .premium-home .perspective-stage [role=tab] { background: transparent; }
+
+/* Kids games: playful feedback. All motion is removed for reduced-motion users. */
+@keyframes kids-pop { 0% { transform: scale(.94); } 55% { transform: scale(1.04); } 100% { transform: scale(1); } }
+@keyframes kids-wiggle { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes kids-fall { 0% { transform: translateY(-20px) rotate(0); opacity: 1; } 100% { transform: translateY(160px) rotate(300deg); opacity: 0; } }
+@keyframes kids-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.kids-pop { animation: kids-pop .35s ease-out; }
+.kids-wiggle { animation: kids-wiggle .3s ease-in-out 2; }
+.kids-confetti > span { position: absolute; top: 0; animation: kids-fall 1.8s ease-in forwards; }
+.kids-bounce { display: inline-block; animation: kids-bounce 1.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .kids-pop, .kids-wiggle, .kids-bounce { animation: none; }
+  .kids-confetti { display: none; }
+}

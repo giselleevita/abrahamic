@@ -27,6 +27,21 @@ interface GameShellProps {
   children: ReactNode
 }
 
+const GAME_EMOJI: Record<string, string> = {
+  'name-match': '🧩',
+  'who-tells-it': '🔍',
+  'timeline-sorter': '⏳',
+  'family-chain': '🌳',
+}
+
+function cheer(score: number): { headline: string; stars: number } {
+  if (score >= 90) return { headline: 'Amazing! You are a story star!', stars: 3 }
+  if (score >= 60) return { headline: 'Great job! Nearly perfect!', stars: 2 }
+  return { headline: 'Good try! Every round teaches you something.', stars: 1 }
+}
+
+const CONFETTI = ['🎉', '⭐', '✨', '🎈', '⭐', '🎉', '✨', '🎈']
+
 export function GameShell({
   gameId,
   title,
@@ -63,7 +78,10 @@ export function GameShell({
         <span aria-hidden="true">←</span> All games
       </Link>
 
-      <h1 className="font-serif text-3xl font-bold text-primary-950 sm:text-4xl">{title}</h1>
+      <h1 className="font-serif text-3xl font-bold text-primary-950 sm:text-4xl">
+        <span aria-hidden="true" className="kids-bounce mr-2">{GAME_EMOJI[gameId] ?? '🎮'}</span>
+        {title}
+      </h1>
       <p className="mt-2 text-lg leading-relaxed text-primary-800">{howToPlay}</p>
 
       <details className="mt-4 rounded-xl border border-primary-200 bg-white p-4">
@@ -77,6 +95,19 @@ export function GameShell({
         <p className="text-base font-semibold text-primary-900">
           {correct} of {total} right
         </p>
+        <div
+          role="progressbar"
+          aria-label="Progress"
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-valuenow={correct}
+          className="h-3 w-32 overflow-hidden rounded-full bg-primary-100 sm:w-48"
+        >
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-amber-400 to-emerald-500 transition-[width] duration-500 motion-reduce:transition-none"
+            style={{ width: `${total > 0 ? Math.min(100, (correct / total) * 100) : 0}%` }}
+          />
+        </div>
         {best !== undefined && (
           <p className="text-sm text-primary-600">Your best on this device: {best}%</p>
         )}
@@ -101,11 +132,29 @@ export function GameShell({
       <div className="mt-6">{children}</div>
 
       {score !== null && (
-        <div className="mt-6 rounded-xl border-2 border-gold-500 bg-gold-50 p-6 text-center">
-          <p className="font-serif text-2xl font-bold text-primary-950">
-            All done — {score}%
+        <div className="relative mt-6 overflow-hidden rounded-2xl border-2 border-gold-500 bg-gradient-to-br from-amber-50 to-emerald-50 p-6 text-center">
+          <div aria-hidden="true" className="kids-confetti pointer-events-none absolute inset-x-0 top-0 h-full">
+            {CONFETTI.map((piece, i) => (
+              <span key={i} className="text-2xl" style={{ left: `${6 + i * 12}%`, animationDelay: `${i * 0.12}s` }}>
+                {piece}
+              </span>
+            ))}
+          </div>
+          <p aria-hidden="true" className="kids-pop text-4xl">
+            {'⭐'.repeat(cheer(score).stars)}
+            <span className="opacity-25">{'⭐'.repeat(3 - cheer(score).stars)}</span>
           </p>
-          <p className="mt-1 text-primary-800">You got {correct} out of {total} right.</p>
+          <p className="mt-2 font-serif text-2xl font-bold text-primary-950">{cheer(score).headline}</p>
+          <p className="mt-1 font-semibold text-primary-900">All done — {score}%</p>
+          <p className="text-primary-800">You got {correct} out of {total} right.</p>
+          <div className="mt-4 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/kids/games"
+              className="rounded-xl bg-gold-600 px-5 py-2 font-bold text-primary-950 hover:bg-gold-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-700"
+            >
+              🎮 Try another game
+            </Link>
+          </div>
         </div>
       )}
     </div>
