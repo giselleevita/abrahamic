@@ -1,3 +1,4 @@
+import { NextUp } from '@/components/layout/NextUp'
 import Link from 'next/link'
 import { SaveButton } from '@/components/experience/SavedItems'
 import { CorrectionForm } from '@/components/corrections/CorrectionForm'
@@ -86,6 +87,7 @@ export default async function ComparisonDetailPage({ params }: { params: Promise
       <CorrectionForm pagePath={`/comparisons/${comparison.id}`} reference={comparison.title} />
       {related.length > 0 && <section className="mt-10"><h2 className="text-2xl">Keep exploring</h2><ul className="mt-4 grid gap-3">{related.map((item) => <li key={item.id}><Link href={`/comparisons/${item.id}`} className="editorial-card block p-5 font-semibold text-[#173b68] hover:border-gold-700">{item.title} →</Link></li>)}</ul></section>}
 
+      <NextUp current={{ kind: 'comparison', id: comparison.id }} />
     </div>
   )
 }

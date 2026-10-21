@@ -39,7 +39,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: '/figures', label: 'People', description: 'Abraham, Moses, Jesus, Muhammad and others.' },
       { href: '/themes', label: 'Themes', description: 'Prayer, law, prophecy, ethics and more.' },
       { href: '/concepts', label: 'Beliefs & concepts', description: 'How each tradition defines key ideas.' },
-      { href: '/family-tree', label: 'Family tree', description: 'Genealogy across the three traditions.' },
+      { href: '/family-tree', label: 'Family tree', description: 'The big picture of how the traditions connect, and who was whose parent.' },
+      { href: '/map', label: 'Map', description: 'Where the stories happened, from Ur to Medina.' },
     ],
   },
   {

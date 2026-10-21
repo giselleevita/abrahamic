@@ -16,7 +16,7 @@ export default async function ThemesPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-      <PageIntro artwork={{ src: "/timeline/exodus.jpg", alt: "Lithograph of the Convent of St Catherine below the mountains of Sinai (David Roberts, 1839)" }} eyebrow="Browse" title="Themes" description="Start with a familiar topic—such as prayer, law, prophecy, or ethics—and find related material across all three traditions." />
+      <PageIntro artwork={{ src: "/timeline/exodus.jpg", alt: "Lithograph of the Convent of St Catherine below the mountains of Sinai (David Roberts, 1839)" }} plainWords="Not sure where to start? Choose a topic you already know, like prayer or justice, and we will show you how each tradition speaks about it." eyebrow="Browse" title="Themes" description="Start with a familiar topic—such as prayer, law, prophecy, or ethics—and find related material across all three traditions." />
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {themes.map((theme) => (

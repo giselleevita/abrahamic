@@ -81,7 +81,7 @@ export default async function TimelinePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
-      <PageIntro eyebrow="Follow the story" title="Interactive timeline" description="Travel from creation narratives to early Islam. Choose an era, open any event, and compare how each tradition records it." />
+      <PageIntro plainWords="A line through time, from the first stories to early Islam. Choose a period, open an event, and see how each tradition tells it." eyebrow="Follow the story" title="Interactive timeline" description="Travel from creation narratives to early Islam. Choose an era, open any event, and compare how each tradition records it." />
 
       <details className="mb-8 rounded-2xl border border-slate-200 bg-white p-5">
         <summary className="cursor-pointer font-bold text-slate-900">How to read the comparison labels</summary>

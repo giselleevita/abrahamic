@@ -5,6 +5,8 @@ import { ArrowDown, ArrowRight, ArrowUpRight, BookOpen, Compass, GitBranch, Sear
 import prisma from '@/lib/prisma'
 import { JourneyResumeCard } from '@/components/learn/JourneyProgress'
 import { StoryScene } from '@/components/experience/Motion'
+import { ChoosePath } from '@/components/home/ChoosePath'
+import { DidYouKnow } from '@/components/home/DidYouKnow'
 import { DeferredPerspectives, DeferredJourney, DeferredEras } from '@/components/discovery/DiscoveryIsland'
 
 export const revalidate = 300
@@ -58,6 +60,9 @@ export default async function HomePage() {
     </section>
 
     <div className="premium-introduction" id="discover"><p>Read with curiosity.<br /><em>Compare with care.</em></p><span>Every perspective has a context. Every claim has a source. Find your own way through the connections.</span><Link href="/editorial-method">Our approach <ArrowUpRight size={17} aria-hidden /></Link></div>
+
+    <ChoosePath />
+    <DidYouKnow />
 
     <div className="premium-content">
       {perspectiveTopics.length > 0 && <DeferredPerspectives topics={perspectiveTopics} fallback={<section className="premium-section" id="perspectives" aria-labelledby="perspective-title"><div className="premium-section-heading"><div><p className="editorial-eyebrow">01 / An exchange of perspectives</p><h2 id="perspective-title">One question.<br /><em>More than one perspective.</em></h2></div><p>Choose a question and inspect each tradition’s perspective.</p></div><div className="premium-static-preview">{comparisons.map((comparison) => <Link className="premium-text-link" href={`/comparisons/${comparison.id}`} key={comparison.id}>{comparison.title}<ArrowUpRight size={17} aria-hidden /></Link>)}</div></section>} />}

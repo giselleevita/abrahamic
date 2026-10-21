@@ -153,3 +153,15 @@ html[data-reduce-effects="true"] *, html[data-reduce-effects="true"] *::before, 
 .family-node { cursor: pointer; }
 .family-node:hover rect, svg a:focus-visible .family-node rect { stroke: #b7791f; stroke-width: 3; }
 svg a:focus-visible { outline: none; }
+
+/* Inline glossary terms: dotted underline, definition on hover or keyboard focus. */
+.glossary-term { position: relative; text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+.glossary-term::after {
+  content: attr(data-definition);
+  position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 30; width: max-content; max-width: min(20rem, 80vw);
+  padding: .6rem .8rem; border-radius: .75rem; background: #1a1613; color: #fff9ed;
+  font-size: .8rem; line-height: 1.45; font-weight: 400; text-decoration: none; white-space: normal;
+  opacity: 0; pointer-events: none; transform: translateY(4px); transition: opacity .15s, transform .15s;
+}
+.glossary-term:hover::after, .glossary-term:focus-visible::after { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .glossary-term::after { transition: none; } }

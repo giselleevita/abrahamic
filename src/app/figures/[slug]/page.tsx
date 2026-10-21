@@ -1,3 +1,4 @@
+import { NextUp } from '@/components/layout/NextUp'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { PageIntro } from '@/components/layout/PageIntro'
@@ -270,6 +271,7 @@ export default async function FigurePage({ params }: { params: Promise<{ slug: s
           </div>
         </section>
       )}
+      <NextUp current={{ kind: 'figure', id: figure.id }} />
     </div>
   )
 }

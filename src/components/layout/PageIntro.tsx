@@ -14,6 +14,7 @@ export function PageIntro({
   actions,
   children,
   artwork,
+  plainWords,
 }: {
   eyebrow: string
   title: string
@@ -30,6 +31,8 @@ export function PageIntro({
   actions?: ReactNode
   /** Extra content below the description — badges, metadata, tabs. */
   artwork?: { src: string; alt: string }
+  /** One or two everyday sentences: what this page is and why a newcomer might use it. */
+  plainWords?: string
   children?: ReactNode
 }) {
   return (
@@ -63,6 +66,12 @@ export function PageIntro({
         </div>
 
         {description && <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">{description}</p>}
+        {plainWords && (
+          <p className="mt-4 max-w-3xl rounded-2xl border border-[#d7c5ad] bg-[#fbf6ec] px-5 py-3 text-base leading-7 text-[#3d3326]">
+            <span aria-hidden="true">💬 </span>
+            <strong>In plain words:</strong> {plainWords}
+          </p>
+        )}
         {children && <div className="mt-5">{children}</div>}
       </div>
     </header>
