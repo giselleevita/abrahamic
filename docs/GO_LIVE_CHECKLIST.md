@@ -19,14 +19,14 @@ plan phases in the PR descriptions. Tick items as they land.
 - [ ] Secrets rotated if ever shared (`NEXTAUTH_SECRET`, admin hash)
 
 ## Legal and privacy
-- [ ] Privacy policy, terms and about pages published and linked from the footer
-- [ ] Report / takedown contact published
+- [x] Privacy policy, terms and about pages published and linked from the footer (live after deploy)
+- [x] Report / takedown contact published (on /about)
 - [ ] Child-safety statement on `/kids`
 - [ ] Vercel Hobby is non-commercial only: no ads or paid features while on it
 
 ## Operations
 - [x] Health check workflow (`.github/workflows/uptime.yml`)
-- [ ] Scheduled database backup workflow and a tested restore
+- [ ] Backup workflow added (`docs/BACKUP_AND_RESTORE.md`): set the two secrets, run it once, practise a restore
 - [ ] Optional: custom domain (about $10/year; not required)
 
 ## Collaboration

@@ -97,8 +97,11 @@ export const FOOTER_GROUPS: NavGroup[] = [
     label: 'Site',
     items: [
       { href: '/search', label: 'Search' },
+      { href: '/about', label: 'About' },
       { href: '/editorial-method', label: 'Editorial method' },
       { href: '/licensing', label: 'Licensing' },
+      { href: '/privacy', label: 'Privacy' },
+      { href: '/terms', label: 'Terms' },
     ],
   },
 ]
