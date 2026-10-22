@@ -4,6 +4,7 @@ import type { Tradition } from '@/generated/prisma/client'
 import { formatVerseRef, verseReaderHref } from '@/lib/verse-links'
 import { filterVerseTranslations } from '@/lib/filter-public-translations'
 import { ScriptText } from '@/components/ui/ScriptText'
+import { SignoffBadge } from '@/components/claims/SignoffBadge'
 
 interface Props {
   claim: ClaimWithRelations
@@ -53,6 +54,11 @@ export function ClaimCard({ claim, showSource = true }: Props) {
           </cite>
         </blockquote>
       )}
+
+      <SignoffBadge requiredTraditions={claim.requiredTraditions} signoffSummary={claim.signoffSummary} revision={claim.revision} />
+      <Link href={`/suggest?claim=${claim.id}`} className="self-start text-xs text-stone-400 underline decoration-stone-300 underline-offset-2 hover:text-blue-800">
+        Report a problem with this claim
+      </Link>
 
       <div className="flex flex-wrap gap-1.5">
         {claim.interpretationScope && (

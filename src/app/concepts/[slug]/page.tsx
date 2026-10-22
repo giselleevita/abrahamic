@@ -45,6 +45,8 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
     include: {
       traditions: { orderBy: { tradition: 'asc' } },
       claims: {
+        // A claim that is unpublished or archived must not keep appearing through a published page.
+        where: { claim: { isPublished: true } },
         include: {
           claim: {
             include: {

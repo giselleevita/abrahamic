@@ -6,6 +6,8 @@ import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { canDelete, canEdit, canTransition, roleFromSession } from '@/lib/editorial-policy'
+import { requiredTraditionsFor, unmetSignoffs } from '@/lib/editorial/signoff'
+import { missingMessage, reviewTraditionSchema, signoffConflict } from '@/lib/editorial/signoff-api'
 import { revalidateEntity } from '@/lib/cache'
 
 export async function GET(
@@ -44,6 +46,7 @@ const updateSchema = z.object({
   verseIds: z.array(z.number()).min(1).optional(),
   figureIds: z.array(z.number()).optional(),
   themeIds: z.array(z.number()).optional(),
+  extraTraditions: z.array(reviewTraditionSchema).optional(),
 })
 
 export async function PUT(
@@ -59,9 +62,9 @@ export async function PUT(
   const parsed = updateSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
-  const { verseIds, figureIds, themeIds, statement, isPublished, editorialStatus, ...rest } = parsed.data
+  const { verseIds, figureIds, themeIds, statement, isPublished, editorialStatus, extraTraditions, ...rest } = parsed.data
 
-  const existing = await prisma.claim.findUniqueOrThrow({ where: { id: parseInt(id) } })
+  const existing = await prisma.claim.findUniqueOrThrow({ where: { id: parseInt(id) }, include: { source: { select: { tradition: true } } } })
   if (!canEdit(role, existing.editorialStatus)) {
     return NextResponse.json({ error: 'Role cannot edit content in this state' }, { status: 403 })
   }
@@ -72,12 +75,39 @@ export async function PUT(
 
   const newHash = statement ? claimHash(existing.sourceId, statement) : undefined
 
-  const claim = await prisma.$transaction(async (tx) => {
+  // Changing the wording or the cited verses starts a new revision, which voids earlier sign-offs.
+  const changesMeaning = Boolean(verseIds) || (statement !== undefined && statement !== existing.statement)
+  const required = extraTraditions
+    ? requiredTraditionsFor(existing.source.tradition, extraTraditions)
+    : existing.requiredTraditions.filter((t): t is 'JEWISH' | 'CHRISTIAN' | 'ISLAMIC' => t !== 'SHARED')
+
+  if (targetStatus === 'PUBLISHED' && existing.editorialStatus !== 'PUBLISHED') {
+    const reviews = changesMeaning
+      ? []
+      : await prisma.claimReview.findMany({
+          where: { claimId: existing.id, revision: existing.revision },
+          select: { tradition: true, kind: true, verdict: true },
+        })
+    const reviewRows = reviews.filter(
+      (r): r is typeof r & { tradition: 'JEWISH' | 'CHRISTIAN' | 'ISLAMIC' } => r.tradition !== 'SHARED',
+    )
+    const gate = unmetSignoffs(required, reviewRows, changesMeaning ? false : existing.isContested)
+    if (!gate.allowed) {
+      return NextResponse.json(
+        { error: missingMessage(gate.missing, gate.blockedByConcern), missing: gate.missing },
+        { status: 409 },
+      )
+    }
+  }
+
+  const outcome = await prisma.$transaction(async (tx) => {
     const updated = await tx.claim.update({
       where: { id: parseInt(id) },
       data: {
       ...(statement ? { statement, contentHash: newHash } : {}),
       ...rest,
+      ...(extraTraditions ? { requiredTraditions: required } : {}),
+      ...(verseIds ? { revision: { increment: 1 } } : {}),
       editorialStatus: targetStatus,
       isPublished: targetStatus === 'PUBLISHED',
       ...(verseIds
@@ -121,7 +151,10 @@ export async function PUT(
       },
     })
     return updated
-  })
+  }).catch((error: unknown) => signoffConflict(error) ?? Promise.reject(error))
+  // A database sign-off error (for example a race with a new objection) becomes a 409.
+  if (outcome instanceof NextResponse) return outcome
+  const claim = outcome
 
   revalidatePath('/comparisons', 'layout')
   revalidateEntity('claim', { tags: ['claims'] })

@@ -41,6 +41,13 @@ This project compares scripture and religious tradition across Judaism, Christia
 - **No licensed translation text in the public-demo path.** If you touch `src/lib/public-demo-policy.ts`, `src/lib/filter-public-translations.ts`, or seed data, keep it consistent with [`docs/LICENSING.md`](docs/LICENSING.md) — the public deployment must never serve JPS/KJV/ESV/Yusuf Ali/Sahih International (or any other licensed) text. There's test coverage for this in `src/lib/public-demo-policy.test.ts`; extend it if you add a new translation source.
 - If you're unsure whether a change is editorially sensitive, say so in the PR description and ask for another set of eyes before merging.
 
+## Contributing content without writing code
+
+You do not need to use Git or GitHub to improve the content. Anyone can [suggest a correction](https://abrahamic.vercel.app/suggest),
+signed-in contributors can propose sourced claims, and members of each tradition can apply to review how
+their own tradition is described. Every route, and how sign-off works, is explained in the
+[contributor guide](docs/CONTRIBUTOR_GUIDE.md).
+
 ## Reporting bugs / requesting features
 
 Use GitHub Issues. For content-accuracy issues specifically (a claim, citation, or comparison that looks wrong), say which claim/figure/verse and what's inaccurate — that's usually enough to act on.

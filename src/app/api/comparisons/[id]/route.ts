@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { revalidateEntity } from '@/lib/cache'
+import { signoffConflict } from '@/lib/editorial/signoff-api'
 
 const claimInclude = {
   claims: {
@@ -32,11 +33,19 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  const numericId = Number(id)
+  if (!Number.isInteger(numericId)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  // Staff may read drafts. Everyone else sees a comparison only once it is published, and only
+  // the claims in it that are themselves published.
+  const staff = Boolean(await getServerSession(authOptions))
   const comparison = await prisma.comparison.findUnique({
-    where: { id: parseInt(id) },
-    include: claimInclude,
+    where: { id: numericId },
+    include: staff
+      ? claimInclude
+      : { claims: { ...claimInclude.claims, where: { claim: { isPublished: true } } } },
   })
-  if (!comparison) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  if (!comparison || (!staff && !comparison.isPublished)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   return NextResponse.json(comparison)
 }
 
@@ -55,6 +64,7 @@ export async function PUT(
 ) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { id } = await params
   const body = await req.json()
@@ -63,7 +73,7 @@ export async function PUT(
 
   const { claimIds, ...data } = parsed.data
 
-  const comparison = await prisma.comparison.update({
+  const outcome = await prisma.comparison.update({
     where: { id: parseInt(id) },
     data: {
       ...data,
@@ -77,7 +87,10 @@ export async function PUT(
         : {}),
     },
     include: claimInclude,
-  })
+  }).catch((error: unknown) => signoffConflict(error) ?? Promise.reject(error))
+  // Publishing needs every claim in the comparison to be published (signed off) first.
+  if (outcome instanceof NextResponse) return outcome
+  const comparison = outcome
 
   revalidateEntity('comparison', { tags: ['comparisons'] })
   return NextResponse.json(comparison)
@@ -89,6 +102,7 @@ export async function DELETE(
 ) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { id } = await params
   await prisma.comparison.delete({ where: { id: parseInt(id) } })

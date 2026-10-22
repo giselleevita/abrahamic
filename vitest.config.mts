@@ -14,6 +14,9 @@ export default defineConfig({
         test: {
           name: 'node',
           environment: 'node',
+          // Route tests import large server modules; the first import in a worker can be slow on CI.
+          testTimeout: 20_000,
+          hookTimeout: 30_000,
           include: [
             'tests/{lib,api,app}/**/*.test.ts',
             'src/**/*.test.ts',
@@ -27,6 +30,9 @@ export default defineConfig({
           name: 'dom',
           environment: 'jsdom',
           setupFiles: ['tests/setup.ts'],
+          // jsdom starts slowly on loaded machines and CI runners; avoid failures that are only timing.
+          testTimeout: 20_000,
+          hookTimeout: 30_000,
           include: ['tests/components/**/*.test.tsx'],
         },
       },

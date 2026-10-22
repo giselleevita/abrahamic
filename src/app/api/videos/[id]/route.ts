@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { requireSession } from '@/lib/api-auth'
+import { requireAdminSession } from '@/lib/api-auth'
 import { updateVideoSchema, extractYoutubeId } from '@/lib/schemas/video'
 import { revalidateEntity } from '@/lib/cache'
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const denied = await requireSession()
+  const denied = await requireAdminSession()
   if (denied) return denied
 
   const { id } = await params
@@ -72,7 +72,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const denied = await requireSession()
+  const denied = await requireAdminSession()
   if (denied) return denied
 
   const { id } = await params

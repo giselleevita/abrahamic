@@ -1,0 +1,57 @@
+name: Database backup
+
+on:
+  schedule:
+    # Weekly, Sunday 03:23 UTC. Free-tier friendly.
+    - cron: '23 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Must be >= the Postgres major version of the Neon project.
+      PG_MAJOR: '17'
+    steps:
+      - name: Check secrets are configured
+        env:
+          DIRECT_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$DIRECT_URL" ] || [ -z "$PASSPHRASE" ]; then
+            echo "::error::Set BACKUP_DATABASE_URL and BACKUP_PASSPHRASE repository secrets."
+            exit 1
+          fi
+
+      - name: Dump database
+        env:
+          BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          set -euo pipefail
+          # Run pg_dump from the matching major-version image so the client is never older than the server.
+          docker run --rm -e BACKUP_DATABASE_URL "postgres:${PG_MAJOR}-alpine" \
+            sh -c 'pg_dump --no-owner --no-privileges --format=custom "$BACKUP_DATABASE_URL"' > backup.dump
+          test -s backup.dump
+
+      # The repository is public and artifacts on public repositories can be downloaded by any
+      # GitHub user, so the dump is encrypted before it is uploaded. Without this step the
+      # artifact would expose every row, including contributor emails once accounts exist.
+      - name: Encrypt dump
+        env:
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$PASSPHRASE" \
+            --symmetric --cipher-algo AES256 --output "backup-$(date -u +%Y%m%d).dump.gpg" backup.dump
+          rm -f backup.dump
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: abrahamic-db-backup
+          path: backup-*.dump.gpg
+          retention-days: 30
+          if-no-files-found: error
