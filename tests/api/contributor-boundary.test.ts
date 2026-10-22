@@ -103,7 +103,7 @@ describe('contributor boundary', () => {
     expect(prismaCalls).toEqual([])
   })
 
-  const ownCases = MUTATING_ROUTES.filter((r) => r.contributorAllowed).flatMap((r) => r.methods.map((method) => ({ ...r, method })))
+  const ownCases = MUTATING_ROUTES.filter((r) => r.contributorAllowed && !r.adminAllowed).flatMap((r) => r.methods.map((method) => ({ ...r, method })))
 
   it.each(ownCases)('$method $path refuses the environment admin, who has no contributor identity', async ({ module, method }) => {
     await signIn({ role: 'ADMIN' })
@@ -128,6 +128,54 @@ describe('contributor boundary', () => {
       expect(res.status).toBe(400)
     }
     expect(prismaCalls).toEqual([])
+  })
+
+  describe('review endpoint authority', () => {
+    const post = async (body: unknown) => {
+      const mod = await import('@/app/api/claims/[id]/reviews/route')
+      return mod.POST(new Request('http://localhost/api/claims/1/reviews', { method: 'POST', body: JSON.stringify(body) }), {
+        params: Promise.resolve({ id: '1' }),
+      })
+    }
+    const valid = { tradition: 'JEWISH', verdict: 'ACCURATE' }
+
+    it('refuses a contributor who is not an approved reviewer, before touching the database', async () => {
+      await signIn({ uid: 'user-1', role: 'CONTRIBUTOR', reviewerTraditions: [] })
+      expect((await post(valid)).status).toBe(403)
+      expect(prismaCalls).toEqual([])
+    })
+
+    it('refuses a reviewer speaking for a tradition they are not approved for', async () => {
+      await signIn({ uid: 'user-1', role: 'CONTRIBUTOR', reviewerTraditions: ['ISLAMIC'] })
+      expect((await post(valid)).status).toBe(403)
+      expect(prismaCalls).toEqual([])
+    })
+
+    it('lets an approved reviewer past authority for their own tradition', async () => {
+      await signIn({ uid: 'user-1', role: 'CONTRIBUTOR', reviewerTraditions: ['JEWISH'] })
+      // The mocked database returns no claim, so reaching the lookup (404) proves authority passed.
+      expect((await post(valid)).status).toBe(404)
+      expect(prismaCalls).toEqual(['claim.findUnique'])
+    })
+
+    it('lets the administrator stand in for any tradition', async () => {
+      await signIn({ role: 'ADMIN' })
+      expect((await post({ tradition: 'CHRISTIAN', verdict: 'ACCURATE' })).status).toBe(404)
+    })
+
+    it('does not let an EDITOR review', async () => {
+      await signIn({ role: 'EDITOR' })
+      expect((await post(valid)).status).toBe(401)
+      expect(prismaCalls).toEqual([])
+    })
+
+    it('requires an explanation for any concern, and rejects SHARED', async () => {
+      await signIn({ role: 'ADMIN' })
+      expect((await post({ tradition: 'JEWISH', verdict: 'OBJECTS' })).status).toBe(400)
+      expect((await post({ tradition: 'JEWISH', verdict: 'OBJECTS', comment: 'short' })).status).toBe(400)
+      expect((await post({ tradition: 'SHARED', verdict: 'ACCURATE' })).status).toBe(400)
+      expect(prismaCalls).toEqual([])
+    })
   })
 
   it('still lets the environment-credential admin through the session check', async () => {

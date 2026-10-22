@@ -67,6 +67,11 @@ export default async function AccountPage() {
             ))}
           </ul>
         )}
+        {session.user.reviewerTraditions && session.user.reviewerTraditions.length > 0 && (
+          <Link href="/review" className="mt-4 inline-flex rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-800">
+            Open the review queue
+          </Link>
+        )}
         <ReviewerApplicationForm available={available} />
       </section>
 

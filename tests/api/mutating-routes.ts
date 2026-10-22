@@ -14,6 +14,8 @@ export type MutatingRoute = {
   module: string
   methods: Method[]
   contributorAllowed?: boolean
+  /** The environment administrator may also use it (so the 'admin has no contributor identity' check is skipped). */
+  adminAllowed?: boolean
   adminOnly?: boolean
 }
 
@@ -47,4 +49,6 @@ export const MUTATING_ROUTES: MutatingRoute[] = [
   { path: '/api/account', module: '@/app/api/account/route', methods: ['DELETE'], contributorAllowed: true },
   { path: '/api/admin/users/[id]', module: '@/app/api/admin/users/[id]/route', methods: ['PATCH'], adminOnly: true },
   { path: '/api/admin/reviewers/[id]', module: '@/app/api/admin/reviewers/[id]/route', methods: ['PATCH'], adminOnly: true },
+  { path: '/api/claims/[id]/reviews', module: '@/app/api/claims/[id]/reviews/route', methods: ['POST'], contributorAllowed: true, adminAllowed: true },
+  { path: '/api/claims/[id]/contested', module: '@/app/api/claims/[id]/contested/route', methods: ['PATCH'], adminOnly: true },
 ]

@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { revalidateEntity } from '@/lib/cache'
+import { signoffConflict } from '@/lib/editorial/signoff-api'
 
 const claimInclude = {
   claims: {
@@ -63,7 +64,7 @@ export async function PUT(
 
   const { claimIds, ...data } = parsed.data
 
-  const comparison = await prisma.comparison.update({
+  const outcome = await prisma.comparison.update({
     where: { id: parseInt(id) },
     data: {
       ...data,
@@ -77,7 +78,10 @@ export async function PUT(
         : {}),
     },
     include: claimInclude,
-  })
+  }).catch((error: unknown) => signoffConflict(error) ?? Promise.reject(error))
+  // Publishing needs every claim in the comparison to be published (signed off) first.
+  if (outcome instanceof NextResponse) return outcome
+  const comparison = outcome
 
   revalidateEntity('comparison', { tags: ['comparisons'] })
   return NextResponse.json(comparison)

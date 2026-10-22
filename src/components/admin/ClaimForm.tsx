@@ -133,7 +133,7 @@ export function ClaimForm({ sources, figures, themes, verses, initialData, role 
     setLoading(false)
     if (!res.ok) {
       const data = await res.json()
-      setError(data.error?.message ?? JSON.stringify(data.error) ?? 'Error saving claim.')
+      setError(typeof data.error === 'string' ? data.error : data.error?.message ?? JSON.stringify(data.error) ?? 'Error saving claim.')
       return
     }
     router.push('/admin/claims')
@@ -296,7 +296,7 @@ export function ClaimForm({ sources, figures, themes, verses, initialData, role 
 
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
         <label className="block text-sm font-semibold text-amber-950">Editorial state</label>
-        <p className="mb-2 text-xs text-amber-800">Only transitions permitted for the {role.toLowerCase()} role are selectable.</p>
+        <p className="mb-2 text-xs text-amber-800">Only transitions permitted for the {role.toLowerCase()} role are selectable. Publishing needs a sign-off from a member of each tradition the claim describes (see the Tradition sign-off panel after saving).</p>
         <select
           value={editorialStatus}
           onChange={(event) => setEditorialStatus(event.target.value as EditorialStatus)}
@@ -304,6 +304,8 @@ export function ClaimForm({ sources, figures, themes, verses, initialData, role 
         >
           {(['DRAFT', 'IN_REVIEW', 'PUBLISHED', 'ARCHIVED'] as EditorialStatus[])
             .filter((status) => canTransition(role, initialData?.editorialStatus ?? 'DRAFT', status))
+            // A new claim cannot be created published: publication needs tradition sign-off first.
+            .filter((status) => initialData || status === 'DRAFT' || status === 'IN_REVIEW')
             .map((status) => <option key={status} value={status}>{status.replace('_', ' ')}</option>)}
         </select>
       </div>
