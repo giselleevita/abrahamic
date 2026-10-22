@@ -19,11 +19,13 @@ export type MutatingRoute = {
   adminOnly?: boolean
   /** Deliberately open to anonymous callers (guarded by abuse controls instead of a session). */
   public?: boolean
+  /** Editors may use it (claim drafting and review, handling public reports). Every other staff route is administrator-only. */
+  editorAllowed?: boolean
 }
 
 export const MUTATING_ROUTES: MutatingRoute[] = [
-  { path: '/api/claims', module: '@/app/api/claims/route', methods: ['POST'] },
-  { path: '/api/claims/[id]', module: '@/app/api/claims/[id]/route', methods: ['PUT', 'DELETE'] },
+  { path: '/api/claims', module: '@/app/api/claims/route', methods: ['POST'], editorAllowed: true },
+  { path: '/api/claims/[id]', module: '@/app/api/claims/[id]/route', methods: ['PUT', 'DELETE'], editorAllowed: true },
   { path: '/api/comparisons', module: '@/app/api/comparisons/route', methods: ['POST'] },
   { path: '/api/comparisons/[id]', module: '@/app/api/comparisons/[id]/route', methods: ['PUT', 'DELETE'] },
   { path: '/api/concepts', module: '@/app/api/concepts/route', methods: ['POST'] },
@@ -54,6 +56,6 @@ export const MUTATING_ROUTES: MutatingRoute[] = [
   { path: '/api/claims/[id]/reviews', module: '@/app/api/claims/[id]/reviews/route', methods: ['POST'], contributorAllowed: true, adminAllowed: true },
   { path: '/api/claims/[id]/contested', module: '@/app/api/claims/[id]/contested/route', methods: ['PATCH'], adminOnly: true },
   { path: '/api/reports', module: '@/app/api/reports/route', methods: ['POST'], public: true },
-  { path: '/api/admin/reports/[id]', module: '@/app/api/admin/reports/[id]/route', methods: ['PATCH'] },
+  { path: '/api/admin/reports/[id]', module: '@/app/api/admin/reports/[id]/route', methods: ['PATCH'], editorAllowed: true },
   { path: '/api/contributions/claims', module: '@/app/api/contributions/claims/route', methods: ['POST'], contributorAllowed: true },
 ]

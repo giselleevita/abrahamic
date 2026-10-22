@@ -37,6 +37,7 @@ const updateSchema = z.object({
 export async function PATCH(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { slug } = await params
   const body = await req.json()
@@ -64,6 +65,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ slug: 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { slug } = await params
   await prisma.timelineEvent.delete({ where: { slug } })

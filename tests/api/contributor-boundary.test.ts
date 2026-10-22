@@ -103,6 +103,30 @@ describe('contributor boundary', () => {
     expect(prismaCalls).toEqual([])
   })
 
+  // Editors draft and request review of claims and handle public reports. Everything else that
+  // changes live content is the administrator's, whichever way the editor signed in.
+  const adminOnlyByPolicy = MUTATING_ROUTES
+    .filter((r) => !r.contributorAllowed && !r.public && !r.editorAllowed && !r.adminOnly)
+    .flatMap((r) => r.methods.map((method) => ({ ...r, method })))
+
+  it('covers a meaningful number of routes in the editor policy check', () => {
+    expect(adminOnlyByPolicy.length).toBeGreaterThan(20)
+  })
+
+  it.each(adminOnlyByPolicy)('$method $path refuses an EDITOR with 403 before touching the database', async ({ module, method }) => {
+    await signIn({ role: 'EDITOR' })
+    const res = await call(module, method)
+    expect(res.status).toBe(403)
+    expect(prismaCalls).toEqual([])
+  })
+
+  it('still lets an editor reach the claim workflow past authentication', async () => {
+    await signIn({ role: 'EDITOR' })
+    const mod = await import('@/app/api/claims/route')
+    const res = await mod.POST(new Request('http://localhost/api/claims', { method: 'POST', body: JSON.stringify({}) }))
+    expect(res.status).toBe(400) // validation, not authentication or authorisation
+  })
+
   const ownCases = MUTATING_ROUTES.filter((r) => r.contributorAllowed && !r.adminAllowed).flatMap((r) => r.methods.map((method) => ({ ...r, method })))
 
   it.each(ownCases)('$method $path refuses the environment admin, who has no contributor identity', async ({ module, method }) => {

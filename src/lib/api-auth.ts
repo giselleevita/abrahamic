@@ -67,3 +67,13 @@ export async function requireSession(): Promise<NextResponse | null> {
   if (await hasSession()) return null
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 }
+
+/**
+ * Same shape as `requireSession`, but administrator only: 401 when unauthenticated, 403 for an
+ * EDITOR. Editors may draft and request review of claims; everything else that changes live
+ * content (figures, themes, translations, videos, AI drafts, ...) is the administrator's.
+ */
+export async function requireAdminSession(): Promise<NextResponse | null> {
+  const guard = await requireAdmin()
+  return guard.ok ? null : guard.response
+}

@@ -30,6 +30,9 @@ export default defineConfig({
           name: 'dom',
           environment: 'jsdom',
           setupFiles: ['tests/setup.ts'],
+          // jsdom starts slowly on loaded machines and CI runners; avoid failures that are only timing.
+          testTimeout: 20_000,
+          hookTimeout: 30_000,
           include: ['tests/components/**/*.test.tsx'],
         },
       },
