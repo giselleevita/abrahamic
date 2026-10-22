@@ -31,5 +31,5 @@ plan phases in the PR descriptions. Tick items as they land.
 
 ## Collaboration
 - [ ] Tri-tradition sign-off enforced in the database (Phase 3)
-- [ ] Contribution flow, report button and contributor guide (Phase 4)
+- [x] Contribution flow, report button and contributor guide (Phase 4): `/suggest`, `/account/propose`, `docs/CONTRIBUTOR_GUIDE.md`
 - [ ] One approved reviewer per tradition recruited (people, not code)

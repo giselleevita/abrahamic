@@ -30,6 +30,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/editorial" className="block rounded px-2 py-1.5 font-medium text-amber-800 hover:bg-amber-50">
             Workflow & Audit
           </Link>
+          <Link href="/admin/suggestions" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
+            Correction reports
+          </Link>
           {session.user.role === 'ADMIN' && (
             <>
               <Link href="/admin/users" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">

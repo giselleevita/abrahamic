@@ -285,6 +285,9 @@ model Claim {
   /// Denormalised per-tradition review state for the current revision, for cheap badges.
   signoffSummary     Json?
 
+  /// Set when a signed-in contributor proposed this claim. Null for staff-authored and seeded claims.
+  proposedById  String?
+  reports       CorrectionReport[]
   reviews       ClaimReview[]
   verses        ClaimVerse[]
   figures       ClaimFigure[]
@@ -1048,4 +1051,42 @@ model ClaimReview {
   @@unique([claimId, revision, tradition, reviewerId])
   @@index([claimId, revision])
   @@map("claim_reviews")
+}
+
+// ─── Public correction reports ───────────────────────────────────────────────
+// Anyone may tell us something is wrong, with no account. Reports are input for editors, never
+// a vote and never a path to publication. The reporter's IP is stored only as a keyed hash, for
+// rate limiting, and is blanked after 30 days.
+
+enum ReportKind {
+  CORRECTION
+  UNFAIR_TO_TRADITION
+  SOURCE_ERROR
+  OTHER
+}
+
+enum ReportStatus {
+  NEW
+  SEEN
+  ACTIONED
+  DISMISSED
+}
+
+model CorrectionReport {
+  id           Int          @id @default(autoincrement())
+  kind         ReportKind
+  claimId      Int?
+  claim        Claim?       @relation(fields: [claimId], references: [id], onDelete: SetNull)
+  pagePath     String?      @db.VarChar(300)
+  message      String       @db.Text
+  contactEmail String?      @db.VarChar(254)
+  ipHash       String       @db.VarChar(64)
+  status       ReportStatus @default(NEW)
+  handledBy    String?
+  handledAt    DateTime?
+  createdAt    DateTime     @default(now())
+
+  @@index([status, createdAt])
+  @@index([ipHash, createdAt])
+  @@map("correction_reports")
 }

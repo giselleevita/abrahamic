@@ -44,7 +44,7 @@ beforeEach(() => {
 })
 
 describe('admin boundary', () => {
-  const cases = MUTATING_ROUTES.flatMap((r) =>
+  const cases = MUTATING_ROUTES.filter((r) => !r.public).flatMap((r) =>
     r.methods.map((method) => ({ ...r, method })),
   )
 

@@ -56,6 +56,12 @@ export default async function AccountPage() {
       <p className="mt-3 text-slate-700">Signed in as <strong>{session.user.name ?? 'contributor'}</strong>. Role: {session.user.role.toLowerCase()}.</p>
 
       <section className="mt-10">
+        <h2 className="text-2xl font-bold text-slate-950">Propose a claim</h2>
+        <p className="mt-3 leading-7 text-slate-700">Suggest a new, sourced claim. It becomes a draft for the editors and is reviewed by members of the tradition it describes before anything is published.</p>
+        <Link href="/account/propose" className="mt-4 inline-flex rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-800">Propose a claim</Link>
+      </section>
+
+      <section className="mt-10">
         <h2 className="text-2xl font-bold text-slate-950">Reviewing for your tradition</h2>
         <p className="mt-3 leading-7 text-slate-700">A reviewer confirms whether their <em>own</em> tradition is described fairly. Please apply only for the tradition you belong to. An administrator approves each application.</p>
         {profiles.length > 0 && (

@@ -51,7 +51,7 @@ async function signIn(claims: Record<string, unknown>) {
   })
 }
 
-const staffCases = MUTATING_ROUTES.filter((r) => !r.contributorAllowed).flatMap((r) =>
+const staffCases = MUTATING_ROUTES.filter((r) => !r.contributorAllowed && !r.public).flatMap((r) =>
   r.methods.map((method) => ({ ...r, method })),
 )
 
