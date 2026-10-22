@@ -13,7 +13,7 @@ plan phases in the PR descriptions. Tick items as they land.
 
 ## Security
 - [x] Admin routes gated in `src/proxy.ts`, layout and every mutating route
-- [ ] Login attempts throttled in the database (the in-memory limiter does not hold across serverless instances)
+- [x] Login attempts throttled in the database (5 failures / 15 min per email, 20 per IP; fails closed)
 - [ ] Contributor accounts and roles (Phase 2)
 - [ ] Dev-audit exception (`scripts/check-dev-audit.mjs`) reviewed before 2026-11-16
 - [ ] Secrets rotated if ever shared (`NEXTAUTH_SECRET`, admin hash)

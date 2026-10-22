@@ -926,3 +926,15 @@ model VideoResourceTheme {
   @@id([videoId, themeId])
   @@map("video_resource_themes")
 }
+
+/// Failed-login counters for brute-force protection. The key is a SHA-256 hash
+/// of "email:<address>" or "ip:<address>", so no raw email or IP is stored.
+/// DB-backed because serverless instances do not share memory.
+model LoginAttempt {
+  key         String    @id @db.VarChar(64)
+  failures    Int       @default(0)
+  windowStart DateTime
+  lockedUntil DateTime?
+
+  @@map("login_attempts")
+}
