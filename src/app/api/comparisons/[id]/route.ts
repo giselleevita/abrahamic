@@ -33,11 +33,19 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  const numericId = Number(id)
+  if (!Number.isInteger(numericId)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  // Staff may read drafts. Everyone else sees a comparison only once it is published, and only
+  // the claims in it that are themselves published.
+  const staff = Boolean(await getServerSession(authOptions))
   const comparison = await prisma.comparison.findUnique({
-    where: { id: parseInt(id) },
-    include: claimInclude,
+    where: { id: numericId },
+    include: staff
+      ? claimInclude
+      : { claims: { ...claimInclude.claims, where: { claim: { isPublished: true } } } },
   })
-  if (!comparison) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  if (!comparison || (!staff && !comparison.isPublished)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   return NextResponse.json(comparison)
 }
 

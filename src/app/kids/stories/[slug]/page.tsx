@@ -35,6 +35,8 @@ export default async function KidsStoryPage({
     where: { slug, isPublished: true, status: 'APPROVED' },
     include: {
       claims: {
+        // A claim that is unpublished or archived must not keep appearing through a published page.
+        where: { claim: { isPublished: true } },
         orderBy: { position: 'asc' },
         include: {
           claim: {

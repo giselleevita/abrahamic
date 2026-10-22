@@ -16,6 +16,7 @@ export default defineConfig({
           environment: 'node',
           // Route tests import large server modules; the first import in a worker can be slow on CI.
           testTimeout: 20_000,
+          hookTimeout: 30_000,
           include: [
             'tests/{lib,api,app}/**/*.test.ts',
             'src/**/*.test.ts',
