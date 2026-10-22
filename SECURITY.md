@@ -16,7 +16,7 @@ You should get an acknowledgment within a few days. This is a small demo project
 
 This is a public-facing demo application (see the [live deployment](https://abrahamic.vercel.app)). In scope:
 
-- Authentication/authorization bypass in the admin area (`/admin`, `src/lib/auth.ts`, `middleware.ts`)
+- Authentication/authorization bypass in the admin area (`/admin`, `src/lib/auth.ts`, `src/proxy.ts`)
 - Data exposure that violates the [public-demo translation policy](docs/LICENSING.md) (i.e. licensed translation text becoming visible on the public deployment)
 - Injection, SSRF, or other classic web vulnerabilities in API routes (`src/app/api/**`)
 - Abuse of the AI-backed endpoints (`src/app/api/ai/**`) beyond the documented rate limits
