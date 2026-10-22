@@ -8,7 +8,7 @@ plan phases in the PR descriptions. Tick items as they land.
 - [x] Scripture corpus imported in production (60,540 verses; see `CI_STATUS.md`)
 - [ ] `npm run import:verify` run against production and result recorded
 - [ ] Qur'an English decision recorded on `/licensing` (Arabic only unless a clearly public-domain English text is chosen)
-- [ ] Licence terms for AlQuran Cloud, Sefaria and eBible re-read; date recorded in `LICENSING.md`
+- [x] Licence terms for AlQuran Cloud, Sefaria and eBible re-read; date recorded in `LICENSING.md` (22 Oct 2026). Sefaria's terms page itself is worth one read by the owner
 - [ ] At least one Jewish, one Christian and one Muslim reviewer have read the published comparisons
 
 ## Security
