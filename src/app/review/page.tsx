@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getServerSession } from 'next-auth'
-import { contributorSessionOptions } from '@/lib/auth'
+import { getContributorSessionSafe } from '@/lib/contributor-session'
 import prisma from '@/lib/prisma'
 import { ReviewForm } from '@/components/admin/SignoffControls'
 import { REVIEW_TRADITIONS, TRADITION_LABEL, type ReviewTradition } from '@/lib/editorial/signoff'
@@ -17,7 +16,7 @@ export const dynamic = 'force-dynamic'
 const PAGE_SIZE = 25
 
 export default async function ReviewQueuePage() {
-  const session = await getServerSession(contributorSessionOptions)
+  const session = await getContributorSessionSafe()
   const mine = (session?.user.reviewerTraditions ?? []).filter((t): t is ReviewTradition => REVIEW_TRADITIONS.includes(t as ReviewTradition))
 
   if (!session || mine.length === 0) {

@@ -12,6 +12,7 @@ plan phases in the PR descriptions. Tick items as they land.
 - [ ] At least one Jewish, one Christian and one Muslim reviewer have read the published comparisons
 
 ## Security
+- [ ] Production sign-in configured on Vercel (NEXTAUTH_SECRET, NEXTAUTH_URL, ADMIN_EMAIL, ADMIN_PASSWORD_HASH). Without them /api/auth/* returns 500 and admin cannot sign in. Generate values onto the clipboard with `node scripts/generate-auth-secrets.mjs secret` and `... hash`
 - [x] Admin routes gated in `src/proxy.ts`, layout and every mutating route
 - [x] Login attempts throttled in the database (5 failures / 15 min per email, 20 per IP; fails closed)
 - [x] Contributor accounts and roles (Phase 2): built; sign-in stays closed until OAuth keys are set

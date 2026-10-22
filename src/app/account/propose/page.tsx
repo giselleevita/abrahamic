@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getServerSession } from 'next-auth'
-import { contributorSessionOptions } from '@/lib/auth'
+import { getContributorSessionSafe } from '@/lib/contributor-session'
 import prisma from '@/lib/prisma'
 import { ProposalForm } from '@/components/contribute/ProposalForm'
 
@@ -9,7 +8,7 @@ export const metadata: Metadata = { title: 'Propose a claim', robots: { index: f
 export const dynamic = 'force-dynamic'
 
 export default async function ProposePage() {
-  const session = await getServerSession(contributorSessionOptions)
+  const session = await getContributorSessionSafe()
   if (!session) {
     return (
       <div className="mx-auto max-w-2xl px-5 py-12 sm:px-8 sm:py-16">

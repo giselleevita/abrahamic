@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { getServerSession } from 'next-auth'
 import Link from 'next/link'
-import { configuredOAuthProviders, contributorSessionOptions } from '@/lib/auth'
+import { configuredOAuthProviders } from '@/lib/auth'
+import { getContributorSessionSafe } from '@/lib/contributor-session'
 import prisma from '@/lib/prisma'
 import { AccountActions, ReviewerApplicationForm, SignInButtons } from '@/components/account/AccountClient'
 
@@ -20,7 +20,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 export default async function AccountPage() {
-  const session = await getServerSession(contributorSessionOptions)
+  const session = await getContributorSessionSafe()
 
   if (!session) {
     const providers = configuredOAuthProviders()
