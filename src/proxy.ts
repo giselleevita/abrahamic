@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
+import { isStaffRole } from '@/lib/session-views'
 
 /**
  * Edge auth pre-check for the admin surface.
@@ -19,7 +20,8 @@ export async function proxy(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })
 
-  if (token) return NextResponse.next()
+  // A contributor's token is valid but is not staff: it must not reach the CMS.
+  if (token && isStaffRole(token.role)) return NextResponse.next()
 
   const loginUrl = new URL('/login', request.url)
   loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname)

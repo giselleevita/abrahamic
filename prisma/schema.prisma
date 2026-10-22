@@ -938,3 +938,62 @@ model LoginAttempt {
 
   @@map("login_attempts")
 }
+
+// ─── Accounts & reviewer verification ────────────────────────────────────────
+// Contributors sign in with an OAuth provider. Identity is (provider, providerAccountId),
+// never email, so an unverified provider email cannot take over another account.
+// ADMIN is deliberately not a role here: it exists only as environment credentials,
+// so nothing in the database can mint an administrator.
+
+enum UserRole {
+  CONTRIBUTOR
+  EDITOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum ReviewerStatus {
+  PENDING
+  APPROVED
+  REVOKED
+}
+
+model User {
+  id                String     @id @default(cuid())
+  provider          String     @db.VarChar(20)
+  providerAccountId String     @db.VarChar(100)
+  email             String?
+  displayName       String?
+  role              UserRole   @default(CONTRIBUTOR)
+  status            UserStatus @default(ACTIVE)
+  createdAt         DateTime   @default(now())
+  lastSignInAt      DateTime   @default(now())
+
+  reviewerProfiles ReviewerProfile[]
+
+  @@unique([provider, providerAccountId])
+  @@map("users")
+}
+
+/// A user's request to review on behalf of one tradition. Approval is a human
+/// decision by an administrator. Never SHARED (CHECK constraint in the migration).
+model ReviewerProfile {
+  id          Int            @id @default(autoincrement())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tradition   Tradition
+  affiliation String         @db.VarChar(200)
+  statement   String         @db.Text
+  status      ReviewerStatus @default(PENDING)
+  decidedBy   String?
+  decidedAt   DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([userId, tradition])
+  @@index([status])
+  @@map("reviewer_profiles")
+}
