@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma'
 import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { getStaffSessionSafe } from '@/lib/api-auth'
 import { canTransition, roleFromSession } from '@/lib/editorial-policy'
 import { sourceKeySchema } from '@/lib/schemas/enums'
 import { revalidateEntity } from '@/lib/cache'
@@ -12,7 +13,7 @@ import { requiredTraditionsFor } from '@/lib/editorial/signoff'
 import { reviewTraditionSchema } from '@/lib/editorial/signoff-api'
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession(authOptions)
+  const session = await getStaffSessionSafe()
   const { searchParams } = req.nextUrl
   const rawSourceKey = searchParams.get('sourceKey')
   const parsedSourceKey = rawSourceKey ? sourceKeySchema.safeParse(rawSourceKey) : null

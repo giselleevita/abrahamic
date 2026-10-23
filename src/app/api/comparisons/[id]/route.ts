@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { getStaffSessionSafe } from '@/lib/api-auth'
 import { revalidateEntity } from '@/lib/cache'
 import { signoffConflict } from '@/lib/editorial/signoff-api'
 
@@ -38,7 +39,7 @@ export async function GET(
 
   // Staff may read drafts. Everyone else sees a comparison only once it is published, and only
   // the claims in it that are themselves published.
-  const staff = Boolean(await getServerSession(authOptions))
+  const staff = Boolean(await getStaffSessionSafe())
   const comparison = await prisma.comparison.findUnique({
     where: { id: numericId },
     include: staff
