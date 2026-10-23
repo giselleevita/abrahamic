@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma'
 import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { getStaffSessionSafe } from '@/lib/api-auth'
 import { canDelete, canEdit, canTransition, roleFromSession } from '@/lib/editorial-policy'
 import { requiredTraditionsFor, unmetSignoffs } from '@/lib/editorial/signoff'
 import { missingMessage, reviewTraditionSchema, signoffConflict } from '@/lib/editorial/signoff-api'
@@ -15,7 +16,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const session = await getServerSession(authOptions)
+  const session = await getStaffSessionSafe()
   const claim = await prisma.claim.findUnique({
     where: { id: parseInt(id) },
     include: {

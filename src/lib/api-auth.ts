@@ -51,8 +51,23 @@ export async function requireReviewActor(): Promise<Guard<{ id: string; role: 'A
   }
 }
 
+/**
+ * The staff session, or null. For PUBLIC reads that show a little more to staff (drafts, unpublished
+ * items): if sign-in itself is broken (for example NEXTAUTH_SECRET is missing), a visitor must still get
+ * the public answer, not a 500. Failing to establish who someone is means treating them as a visitor,
+ * which can only ever show them less.
+ */
+export async function getStaffSessionSafe() {
+  try {
+    return await getServerSession(authOptions)
+  } catch (error) {
+    console.error('[staff-session] treating request as a visitor:', error instanceof Error ? error.message : 'unknown error')
+    return null
+  }
+}
+
 export async function hasSession(): Promise<boolean> {
-  return Boolean(await getServerSession(authOptions))
+  return Boolean(await getStaffSessionSafe())
 }
 
 /**
