@@ -80,7 +80,10 @@ test('family, glossary and kids controls are accessible and keep progress local'
   await page.reload()
   expect(await page.evaluate(() => localStorage.getItem('abrahamic.kids.v1'))).toBe(progress)
   await expect(page.getByRole('link', { name: 'Ages 6–8', exact: true })).toHaveAttribute('aria-current', 'page')
-  await expect(page.getByText('Suggest a correction', { exact: true })).toHaveCount(0)
+  // Children are never shown a form that collects data. The site footer may link to the adult correction page, but no report form or its fields may appear here.
+  await expect(page.getByLabel('What is wrong, and what should it say?')).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Send report' })).toHaveCount(0)
+  await expect(page.locator('main textarea, main input[type=email]')).toHaveCount(0)
   for (const route of ['/family-tree', '/glossary', '/kids/stories', '/kids/games', '/search?q=Genesis+22%3A2']) {
     await page.goto(route)
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
