@@ -18,18 +18,18 @@ export default async function SourcesPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-      <PageIntro eyebrow="Read" title="Source library" description="Read the complete supported Bible canon in public-domain English and all 114 Quran surahs in Arabic. Hebrew-original and historical-source coverage remains selective; each card shows what is available." />
+      <PageIntro plainWords="These are the holy books themselves. Open one to read it, and you will see which edition and translation you are reading." eyebrow="Read" title="Source library" description="Read the complete supported Bible canon in public-domain English and all 114 Quran surahs in Arabic. Hebrew-original and historical-source coverage remains selective; each card shows what is available." />
 
       <div className="grid gap-5 sm:grid-cols-2">
         {sources.map((source) => (
           <Link
             key={source.slug}
             href={`/sources/${source.slug}`}
-            className="group rounded-2xl border border-slate-200 bg-white p-7 shadow-sm hover:border-blue-300 hover:shadow-md transition-all"
+            className="group editorial-card p-7 shadow-sm hover:border-gold-700 hover:shadow-md transition-all"
           >
-            <div className="mb-5 flex h-1.5 overflow-hidden rounded-full" aria-hidden="true"><span className="flex-1 bg-blue-500" /><span className="flex-1 bg-rose-500" /><span className="flex-1 bg-emerald-500" /></div>
+            <div className="mb-5 flex h-1.5 overflow-hidden rounded-full" aria-hidden="true"><span className="flex-1 bg-[#f3eadb]0" /><span className="flex-1 bg-rose-500" /><span className="flex-1 bg-emerald-500" /></div>
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-2xl font-bold text-slate-950 group-hover:text-blue-800">{source.title}</h2>
+              <h2 className="text-2xl font-bold text-slate-950 group-hover:text-[#173b68]">{source.title}</h2>
               <Badge className={TRADITION_BG[source.tradition]}>{source.tradition}</Badge>
             </div>
 
@@ -41,7 +41,7 @@ export default async function SourcesPage() {
               </p>
             )}
 
-            <div className="mt-5 flex gap-4 text-sm font-semibold text-blue-700">
+            <div className="mt-5 flex gap-4 text-sm font-semibold text-[#173b68]">
               <span>{source._count.verses} available verses</span>
               <span>{source._count.claims} claims</span>
             </div>

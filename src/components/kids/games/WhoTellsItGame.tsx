@@ -96,9 +96,9 @@ export function WhoTellsItGame({ questions }: { questions: PresenceQuestion[] })
       announcement={announcement}
       onRestart={restart}
     >
-      <div className="rounded-xl border-2 border-primary-300 bg-white p-6">
+      <div className="rounded-3xl border-4 border-rose-300 bg-rose-50 p-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
-          Question {index + 1} of {questions.length}
+          🔎 Question {index + 1} of {questions.length}
         </p>
 
         <h2 className="mt-2 font-serif text-2xl font-bold text-primary-950">
@@ -124,14 +124,14 @@ export function WhoTellsItGame({ questions }: { questions: PresenceQuestion[] })
                 type="button"
                 disabled={revealed}
                 onClick={() => choose(choice.value)}
-                className={`rounded-xl border-2 px-4 py-3 text-left text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
+                className={`rounded-2xl border-4 px-5 py-4 text-left text-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
                   revealed && isAnswer
-                    ? 'border-green-500 bg-green-50 text-green-900'
+                    ? 'kids-pop border-green-500 bg-green-50 text-green-900'
                     : revealed && isChosen
-                      ? 'border-christian-500 bg-christian-50 text-christian-900'
+                      ? 'kids-wiggle border-christian-500 bg-christian-50 text-christian-900'
                       : revealed
                         ? 'border-primary-200 bg-white text-primary-500'
-                        : 'border-primary-300 bg-white text-primary-900 hover:border-primary-500'
+                        : 'border-rose-300 bg-white text-primary-900 hover:-translate-y-0.5 hover:border-rose-500'
                 }`}
               >
                 {choice.label}

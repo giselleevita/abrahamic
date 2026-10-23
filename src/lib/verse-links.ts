@@ -11,11 +11,12 @@ export type VerseRef = {
   book: string
   chapter: number
   verse: number
+  versification?: string
 }
 
 /** Anchor id for a verse row inside the reader. */
-export function verseAnchorId(verse: number): string {
-  return `v-${verse}`
+export function verseAnchorId(verse: number, versification?: string): string {
+  return `${versification === 'MASORETIC' ? 'h' : 'v'}-${verse}`
 }
 
 /** URL of a chapter in the reader, optionally anchored to one verse. */
@@ -24,7 +25,7 @@ export function verseReaderHref(sourceSlug: string, ref: VerseRef): string {
     book: ref.book,
     chapter: String(ref.chapter),
   })
-  return `/sources/${sourceSlug}/read?${params.toString()}#${verseAnchorId(ref.verse)}`
+  return `/sources/${sourceSlug}/read?${params.toString()}#${verseAnchorId(ref.verse, ref.versification)}`
 }
 
 /** Human-readable citation, e.g. "Genesis 22:2". */

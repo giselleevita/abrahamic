@@ -26,7 +26,7 @@ export async function seedFigureLegacy(prisma: PrismaClient) {
     { slug: 'jesus', legacy: 'Christ/Messiah; Incarnation of God; founder of Christianity; salvation through faith and resurrection' },
     { slug: 'peter', legacy: 'Rock of the church; first pope; led apostles; boldly testified to resurrection' },
     { slug: 'paul', legacy: 'Apostle to gentiles; wrote most of NT; expanded church beyond Judaism; theology of grace' },
-    { slug: 'mary-of-nazareth', legacy: 'Mother of Jesus; venerated as Theotokos; model of virginity and motherhood' },
+    { slug: 'mary', legacy: 'Mother of Jesus; venerated as Theotokos; model of virginity and motherhood' },
     { slug: 'john', legacy: 'Beloved disciple; wrote gospel and apocalypse; established mystical theology' },
     { slug: 'james-the-greater', legacy: 'Apostle; first apostle to be martyred; patron of pilgrims; apostle to Spain' },
     { slug: 'lot', legacy: 'Righteous man; saved from Sodom; prophet in Islamic tradition; tested by trial' },

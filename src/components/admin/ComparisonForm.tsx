@@ -25,6 +25,8 @@ export function ComparisonForm({ claims, initialData }: Props) {
   const [slug, setSlug] = useState(initialData?.slug ?? '')
   const [tag, setTag] = useState<typeof TAGS[number]>(initialData?.tag ?? 'SHARED')
   const [summary, setSummary] = useState(initialData?.summary ?? '')
+  const [sharedGround, setSharedGround] = useState(initialData?.sharedGround ?? '')
+  const [keyDifferences, setKeyDifferences] = useState(initialData?.keyDifferences ?? '')
   const [isPublished, setIsPublished] = useState(initialData?.isPublished ?? false)
   const [isControversial, setIsControversial] = useState(initialData?.isControversial ?? false)
   const [aiSummaryLoading, setAiSummaryLoading] = useState(false)
@@ -78,7 +80,7 @@ export function ComparisonForm({ claims, initialData }: Props) {
     setLoading(true)
     setError('')
 
-    const payload = { title, slug, tag, summary, isPublished, isControversial, claimIds: selectedClaimIds }
+    const payload = { title, slug, tag, summary, sharedGround, keyDifferences, isPublished, isControversial, claimIds: selectedClaimIds }
     const url = initialData ? `/api/comparisons/${initialData.id}` : '/api/comparisons'
     const method = initialData ? 'PUT' : 'POST'
 
@@ -172,6 +174,14 @@ export function ComparisonForm({ claims, initialData }: Props) {
         />
       </div>
 
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="block text-sm font-medium text-stone-700">Shared ground (optional)
+          <textarea value={sharedGround} onChange={(e) => setSharedGround(e.target.value)} maxLength={3000} rows={4} className="editorial-control mt-2 w-full p-3" />
+        </label>
+        <label className="block text-sm font-medium text-stone-700">Key differences (optional)
+          <textarea value={keyDifferences} onChange={(e) => setKeyDifferences(e.target.value)} maxLength={3000} rows={4} className="editorial-control mt-2 w-full p-3" />
+        </label>
+      </div>
       {/* Claims */}
       <div>
         <label className="block text-sm font-medium text-stone-700">

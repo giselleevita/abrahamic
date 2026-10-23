@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import prisma from '@/lib/prisma'
 import { ReportForm } from '@/components/contribute/ReportForm'
+import { validCorrectionPath } from '@/lib/schemas/corrections'
 
 export const metadata: Metadata = {
   title: 'Suggest a correction',
@@ -8,8 +9,9 @@ export const metadata: Metadata = {
 }
 export const dynamic = 'force-dynamic'
 
-export default async function SuggestPage({ searchParams }: { searchParams: Promise<{ claim?: string }> }) {
-  const { claim: claimParam } = await searchParams
+export default async function SuggestPage({ searchParams }: { searchParams: Promise<{ claim?: string; page?: string }> }) {
+  const { claim: claimParam, page: pageParam } = await searchParams
+  const pagePath = pageParam && pageParam.length <= 300 && validCorrectionPath(pageParam) ? pageParam : undefined
   const claimId = /^\d{1,9}$/.test(claimParam ?? '') ? Number(claimParam) : undefined
   const claim = claimId
     ? await prisma.claim.findFirst({ where: { id: claimId, isPublished: true }, select: { id: true, statement: true, source: { select: { title: true } } } })
@@ -31,7 +33,11 @@ export default async function SuggestPage({ searchParams }: { searchParams: Prom
         </blockquote>
       )}
 
-      <ReportForm claimId={claim?.id} />
+      {pagePath && !claim && (
+        <p className="mt-6 rounded-lg border-l-4 border-slate-300 bg-slate-50 p-4 text-sm text-slate-700">About the page <code>{pagePath}</code></p>
+      )}
+
+      <ReportForm claimId={claim?.id} pagePath={pagePath} />
       <p className="mt-6 text-xs text-slate-500">
         We store your message, your email if you give one, and a scrambled form of your IP address used only to limit spam. The scrambled address is erased after 30 days. See the privacy page.
       </p>

@@ -1,3 +1,4 @@
+import { PUBLIC_FAMILY_RELATIONS } from '@/lib/queries/family-relations'
 import prisma from '@/lib/prisma'
 import Link from 'next/link'
 import { TRADITION_COLORS } from '@/lib/constants'
@@ -22,7 +23,7 @@ const getRootFigures = cachedQuery(
         canonicalName: true,
         aliases: { take: 1, select: { tradition: true } },
         relationsFrom: {
-          where: { relationType: 'PARENT' },
+          where: { AND: [PUBLIC_FAMILY_RELATIONS, { relationType: 'PARENT' }] },
           take: 3,
           select: { id: true },
         },

@@ -1,7 +1,15 @@
+import { ScriptText } from '@/components/ui/ScriptText'
+import { GuidedQuestions } from '@/components/search/GuidedQuestions'
+import { SearchForm } from '@/components/search/SearchForm'
+import { SearchFilters } from '@/components/search/SearchFilters'
+import { searchOptions } from '@/lib/search-options'
+import { exactPassages } from '@/lib/search-references'
+import { verseReaderHref } from '@/lib/verse-links'
+import { Citation } from '@/components/ui/Citation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { search } from '@/lib/search'
-import { SectionHeader } from '@/components/ui/SectionHeader'
+import { PageIntro } from '@/components/layout/PageIntro'
 import { Surface } from '@/components/ui/Surface'
 import { Callout } from '@/components/ui/Callout'
 import { CONCEPT_CATEGORY_LABEL, ERA_LABEL, SOURCE_TRADITION, TRADITION_BG } from '@/lib/constants'
@@ -15,30 +23,36 @@ export const metadata: Metadata = { title: 'Search' }
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>
+  searchParams: Promise<{ q?: string; tradition?: string; type?: string; source?: string }>
 }) {
-  const { q } = await searchParams
-  const query = q?.trim() ?? ''
+  const params = await searchParams
+  const { q } = params
+  const filters = searchOptions(params)
+  const query = typeof q === 'string' ? q.trim().slice(0, 300) : ''
 
+  const form = <><SearchForm key={JSON.stringify(params)} query={query} filters={filters} /><SearchFilters /></>
   if (query.length < 2) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <SectionHeader title="Search" />
-        <p className="text-primary-300">Enter at least two characters to search.</p>
+        <PageIntro eyebrow="Explore" title="Search" />
+        {form}<p className="text-primary-700">Enter at least two characters to search.</p><div className="mt-5 flex flex-wrap gap-3">{['Abraham', 'prayer', 'creation'].map((term) => <Link key={term} href={`/search?q=${term}`} className="reading-action">{term}</Link>)}</div>
+      <GuidedQuestions />
       </div>
     )
   }
 
-  const results = await search(query)
+  const [results, passages] = await Promise.all([search(query, 10, filters), exactPassages(query, filters)])
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <SectionHeader
+      <PageIntro eyebrow="Explore"
         title="Search"
-        description={`${results.total} result${results.total !== 1 ? 's' : ''} for “${query}”, ranked by relevance.`}
+        description={`${results.total + passages.length} displayed result${results.total + passages.length !== 1 ? 's' : ''} for “${query}”, ranked by relevance.`}
       />
 
-      {results.total === 0 && (
+      {form}
+      {passages.length > 0 && <section className="mb-10" aria-label="Exact passages"><h2 className="mb-3 font-serif text-2xl text-primary-950">Exact passages</h2><p className="mb-4 text-sm text-primary-700">Choose a source and inspect its available editions. Numbering is preserved from each source.</p><div className="space-y-3">{passages.map((passage) => <Surface key={passage.href} className="p-5"><Link href={passage.href} className="underline underline-offset-4"><p className="font-semibold">{passage.label}</p></Link><p className="mt-1 text-sm text-primary-700">{passage.numbering}</p><div className="mt-3 flex flex-wrap gap-2">{passage.editions.length ? passage.editions.map((edition) => <Link key={edition} className="reading-action" href={passage.href.replace('#', `&edition=${encodeURIComponent(edition)}#`)}>{edition === 'Reader note (original)' ? 'Project explanation: ' : 'Edition: '}{edition}</Link>) : <p>Reference only; no permitted excerpt is available.</p>}</div></Surface>)}</div></section>}
+      {results.total === 0 && passages.length === 0 && (
         <Callout tone="note">
           Nothing matched “{query}”. Try a different word, or browse{' '}
           <Link href="/concepts" className="underline">concepts</Link> and{' '}
@@ -69,8 +83,8 @@ export default async function SearchPage({
           <div className="space-y-2">
             {results.verses.map((verse) => (
               <Surface
-                key={verse.id}
-                href={`/sources/${verse.sourceKey.toLowerCase()}/read?book=${encodeURIComponent(verse.book)}&chapter=${verse.chapter}`}
+                key={`${verse.id}-${verse.translationName}`}
+                href={verseReaderHref(verse.sourceSlug ?? verse.sourceKey.toLowerCase(), verse)}
                 className="p-4"
               >
                 <div className="flex flex-wrap items-baseline gap-2">
@@ -83,9 +97,7 @@ export default async function SearchPage({
                     {verse.book} {verse.chapter}:{verse.verse}
                   </span>
                 </div>
-                <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-700">
-                  {verse.text}
-                </p>
+                <ScriptText text={verse.text} className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-700" /><p className="mt-2 text-xs text-primary-700">Edition: {verse.translationName}</p>
               </Surface>
             ))}
           </div>
@@ -95,17 +107,18 @@ export default async function SearchPage({
       {results.claims.length > 0 && (
         <section className="mb-10">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-primary-400">
-            Claims
+            Teachings &amp; interpretations
           </h2>
           <div className="space-y-2">
             {results.claims.map((claim) => (
-              <Surface key={claim.id} className="p-4" interactive>
+              <Surface key={claim.id} className="p-4">
                 <span
                   className={`rounded px-2 py-0.5 text-[10px] font-semibold ${TRADITION_BG[SOURCE_TRADITION[claim.sourceKey]]}`}
                 >
                   {claim.sourceTitle}
                 </span>
                 <p className="mt-2 text-sm leading-relaxed text-stone-800">{claim.statement}</p>
+                {claim.citation && <div className="mt-3"><Citation sourceSlug={claim.citation.sourceSlug} verse={claim.citation} /></div>}
               </Surface>
             ))}
           </div>

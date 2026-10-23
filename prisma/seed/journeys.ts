@@ -2,10 +2,10 @@ import type { PrismaClient, Tradition, TraditionPresence } from '@/generated/pri
 
 const ART = {
   artworkPath: '/timeline/patriarchal.jpg',
-  artworkAlt: 'Illustrated ancient desert encampment beneath a field of stars',
-  artworkCredit: 'Abrahamic Texts project artwork',
-  artworkSourceUrl: '/licensing',
-  artworkLicense: 'PROJECT',
+  artworkAlt: 'Painting of a Bedouin encampment with tents and palms beside a well (Marie-Méloé Lafon, 1841)',
+  artworkCredit: 'Marie-Méloé Lafon, Campement de bédouins dans le désert (1841)',
+  artworkSourceUrl: 'https://commons.wikimedia.org/wiki/File:Marie_M%C3%A9lo%C3%A9_Lafon_-_Campement_de_b%C3%A9douins_dans_le_d%C3%A9sert,_1841.jpg',
+  artworkLicense: 'Public domain',
 }
 
 type Item =

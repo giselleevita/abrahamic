@@ -1,8 +1,8 @@
+import { PassageFocus } from '@/components/sources/PassageFocus'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { VerseReader } from '@/components/sources/VerseReader'
-import { ScriptText } from '@/components/ui/ScriptText'
 import { filterVersesWithTranslations } from '@/lib/filter-public-translations'
 import Link from 'next/link'
 import { ReaderNavigation } from '@/components/sources/ReaderNavigation'
@@ -16,7 +16,7 @@ export async function generateMetadata({
   searchParams,
 }: {
   params: Promise<{ sourceKey: string }>
-  searchParams: Promise<{ book?: string; chapter?: string }>
+  searchParams: Promise<{ book?: string; chapter?: string; edition?: string }>
 }): Promise<Metadata> {
   const { sourceKey } = await params
   const { book, chapter } = await searchParams
@@ -30,10 +30,10 @@ export default async function VerseReaderPage({
   searchParams,
 }: {
   params: Promise<{ sourceKey: string }>
-  searchParams: Promise<{ book?: string; chapter?: string }>
+  searchParams: Promise<{ book?: string; chapter?: string; edition?: string }>
 }) {
   const { sourceKey } = await params
-  const { book, chapter } = await searchParams
+  const { book, chapter, edition } = await searchParams
 
   const source = await prisma.source.findUnique({ where: { slug: sourceKey } })
   if (!source) notFound()
@@ -125,12 +125,10 @@ export default async function VerseReaderPage({
   const selectedBook = bookOptions.find((item) => item.book === book)
   if (book && (!selectedBook || !selectedBook.chapters.includes(activeChapter))) notFound()
   const currentBook = selectedBook?.book ?? bookOptions[0]?.book
-  const reportTitle = `Source correction: ${source.title}${book ? ` — ${book} ${activeChapter}` : ''}`
-  const reportBody = `Source: ${source.title}\nPassage: ${book ? `${book} ${activeChapter}` : 'Please add the passage'}\nPage: https://abrahamic.vercel.app/sources/${encodeURIComponent(sourceKey)}/read${book ? `?book=${encodeURIComponent(book)}&chapter=${activeChapter}` : ''}\n\nWhat appears incorrect?\n\nWhat source supports the correction?\n`
-  const reportHref = `https://github.com/giselleevita/abrahamic/issues/new?title=${encodeURIComponent(reportTitle)}&body=${encodeURIComponent(reportBody)}`
+  const reportPath = `/sources/${sourceKey}/read${book ? `?${new URLSearchParams({ book, chapter: String(activeChapter) })}` : ''}`
 
   return (
-    <div className="editorial-page min-h-screen px-4 py-10 sm:px-6"><div className="mx-auto max-w-3xl">
+    <div className="editorial-page min-h-screen px-4 py-10 sm:px-6"><PassageFocus key={reportPath} /><div className="mx-auto max-w-3xl">
       <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 text-sm text-[#655a4b]">
         <Link href="/sources" className="hover:text-stone-700">Sources</Link>
         <span>/</span>
@@ -172,7 +170,7 @@ export default async function VerseReaderPage({
           </div>
 
           {masoretic.length > 0 && <nav aria-label="Editions on this page" className="mb-6 flex flex-wrap gap-2 text-sm"><a href="#translated-edition" className="editorial-control px-4 py-2 font-semibold">Translated edition</a><a href="#hebrew-edition" className="editorial-control px-4 py-2 font-semibold">Hebrew edition ↓</a></nav>}
-          {verses.length > 0 ? <section id="translated-edition" className="editorial-card scroll-mt-24 p-5 sm:p-7"><h2 className="editorial-title mb-2 text-2xl">Translated edition</h2><p className="mb-6 text-sm leading-relaxed text-[#51483c]">Compare editions of this same numbered passage. Linked passages from other traditions are references, not equivalent translations.</p><VerseReader verses={filterVersesWithTranslations(verses) as any} /></section> : <p id="translated-edition" className="editorial-card p-5 text-sm text-[#51483c]">No translated verses are available for this chapter in the current numbering. The Hebrew edition may use a different chapter division.</p>}
+          {verses.length > 0 ? <section id="translated-edition" className="editorial-card scroll-mt-24 p-5 sm:p-7"><h2 className="editorial-title mb-2 text-2xl">Available editions</h2><p className="mb-6 text-sm leading-relaxed text-[#51483c]">Compare editions of this same numbered passage. Linked passages from other traditions are references, not equivalent translations.</p><VerseReader initialEdition={edition} key={`${sourceKey}:${book}:${activeChapter}`} sourceSlug={source.slug} sourceTitle={source.title} verses={filterVersesWithTranslations(verses) as any} /></section> : <p id="translated-edition" className="editorial-card p-5 text-sm text-[#51483c]">No translated verses are available for this chapter in the current numbering. The Hebrew edition may use a different chapter division.</p>}
 
           {masoretic.length > 0 && (
             <section id="hebrew-edition" className="editorial-card mt-10 scroll-mt-24 p-5 sm:p-7">
@@ -184,20 +182,7 @@ export default async function VerseReaderPage({
                 Some chapters and verses differ from the English division above, so the
                 two editions are shown separately rather than paired without a verified mapping.
               </p>
-              <ol className="mt-4 space-y-2">
-                {masoretic.map((v) => {
-                  const text = v.translations[0]?.text
-                  if (!text) return null
-                  return (
-                  <li key={v.id} className="flex gap-3 border-b border-[#eee4d6] py-2 last:border-b-0">
-                      <span className="w-8 shrink-0 pt-0.5 text-right font-mono text-xs text-stone-500">
-                        {v.verse}
-                      </span>
-                      <ScriptText text={text} className="min-w-0 flex-1 text-lg leading-relaxed text-[#242019]" />
-                    </li>
-                  )
-                })}
-              </ol>
+              <div className="mt-5"><VerseReader initialEdition={edition} key={`hebrew:${sourceKey}:${book}:${activeChapter}`} sourceSlug={source.slug} sourceTitle={`${source.title} · Masoretic numbering`} verses={filterVersesWithTranslations(masoretic).map((verse) => ({ ...verse, linksAsA: [], linksAsB: [] }))} /></div>
             </section>
           )}
 
@@ -210,8 +195,9 @@ export default async function VerseReaderPage({
 
       <aside className="editorial-card mt-10 p-5">
         <h2 className="font-semibold text-stone-900">Keep exploring or suggest a correction</h2>
-        <p className="mt-1 text-sm leading-relaxed text-[#51483c]">Our <Link href="/learn" className="editorial-link">guided journeys</Link> explain context and cite their sources. If a passage, label, or explanation seems wrong, please <a href={reportHref} target="_blank" rel="noopener noreferrer" className="editorial-link">report a source issue</a>. The report opens on GitHub and requires a free GitHub account.</p>
+        <p className="mt-1 text-sm leading-relaxed text-[#51483c]">Our <Link href="/learn" className="editorial-link">guided journeys</Link> explain context and cite their sources. If a passage, label, or explanation seems wrong, share the details with our editorial team below.</p>
       </aside>
+      <Link href={`/suggest?page=${encodeURIComponent(reportPath)}`} className="text-sm font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-900">Suggest a correction for this page</Link>
     </div></div>
   )
 }

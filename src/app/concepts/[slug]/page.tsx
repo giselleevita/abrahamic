@@ -1,3 +1,8 @@
+import { NoteButton } from '@/components/experience/NoteButton'
+import { ListenButton } from '@/components/ui/ListenButton'
+import { TrailRecorder } from '@/components/experience/TrailRecorder'
+import { GlossaryText } from '@/components/glossary/GlossaryText'
+import { NextUp } from '@/components/layout/NextUp'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { PageIntro } from '@/components/layout/PageIntro'
@@ -76,7 +81,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
   const overviewContent = (
     <div className="space-y-8">
       {concept.summary && (
-        <p className="text-lg leading-relaxed text-stone-700">{concept.summary}</p>
+        <div><p className="text-lg leading-relaxed text-stone-700"><GlossaryText text={concept.summary} /></p><p className="mt-3"><ListenButton text={`${concept.name}. ${concept.summary}`} label="Listen to this summary" /></p></div>
       )}
 
       <div>
@@ -89,9 +94,9 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
               <Badge className={TRADITION_BG[tradition.tradition]}>
                 {tradition.tradition}
               </Badge>
-              <p className="mt-3 text-sm font-medium text-stone-900">{tradition.definition}</p>
+              <p className="mt-3 text-sm font-medium text-stone-900"><GlossaryText text={tradition.definition} /></p>
               {tradition.nuances && (
-                <p className="mt-2 text-xs text-stone-500">{tradition.nuances}</p>
+                <p className="mt-2 text-xs text-stone-500"><GlossaryText text={tradition.nuances} /></p>
               )}
             </div>
           ))}
@@ -150,6 +155,9 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
             : []),
         ]}
       />
+      <NoteButton href={`/concepts/${concept.slug}`} label={concept.name} />
+      <TrailRecorder item={{ href: `/concepts/${concept.slug}`, label: concept.name, kind: 'concept' }} />
+      <NextUp current={{ kind: 'concept', id: concept.id }} />
     </div>
   )
 }

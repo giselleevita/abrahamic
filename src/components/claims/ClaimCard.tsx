@@ -3,6 +3,7 @@ import type { ClaimWithRelations } from '@/types'
 import type { Tradition } from '@/generated/prisma/client'
 import { formatVerseRef, verseReaderHref } from '@/lib/verse-links'
 import { filterVerseTranslations } from '@/lib/filter-public-translations'
+import { Citation } from '@/components/ui/Citation'
 import { ScriptText } from '@/components/ui/ScriptText'
 import { SignoffBadge } from '@/components/claims/SignoffBadge'
 
@@ -12,9 +13,9 @@ interface Props {
 }
 
 const TRADITION_STYLE: Record<Tradition, { border: string; sourceDot: string; sourceText: string; citeBg: string }> = {
-  JEWISH:    { border: 'border-l-blue-500',   sourceDot: 'bg-blue-500',   sourceText: 'text-blue-700',  citeBg: 'bg-blue-50'   },
-  CHRISTIAN: { border: 'border-l-red-600',    sourceDot: 'bg-red-600',    sourceText: 'text-red-700',   citeBg: 'bg-red-50'    },
-  ISLAMIC:   { border: 'border-l-green-600',  sourceDot: 'bg-green-600',  sourceText: 'text-green-700', citeBg: 'bg-green-50'  },
+  JEWISH:    { border: 'border-l-jewish-600',   sourceDot: 'bg-jewish-600',   sourceText: 'text-jewish-700',  citeBg: 'bg-jewish-50'   },
+  CHRISTIAN: { border: 'border-l-christian-600',    sourceDot: 'bg-christian-600',    sourceText: 'text-christian-700',   citeBg: 'bg-christian-50'    },
+  ISLAMIC:   { border: 'border-l-islamic-600',  sourceDot: 'bg-islamic-600',  sourceText: 'text-islamic-700', citeBg: 'bg-islamic-50'  },
   SHARED:    { border: 'border-l-violet-500', sourceDot: 'bg-violet-500', sourceText: 'text-violet-700',citeBg: 'bg-violet-50' },
 }
 
@@ -43,6 +44,7 @@ export function ClaimCard({ claim, showSource = true }: Props) {
       {primaryVerse && defaultTranslation && (
         <blockquote className={`rounded-md ${style.citeBg} px-3 py-2`}>
           <ScriptText text={defaultTranslation.text} quoted className="text-xs text-stone-600 italic leading-relaxed" />
+          <p className="text-xs text-primary-700">Edition: {defaultTranslation.name}</p>
           <cite className="mt-1 block not-italic">
             <Link
               href={verseReaderHref(claim.source.slug, primaryVerse)}
@@ -54,6 +56,8 @@ export function ClaimCard({ claim, showSource = true }: Props) {
           </cite>
         </blockquote>
       )}
+
+      {claim.verses.length > 0 && <ul aria-label="All supporting passages" className="flex flex-wrap gap-3">{claim.verses.map(({ verse }) => <li key={verse.id}><Citation sourceSlug={claim.source.slug} verse={verse} /></li>)}</ul>}
 
       <SignoffBadge requiredTraditions={claim.requiredTraditions} signoffSummary={claim.signoffSummary} revision={claim.revision} />
       <Link href={`/suggest?claim=${claim.id}`} className="self-start text-xs text-stone-400 underline decoration-stone-300 underline-offset-2 hover:text-blue-800">

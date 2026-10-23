@@ -1,4 +1,6 @@
+import { PickQuestion } from '@/components/learn/PickQuestion'
 import type { Metadata } from "next";
+import { StoryScene } from '@/components/experience/Motion'
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -55,7 +57,7 @@ export default async function CoursePage({ params }: { params: Params }) {
             <p className="mt-5 max-w-3xl text-lg leading-8 text-[#51483c]">{course.description}</p>
             <div className="mt-6 flex flex-wrap gap-4 text-sm font-semibold text-[#51483c]"><span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#80571b]" aria-hidden="true" /> {course.estimatedMinutes ?? course.chapters.length * 3} minutes</span><span className="inline-flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#80571b]" aria-hidden="true" /> Editorially reviewed and sourced</span></div>
           </div>
-          <figure><div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-[#d7c5ad] bg-[#173b68]"><Image src={course.artworkPath ?? '/timeline/patriarchal.jpg'} alt={course.artworkAlt ?? ''} fill priority className="object-cover" sizes="(min-width:1024px) 42vw, 100vw" /></div><figcaption className="mt-3 text-xs leading-5 text-[#655a4b]">Artwork: {course.artworkCredit ?? 'Abrahamic Texts project artwork'} · {course.artworkLicense === 'PROJECT' ? 'Project-created' : course.artworkLicense ?? 'Project-created'} · <Link href={course.artworkSourceUrl ?? '/licensing'} className="editorial-link">source and licence</Link></figcaption></figure>
+          <figure><StoryScene className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-[#d7c5ad] bg-[#173b68]"><Image src={course.artworkPath ?? '/timeline/patriarchal.jpg'} alt={course.artworkAlt ?? ''} fill priority className="object-cover" sizes="(min-width:1024px) 42vw, 100vw" /></StoryScene><figcaption className="mt-3 text-xs leading-5 text-[#655a4b]">Artwork: {course.artworkCredit ?? 'Abrahamic Texts project artwork'} · {course.artworkLicense === 'PROJECT' ? 'Project-created' : course.artworkLicense ?? 'Project-created'} · <Link href={course.artworkSourceUrl ?? '/licensing'} className="editorial-link">source and licence</Link></figcaption></figure>
         </div>
       </section>
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1fr_320px]">
@@ -68,6 +70,7 @@ export default async function CoursePage({ params }: { params: Params }) {
               {steps.length} steps
             </h2>
           </div>
+          <PickQuestion courseSlug={course.slug} chapterSlugs={course.chapters.map((c) => c.slug)} />
           <JourneyStepList steps={steps} />
         </section>
         <aside className="h-fit space-y-5 lg:sticky lg:top-24">

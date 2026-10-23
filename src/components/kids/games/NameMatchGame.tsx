@@ -87,7 +87,7 @@ export function NameMatchGame({ pairs }: { pairs: NamePair[] }) {
     >
       <div className="grid gap-6 sm:grid-cols-2">
         <section>
-          <h2 className="mb-3 text-lg font-bold text-primary-900">Choose a person</h2>
+          <h2 className="mb-3 text-xl font-bold text-sky-900">1️⃣ Choose a person</h2>
           <ul className="space-y-2">
             {pairs.map((pair) => {
               const isMatched = matched.has(pair.figureId)
@@ -99,15 +99,15 @@ export function NameMatchGame({ pairs }: { pairs: NamePair[] }) {
                     disabled={isMatched}
                     aria-pressed={isSelected}
                     onClick={() => setSelectedFigure(pair.figureId)}
-                    className={`w-full rounded-xl border-2 px-4 py-3 text-left text-lg font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
+                    className={`w-full rounded-2xl border-4 px-5 py-4 text-left text-xl font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
                       isMatched
-                        ? 'cursor-default border-green-300 bg-green-50 text-green-900'
+                        ? 'kids-pop cursor-default border-green-300 bg-green-50 text-green-900'
                         : isSelected
                           ? 'border-gold-600 bg-gold-100 text-primary-950'
-                          : 'border-primary-300 bg-white text-primary-900 hover:border-primary-500'
+                          : 'border-sky-300 bg-sky-50 text-primary-900 hover:-translate-y-0.5 hover:border-sky-500'
                     }`}
                   >
-                    {pair.canonicalName}
+                    <span aria-hidden="true" className="mr-2">👤</span>{pair.canonicalName}
                     {isMatched && <span className="ml-2 text-green-700">✓</span>}
                   </button>
                 </li>
@@ -117,7 +117,7 @@ export function NameMatchGame({ pairs }: { pairs: NamePair[] }) {
         </section>
 
         <section>
-          <h2 className="mb-3 text-lg font-bold text-primary-900">Find the other name</h2>
+          <h2 className="mb-3 text-xl font-bold text-amber-900">2️⃣ Find the other name</h2>
           <ul className="space-y-2">
             {shuffledAliases.map((pair) => {
               const isMatched = matched.has(pair.figureId)
@@ -131,14 +131,14 @@ export function NameMatchGame({ pairs }: { pairs: NamePair[] }) {
                       selectedFigure !== null &&
                       attemptMatch(selectedFigure, pair.figureId, pair.aliasName)
                     }
-                    className={`w-full rounded-xl border-2 px-4 py-3 text-left text-lg font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
+                    className={`w-full rounded-2xl border-4 px-5 py-4 text-left text-xl font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600 ${
                       isMatched
-                        ? 'cursor-default border-green-300 bg-green-50 text-green-900'
+                        ? 'kids-pop cursor-default border-green-300 bg-green-50 text-green-900'
                         : isWrong
-                          ? 'border-christian-500 bg-christian-50 text-christian-900'
+                          ? 'kids-wiggle border-christian-500 bg-christian-50 text-christian-900'
                           : selectedFigure === null
                             ? 'cursor-not-allowed border-primary-200 bg-primary-100 text-primary-500'
-                            : 'border-primary-300 bg-white text-primary-900 hover:border-primary-500'
+                            : 'border-amber-300 bg-amber-50 text-primary-900 hover:-translate-y-0.5 hover:border-amber-500'
                     }`}
                   >
                     <span>{pair.aliasName}</span>

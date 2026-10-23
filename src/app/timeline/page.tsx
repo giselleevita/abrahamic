@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import prisma from '@/lib/prisma'
 import type { TimelineEra, TraditionPresence } from '@/generated/prisma/client'
+import { StoryPlayer } from '@/components/timeline/StoryPlayer'
 import VisualTimeline from '@/components/timeline/VisualTimeline'
 import { PageIntro } from '@/components/layout/PageIntro'
 
@@ -21,12 +22,12 @@ const ERA_CONFIG: Record<TimelineEra, {
   imageSrc: string
   imageAlt: string
 }> = {
-  PRIMORDIAL:  { gradient: 'from-indigo-100 to-blue-50', dotColor: 'bg-indigo-500', textAccent: 'text-indigo-700', label: 'Primordial — From Creation to the Flood', imageSrc: '/timeline/primordial.jpg', imageAlt: 'Illustrated cosmic dawn over mountains, water, and a flourishing landscape' },
-  PATRIARCHAL: { gradient: 'from-amber-100 to-yellow-50', dotColor: 'bg-amber-500', textAccent: 'text-amber-800', label: 'Patriarchal — Abraham, Isaac & Jacob', imageSrc: '/timeline/patriarchal.jpg', imageAlt: 'Illustrated ancient desert encampment beneath a field of stars' },
-  EXODUS:      { gradient: 'from-rose-100 to-red-50', dotColor: 'bg-rose-500', textAccent: 'text-rose-700', label: 'Exodus — Moses & the Law', imageSrc: '/timeline/exodus.jpg', imageAlt: 'Illustrated journey through the rocky Sinai landscape at sunrise' },
-  KINGDOM:     { gradient: 'from-violet-100 to-purple-50', dotColor: 'bg-violet-500', textAccent: 'text-violet-700', label: 'Kingdom — David, Solomon & the Prophets', imageSrc: '/timeline/kingdom.jpg', imageAlt: 'Illustrated ancient hill city with scrolls and olive trees' },
-  GOSPEL:      { gradient: 'from-sky-100 to-cyan-50', dotColor: 'bg-sky-500', textAccent: 'text-sky-700', label: 'Gospel Era — Jesus / Isa', imageSrc: '/timeline/gospel.jpg', imageAlt: 'Illustrated first-century lakeshore with boats, paths, and stone villages' },
-  EARLY_ISLAM: { gradient: 'from-emerald-100 to-teal-50', dotColor: 'bg-emerald-500', textAccent: 'text-emerald-700', label: 'Early Islam — Muhammad & the Quran', imageSrc: '/timeline/early-islam.jpg', imageAlt: 'Illustrated historic Arabian oasis city at dawn with a caravan trail' },
+  PRIMORDIAL:  { gradient: 'from-indigo-100 to-blue-50', dotColor: 'bg-indigo-500', textAccent: 'text-indigo-700', label: 'Primordial — From Creation to the Flood', imageSrc: '/timeline/primordial.jpg', imageAlt: "Painting of storm clouds clearing over a flooded landscape (Thomas Cole, 1829)" },
+  PATRIARCHAL: { gradient: 'from-amber-100 to-yellow-50', dotColor: 'bg-amber-500', textAccent: 'text-amber-800', label: 'Patriarchal — Abraham, Isaac & Jacob', imageSrc: '/timeline/patriarchal.jpg', imageAlt: "Painting of a Bedouin encampment with tents and palms beside a well (Marie-Méloé Lafon, 1841)" },
+  EXODUS:      { gradient: 'from-rose-100 to-red-50', dotColor: 'bg-rose-500', textAccent: 'text-rose-700', label: 'Exodus — Moses & the Law', imageSrc: '/timeline/exodus.jpg', imageAlt: "Lithograph of the Convent of St Catherine below the mountains of Sinai (David Roberts, 1839)" },
+  KINGDOM:     { gradient: 'from-violet-100 to-purple-50', dotColor: 'bg-violet-500', textAccent: 'text-violet-700', label: 'Kingdom — David, Solomon & the Prophets', imageSrc: '/timeline/kingdom.jpg', imageAlt: "Lithograph of Jerusalem seen from the south (David Roberts)" },
+  GOSPEL:      { gradient: 'from-sky-100 to-cyan-50', dotColor: 'bg-sky-500', textAccent: 'text-sky-700', label: 'Gospel Era — Jesus / Isa', imageSrc: '/timeline/gospel.jpg', imageAlt: "Lithograph of Tiberias on the Sea of Galilee (David Roberts, 1839)" },
+  EARLY_ISLAM: { gradient: 'from-emerald-100 to-teal-50', dotColor: 'bg-emerald-500', textAccent: 'text-emerald-700', label: 'Early Islam — Muhammad & the Quran', imageSrc: '/timeline/early-islam.jpg', imageAlt: "Gold Kufic script on a ninth-century Qur'an manuscript folio" },
 }
 
 const PRESENCE_CONFIG: Record<TraditionPresence, { icon: string; label: string; bg: string; text: string; border: string }> = {
@@ -81,7 +82,7 @@ export default async function TimelinePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
-      <PageIntro eyebrow="Follow the story" title="Interactive timeline" description="Travel from creation narratives to early Islam. Choose an era, open any event, and compare how each tradition records it." />
+      <PageIntro plainWords="A line through time, from the first stories to early Islam. Choose a period, open an event, and see how each tradition tells it." eyebrow="Follow the story" title="Interactive timeline" description="Travel from creation narratives to early Islam. Choose an era, open any event, and compare how each tradition records it." />
 
       <details className="mb-8 rounded-2xl border border-slate-200 bg-white p-5">
         <summary className="cursor-pointer font-bold text-slate-900">How to read the comparison labels</summary>
@@ -98,16 +99,31 @@ export default async function TimelinePage() {
             )
           })}
           <span className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
-            <span className="h-2 w-2 rounded-full bg-blue-500" /> Judaism
+            <span className="h-2 w-2 rounded-full bg-jewish-600" /> Judaism
           </span>
           <span className="flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
-            <span className="h-2 w-2 rounded-full bg-red-500" /> Christianity
+            <span className="h-2 w-2 rounded-full bg-christian-600" /> Christianity
           </span>
-          <span className="flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
-            <span className="h-2 w-2 rounded-full bg-green-500" /> Islam
+          <span className="flex items-center gap-1.5 rounded-full border border-islamic-200 bg-islamic-50 px-3 py-1 text-xs font-medium text-islamic-700">
+            <span className="h-2 w-2 rounded-full bg-islamic-600" /> Islam
           </span>
         </div>
       </details>
+
+      <StoryPlayer
+        events={groups.flatMap((g) =>
+          g.events.map((e) => ({
+            slug: e.slug,
+            name: e.name,
+            summary: e.summary,
+            era: g.era,
+            eraLabel: g.label,
+            imageSrc: g.imageSrc,
+            imageAlt: g.imageAlt,
+            traditions: e.traditions.map((t) => ({ tradition: t.tradition, presence: t.presence })),
+          })),
+        )}
+      />
 
       {/* Visual timeline */}
       <VisualTimeline groups={groups} />

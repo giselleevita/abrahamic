@@ -17,7 +17,7 @@ export default async function ConceptsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
-      <PageIntro eyebrow="Learn" title="Beliefs & concepts" description="Choose an idea and see how Judaism, Christianity, and Islam describe it in their own terms. Filters help you narrow the list." />
+      <PageIntro plainWords="Pick a big idea, such as prayer, prophets or the afterlife, and see how Judaism, Christianity and Islam each explain it, in their own words." eyebrow="Learn" title="Beliefs & concepts" description="Choose an idea and see how Judaism, Christianity, and Islam describe it in their own terms. Filters help you narrow the list." />
 
       <ConceptFilter concepts={concepts} />
     </div>

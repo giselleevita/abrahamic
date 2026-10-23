@@ -32,7 +32,7 @@ function calculateGenerations(
   gen: number = 0
 ): Map<number, number> {
   const existing = generations.get(figureId)
-  if (existing !== undefined && existing >= gen) return generations
+  if (existing !== undefined) return generations
 
   generations.set(figureId, gen)
 
@@ -50,10 +50,12 @@ function calculateGenerations(
 
 function buildFamilyTree(
   figure: FigureWithRelations,
-  generations: Map<number, number>
+  generations: Map<number, number>,
+  path: Set<number> = new Set()
 ): FigureNode {
-  const children = (figure.relationsFrom?.filter(r => r.relationType === 'PARENT') || []).map(
-    relation => buildFamilyTree(relation.toFigure, generations)
+  const nextPath = new Set(path).add(figure.id)
+  const children = (figure.relationsFrom?.filter(r => r.relationType === 'PARENT' && !nextPath.has(r.toFigureId)) || []).map(
+    relation => buildFamilyTree(relation.toFigure, generations, nextPath)
   )
 
   return {

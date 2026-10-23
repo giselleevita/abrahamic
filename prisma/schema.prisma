@@ -366,6 +366,8 @@ model Comparison {
   summary         String?       @db.Text
   isPublished     Boolean       @default(false)
   isControversial Boolean       @default(false)
+  sharedGround    String?       @db.Text
+  keyDifferences  String?       @db.Text
   createdById     String?
 
   claims ComparisonClaim[]
@@ -1089,4 +1091,15 @@ model CorrectionReport {
   @@index([status, createdAt])
   @@index([ipHash, createdAt])
   @@map("correction_reports")
+}
+
+/// Anonymous, keyed request digests only. Expired windows are removed in bounded batches.
+model CorrectionRateBucket {
+  keyDigest   String   @db.Char(64)
+  windowStart DateTime
+  count       Int      @default(1)
+
+  @@id([keyDigest, windowStart])
+  @@index([windowStart])
+  @@map("correction_rate_buckets")
 }

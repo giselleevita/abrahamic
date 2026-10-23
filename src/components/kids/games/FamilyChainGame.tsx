@@ -83,8 +83,8 @@ export function FamilyChainGame({ chain }: { chain: ChainLink[] }) {
           {placed.map((link, i) => (
             <li key={i}>
               <div
-                className={`flex items-center gap-4 rounded-xl border-2 px-4 py-3 ${
-                  link ? 'border-green-400 bg-green-50' : 'border-dashed border-primary-300 bg-white'
+                className={`flex items-center gap-4 rounded-2xl border-4 px-5 py-4 text-lg font-semibold ${
+                  link ? 'kids-pop border-green-400 bg-green-50' : 'border-dashed border-violet-300 bg-violet-50'
                 }`}
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-200 font-bold text-primary-800">
@@ -117,7 +117,7 @@ export function FamilyChainGame({ chain }: { chain: ChainLink[] }) {
                 key={link.figureId}
                 type="button"
                 onClick={() => place(link)}
-                className="rounded-xl border-2 border-primary-300 bg-white px-5 py-3 text-lg font-semibold text-primary-900 transition-colors hover:border-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
+                className="rounded-2xl border-4 border-violet-300 bg-white px-5 py-3 text-xl font-bold text-primary-900 transition-colors hover:border-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
               >
                 {link.name}
               </button>

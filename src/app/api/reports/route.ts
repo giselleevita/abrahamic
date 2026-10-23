@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { ipFromHeaders, ipHash } from '@/lib/client-ip'
+import { correctionRateLimit } from '@/lib/correction-rate-limit'
+import { requestKey } from '@/lib/rate-limit'
+import { isSameOrigin } from '@/lib/same-origin'
 import { REPORT_GLOBAL_MAX_PER_HOUR, REPORT_MAX_PER_DAY, reportSchema } from '@/lib/schemas/contributions'
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -16,6 +19,9 @@ const RETENTION_MS = 30 * DAY_MS
  * The IP is stored only as a keyed hash and blanked after 30 days.
  */
 export async function POST(req: Request) {
+  // A browser form on another site must not be able to post here. Non-browser callers send no Origin.
+  if (req.headers.get('origin') && !isSameOrigin(req)) return NextResponse.json({ error: 'Please submit from this site.' }, { status: 403 })
+
   const length = Number(req.headers.get('content-length') ?? 0)
   if (length > MAX_BODY_BYTES) return NextResponse.json({ error: 'Too large' }, { status: 413 })
 
@@ -31,6 +37,18 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   const { website: _website, ...data } = parsed.data
   void _website
+
+  // Atomic, instance-wide quota (5 per ten minutes), used when RATE_LIMIT_SECRET is configured. Without it,
+  // the database-count limits below still apply, so the form keeps working.
+  if (process.env.RATE_LIMIT_SECRET) {
+    const quota = await correctionRateLimit(requestKey(req)).catch(() => null)
+    if (quota && !quota.ok) {
+      return NextResponse.json(
+        { error: 'Too many reports. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': String(quota.retryAfterSeconds) } },
+      )
+    }
+  }
 
   const hash = ipHash(ipFromHeaders(req.headers))
   const now = Date.now()

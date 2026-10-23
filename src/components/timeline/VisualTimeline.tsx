@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { StoryScene } from '@/components/experience/Motion'
 import Image from 'next/image'
 import type { Tradition, TraditionPresence, TimelineEra } from '@/generated/prisma/client'
 import { TRADITION_LABEL, TRADITION_DOT, TRADITION_ACCENT } from '@/lib/constants'
@@ -114,7 +115,7 @@ function EventCard({ event, textAccent, isLeft }: EventCardProps) {
         )}
 
         {/* Tradition dots row */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {traditionDots.map(({ trad, cfg }) => (
             <span
               key={trad}
@@ -122,7 +123,7 @@ function EventCard({ event, textAccent, isLeft }: EventCardProps) {
               className={`inline-flex items-center gap-1 rounded-full border ${cfg.border} ${cfg.bg} px-2 py-0.5 text-[10px] font-semibold ${cfg.text}`}
             >
               <span className={`h-1.5 w-1.5 rounded-full ${TRADITION_DOT[trad]}`} />
-              {cfg.icon}
+              {TRADITION_LABEL[trad]} {cfg.icon}
             </span>
           ))}
         </div>
@@ -192,7 +193,7 @@ interface EraBannerProps {
 function EraBanner({ era, label, gradient, imageSrc, imageAlt, eventCount }: EraBannerProps) {
   return (
     <div className={`relative h-56 overflow-hidden rounded-3xl border border-white/70 bg-gradient-to-r ${gradient} shadow-lg sm:h-72`}>
-      <Image src={imageSrc} alt={imageAlt} fill sizes="(max-width: 768px) 100vw, 1100px" className="object-cover" />
+      <StoryScene className="absolute inset-0"><Image src={imageSrc} alt={imageAlt} fill sizes="(max-width: 768px) 100vw, 1100px" className="object-cover" /></StoryScene>
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-7">
         <div><span className="text-2xl" aria-hidden>{ERA_EMOJI[era]}</span><h2 style={{ color: '#ffffff', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }} className="mt-2 text-2xl font-bold sm:text-3xl">{label}</h2></div>

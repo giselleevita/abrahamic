@@ -14,6 +14,7 @@ export default function LicensingPage() {
         need a publisher license to view it — we do not redistribute modern copyrighted translations.
       </p>
 
+      <section className="mt-10 space-y-4 text-sm leading-relaxed text-primary-700"><h2 className="text-lg font-semibold text-primary-900">Artwork credits</h2><p>Images on journeys, discovery pages and the timeline are public-domain or CC0 historical works, sourced from Wikimedia Commons. They provide atmosphere rather than historical evidence, and none depicts a named religious figure. Credits: primordial era, Thomas Cole, The Subsiding of the Waters of the Deluge (1829); patriarchal era, Marie-Méloé Lafon, Campement de bédouins dans le désert (1841); Exodus, Kingdoms and Gospel eras, lithographs by David Roberts from the Cleveland Museum of Art (CC0); early Islam, a ninth-century Qur&apos;an manuscript folio from the Cleveland Museum of Art (CC0).</p></section>
       <section className="mt-10 space-y-4 text-sm leading-relaxed text-primary-700">
         <h2 className="text-lg font-semibold text-primary-900">Included (no license required)</h2>
         <ul className="list-disc space-y-2 pl-5">

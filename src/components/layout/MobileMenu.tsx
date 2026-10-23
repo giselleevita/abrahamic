@@ -10,7 +10,7 @@ export function MobileMenu() {
   const pathname = usePathname()
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         onClick={() => setOpen(!open)}
         aria-label={open ? 'Close menu' : 'Open menu'}
@@ -34,6 +34,14 @@ export function MobileMenu() {
       {open && (
         <div className="absolute left-0 right-0 top-full z-50 border-b border-slate-200 bg-white shadow-xl">
           <nav aria-label="Mobile navigation" className="mx-auto max-w-7xl px-5 py-5">
+            <Link
+              href="/kids"
+              onClick={() => setOpen(false)}
+              className="mb-4 flex items-center gap-3 rounded-2xl bg-gradient-to-r from-amber-200 to-rose-200 px-4 py-3 text-lg font-bold text-slate-950"
+            >
+              <span aria-hidden="true" className="text-2xl">🎈</span>
+              <span>For kids<span className="block text-sm font-medium">Stories, games and videos · ages 6–12</span></span>
+            </Link>
             <form action="/search" role="search" className="mb-4"><label htmlFor="mobile-search" className="sr-only">Search the whole site</label><input id="mobile-search" name="q" type="search" placeholder="Search the whole site" className="h-12 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-base text-slate-950" /></form>
             {NAV_GROUPS.map((group) => (
               <div key={group.id} className="mb-2">
@@ -49,7 +57,7 @@ export function MobileMenu() {
                       onClick={() => setOpen(false)}
                       aria-current={active ? 'page' : undefined}
                       className={`block rounded-lg px-3 py-3 text-base font-semibold transition-colors ${
-                        active ? 'bg-blue-50 text-blue-900' : 'text-slate-800 hover:bg-blue-50 hover:text-blue-900'
+                        active ? 'bg-[#f3eadb] text-blue-900' : 'text-slate-800 hover:bg-[#f3eadb] hover:text-blue-900'
                       }`}
                     >
                       {item.label}

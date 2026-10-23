@@ -39,7 +39,19 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: '/figures', label: 'People', description: 'Abraham, Moses, Jesus, Muhammad and others.' },
       { href: '/themes', label: 'Themes', description: 'Prayer, law, prophecy, ethics and more.' },
       { href: '/concepts', label: 'Beliefs & concepts', description: 'How each tradition defines key ideas.' },
-      { href: '/family-tree', label: 'Family tree', description: 'Genealogy across the three traditions.' },
+      { href: '/family-tree', label: 'Family tree', description: 'The big picture of how the traditions connect, and who was whose parent.' },
+      { href: '/names', label: 'Name explorer', description: 'Type a name and see the same person in all three traditions.' },
+      { href: '/map', label: 'Map', description: 'Where the stories happened, from Ur to Medina.' },
+    ],
+  },
+  {
+    id: 'play',
+    label: 'Play',
+    items: [
+      { href: '/daily', label: 'Daily challenge', description: 'Three quick questions, new every day.' },
+      { href: '/evidence', label: 'Evidence board', description: 'Sort statements into the tradition they come from.' },
+      { href: '/build-story', label: 'Build the story', description: 'Pin events to places, then put them in order.' },
+      { href: '/album', label: 'Streak and badges', description: 'Your progress, kept on this device.' },
     ],
   },
   {
@@ -47,6 +59,8 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'Compare',
     items: [
       { href: '/comparisons', label: 'Comparisons', description: 'Side-by-side, with sources attached.' },
+      { href: '/compare-people', label: 'Compare two people', description: 'Pick any two and see what they share.' },
+      { href: '/web', label: 'Web of ideas', description: 'How beliefs and people connect.' },
       { href: '/verse-links', label: 'Cross-references', description: 'Linked passages between scriptures.' },
     ],
   },
@@ -56,6 +70,8 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: '/sources', label: 'Sources', description: 'Torah, Hebrew Bible, New Testament, Quran.' },
       { href: '/videos', label: 'Videos', description: 'Editorially reviewed explainers with privacy-friendly embeds.' },
+      { href: '/notebook', label: 'My notebook', description: 'Your private notes and reading list, kept on this device.' },
+      { href: '/saved', label: 'Saved', description: 'Passages and comparisons saved on this device.' },
       { href: '/glossary', label: 'Glossary', description: 'Plain-language definitions of the terms used.' },
     ],
   },

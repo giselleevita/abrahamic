@@ -34,8 +34,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  if (!/^[1-9]\d*$/.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   const numericId = Number(id)
-  if (!Number.isInteger(numericId)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   // Staff may read drafts. Everyone else sees a comparison only once it is published, and only
   // the claims in it that are themselves published.
@@ -54,6 +54,8 @@ const updateSchema = z.object({
   title: z.string().min(3).max(200).optional(),
   tag: z.enum(['SHARED', 'SIMILAR_DIFFERENT', 'CONTRADICTION']).optional(),
   summary: z.string().optional(),
+  sharedGround: z.string().max(3000).nullable().optional(),
+  keyDifferences: z.string().max(3000).nullable().optional(),
   isPublished: z.boolean().optional(),
   isControversial: z.boolean().optional(),
   claimIds: z.array(z.number()).min(2).optional(),

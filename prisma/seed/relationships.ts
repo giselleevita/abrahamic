@@ -1,6 +1,7 @@
+import { MOTHER_REFERENCES, normalizeFamilyEntry } from './family-policy'
 import type { PrismaClient } from '@/generated/prisma/client'
 
-// Map of relationship keys to verse references: "Genesis:5:3" format
+// Recorded project references. Citation wiring does not establish editorial approval.
 const relationshipVerses: Record<string, { source: 'TORAH' | 'HEBREW_BIBLE' | 'QURAN' | 'NEW_TESTAMENT'; book: string; chapter: number; verse: number } | null> = {
   'adam-seth': { source: 'TORAH', book: 'Genesis', chapter: 5, verse: 3 },
   'seth-enosh': { source: 'TORAH', book: 'Genesis', chapter: 5, verse: 6 },
@@ -50,7 +51,7 @@ const relationshipVerses: Record<string, { source: 'TORAH' | 'HEBREW_BIBLE' | 'Q
   'boaz-obed': { source: 'HEBREW_BIBLE', book: 'Ruth', chapter: 4, verse: 21 },
   'obed-jesse': { source: 'HEBREW_BIBLE', book: 'Ruth', chapter: 4, verse: 22 },
   'jesse-david': { source: 'HEBREW_BIBLE', book: 'Ruth', chapter: 4, verse: 22 },
-  'david-solomon': { source: 'HEBREW_BIBLE', book: '2 Samuel', chapter: 12, verse: 25 },
+  'david-solomon': { source: 'HEBREW_BIBLE', book: '2 Samuel', chapter: 12, verse: 24 },
   'joseph-manasseh': { source: 'TORAH', book: 'Genesis', chapter: 41, verse: 50 },
   'joseph-ephraim': { source: 'TORAH', book: 'Genesis', chapter: 41, verse: 52 },
   'zerubbabel-abijah-nt': { source: 'NEW_TESTAMENT', book: 'Matthew', chapter: 1, verse: 12 },
@@ -66,8 +67,7 @@ const relationshipVerses: Record<string, { source: 'TORAH' | 'HEBREW_BIBLE' | 'Q
   'joseph-jesus': { source: 'NEW_TESTAMENT', book: 'Matthew', chapter: 1, verse: 16 },
 }
 
-export async function seedFigureRelationships(prisma: PrismaClient) {
-  const relationships = [
+export const familySeedEntries = [
     // Adam's lineage
     { from: 'adam', to: 'seth', type: 'PARENT', verseKey: 'adam-seth' },
     { from: 'seth', to: 'enosh', type: 'PARENT', verseKey: 'seth-enosh' },
@@ -200,7 +200,7 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
 
     // Jesus' relationships
     { from: 'jesus', to: 'james-the-less', type: 'SIBLING', notes: 'Brother (according to some traditions)' },
-    { from: 'mary-of-nazareth', to: 'jesus', type: 'SPOUSE', notes: 'Mother' },
+    { from: 'mary', to: 'jesus', type: 'SPOUSE', notes: 'Mother' },
 
     // Apostles
     { from: 'jesus', to: 'peter', type: 'CHILD', notes: 'Spiritual relationship' },
@@ -214,7 +214,13 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
     { from: 'terah', to: 'sarah', type: 'CHILD', notes: 'Daughter (some sources)' },
   ]
 
-  for (const rel of relationships) {
+
+export async function seedFigureRelationships(prisma: PrismaClient) {
+
+  for (const ref of MOTHER_REFERENCES) relationshipVerses[ref.key] = ref
+  const sources = await prisma.source.findMany({ select: { id: true, key: true } })
+  for (const original of familySeedEntries) {
+    const rel = normalizeFamilyEntry(original)
     const fromFigure = await prisma.figure.findUnique({ where: { slug: rel.from } })
     const toFigure = await prisma.figure.findUnique({ where: { slug: rel.to } })
 
@@ -224,13 +230,13 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
       let verse = null
 
       if (verseRef) {
-        verse = await prisma.verse.findUnique({
-          where: {
-            referenceKey: `${verseRef.source}:${verseRef.book}:${verseRef.chapter}:${verseRef.verse}`,
-          },
+        verse = await prisma.verse.findFirst({
+          where: { source: { key: verseRef.source }, book: verseRef.book, chapter: verseRef.chapter, verse: verseRef.verse, versification: 'CHRISTIAN' },
         })
       }
 
+      const sourceId = verseRef ? sources.find((source) => source.key === verseRef.source)?.id : undefined
+      const notes = [rel.notes, verseRef && !verse ? `Recorded reference: ${verseRef.book} ${verseRef.chapter}:${verseRef.verse} (passage not loaded in this demonstration).` : null].filter(Boolean).join(' ') || null
       await prisma.figureRelation.upsert({
         where: {
           fromFigureId_toFigureId_relationType: {
@@ -240,19 +246,21 @@ export async function seedFigureRelationships(prisma: PrismaClient) {
           },
         },
         update: {
-          notes: rel.notes || null,
-          verseId: verse?.id || null,
+          notes,
+          sourceId,
+          verseId: verse?.id,
         },
         create: {
           fromFigureId: fromFigure.id,
           toFigureId: toFigure.id,
           relationType: rel.type as 'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING' | 'DESCENDANT',
-          notes: rel.notes || null,
-          verseId: verse?.id || null,
+          notes,
+          sourceId,
+          verseId: verse?.id,
         },
       })
     }
   }
 
-  console.log('✓ Seeded figure relationships with citations')
+  console.log('✓ Seeded figure relationships with recorded source references')
 }

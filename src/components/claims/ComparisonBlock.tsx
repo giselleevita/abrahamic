@@ -1,97 +1,35 @@
+import { ComparisonLens } from '@/components/claims/ComparisonLens'
 import type { ComparisonWithClaims } from '@/types'
-import { COMPARISON_TAG_LABEL } from '@/lib/constants'
-import type { Tradition } from '@/generated/prisma/client'
+import { COMPARISON_TAG_LABEL, TRADITION_LABEL, TRADITION_BG, TRADITION_SURFACE } from '@/lib/constants'
+import { filterVerseTranslations } from '@/lib/filter-public-translations'
 import { ScriptText } from '@/components/ui/ScriptText'
+import { Citation } from '@/components/ui/Citation'
+
+import type { ReactNode } from 'react'
 
 interface Props {
   comparison: ComparisonWithClaims
   showSummary?: boolean
+  /** Lets a server page turn names in a statement into tappable links without this module importing server code. */
+  renderStatement?: (text: string) => ReactNode
 }
-
-const TRADITION_CARD: Record<Tradition, { header: string; body: string; border: string; cite: string }> = {
-  JEWISH:    { header: 'bg-blue-700 text-white',   body: 'bg-blue-50/40',   border: 'border-blue-200',   cite: 'text-blue-600' },
-  CHRISTIAN: { header: 'bg-red-700 text-white',    body: 'bg-red-50/40',    border: 'border-red-200',    cite: 'text-red-600' },
-  ISLAMIC:   { header: 'bg-green-700 text-white',  body: 'bg-green-50/40',  border: 'border-green-200',  cite: 'text-green-600' },
-  SHARED:    { header: 'bg-violet-700 text-white', body: 'bg-violet-50/40', border: 'border-violet-200', cite: 'text-violet-600' },
-}
-
-const TAG_STYLE: Record<string, { bg: string; text: string; border: string; icon: string }> = {
-  SHARED:           { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', icon: '✓' },
-  SIMILAR_DIFFERENT:{ bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200',   icon: '~' },
-  CONTRADICTION:    { bg: 'bg-rose-50',    text: 'text-rose-700',    border: 'border-rose-200',    icon: '✕' },
-}
-
-const TRADITION_LABEL: Partial<Record<Tradition, string>> = {
-  JEWISH: 'Judaism', CHRISTIAN: 'Christianity', ISLAMIC: 'Islam', SHARED: 'Shared',
-}
-
-export function ComparisonBlock({ comparison, showSummary = true }: Props) {
-  const tag = TAG_STYLE[comparison.tag] ?? TAG_STYLE.SHARED
-
-  return (
-    <div>
-      {/* Header */}
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <h3 className="text-lg font-semibold text-stone-900 leading-snug">{comparison.title}</h3>
-        <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-semibold ${tag.bg} ${tag.text} ${tag.border}`}>
-          <span className="font-bold">{tag.icon}</span>
-          {COMPARISON_TAG_LABEL[comparison.tag]}
-        </span>
-      </div>
-
-      {showSummary && comparison.summary && (
-        <p className="mb-5 text-sm text-stone-600 leading-relaxed border-l-2 border-stone-200 pl-4 italic">
-          {comparison.summary}
-        </p>
-      )}
-
-      {/* Claim cards */}
-      <div
-        className={`grid gap-0 overflow-hidden rounded-xl border border-stone-200 shadow-sm ${
-          comparison.claims.length === 2
-            ? 'sm:grid-cols-2'
-            : comparison.claims.length >= 3
-            ? 'sm:grid-cols-3'
-            : 'grid-cols-1'
-        }`}
-      >
-        {comparison.claims.map(({ claim }, i) => {
-          const tradition = claim.source.tradition as Tradition
-          const style = TRADITION_CARD[tradition] ?? TRADITION_CARD.SHARED
-          const primaryVerse = claim.verses[0]?.verse
-          const defaultTranslation = primaryVerse?.translations[0]
-          const isLast = i === comparison.claims.length - 1
-
-          return (
-            <div
-              key={claim.id}
-              className={`flex flex-col ${!isLast ? 'border-b border-stone-200 sm:border-b-0 sm:border-r' : ''}`}
-            >
-              {/* Tradition header */}
-              <div className={`px-4 py-3 ${style.header}`}>
-                <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">
-                  {TRADITION_LABEL[tradition] ?? tradition}
-                </p>
-                <p className="text-sm font-semibold">{claim.source.title}</p>
-              </div>
-
-              {/* Body */}
-              <div className={`flex flex-1 flex-col gap-3 p-4 ${style.body}`}>
-                <p className="text-sm text-stone-800 leading-relaxed">{claim.statement}</p>
-
-                {primaryVerse && defaultTranslation && (
-                  <blockquote className="mt-auto border-l-2 border-stone-300/60 pl-3">
-                    <ScriptText text={defaultTranslation.text} quoted className="text-xs text-stone-500 italic leading-relaxed" />
-                    <cite className={`mt-1 block text-xs font-semibold not-italic ${style.cite}`}>
-                      {primaryVerse.book} {primaryVerse.chapter}:{primaryVerse.verse}
-                    </cite>
-                  </blockquote>
-                )}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
+export function ComparisonBlock({ comparison, showSummary = true, renderStatement }: Props) {
+  return <div>
+    <span className="mb-5 inline-flex rounded-full border border-[#d7c5ad] bg-[#f3eadb] px-3 py-2 text-sm font-semibold text-primary-800">{COMPARISON_TAG_LABEL[comparison.tag]}</span>
+    {showSummary && comparison.summary && <p className="mb-6 leading-7 text-primary-700">{comparison.summary}</p>}
+    {(comparison.sharedGround || comparison.keyDifferences) && <div className="mb-8 grid gap-4 md:grid-cols-2">{comparison.sharedGround && <section className="editorial-card p-5"><h2 className="text-xl">Shared ground</h2><p className="mt-3 whitespace-pre-line leading-7 text-primary-700">{comparison.sharedGround}</p></section>}{comparison.keyDifferences && <section className="editorial-card p-5"><h2 className="text-xl">Key differences</h2><p className="mt-3 whitespace-pre-line leading-7 text-primary-700">{comparison.keyDifferences}</p></section>}</div>}
+    <h2 className="mb-4 text-2xl">Each tradition’s perspective</h2>
+    <ComparisonLens views={comparison.claims.map(({ claim }) => {
+        const primary = claim.verses.find((v) => v.isPrimary)?.verse ?? claim.verses[0]?.verse
+        const edition = primary ? filterVerseTranslations(primary.translations).find((t) => t.isDefault) ?? filterVerseTranslations(primary.translations)[0] : undefined
+        return { id: claim.id, tradition: claim.source.tradition, content: <article key={claim.id} className={`overflow-hidden rounded-2xl border ${TRADITION_SURFACE[claim.source.tradition]}`}>
+          <div className={`px-5 py-4 ${TRADITION_BG[claim.source.tradition]}`}><p className="text-sm font-bold">{TRADITION_LABEL[claim.source.tradition]}</p><p className="mt-1 text-sm">{claim.source.title}</p></div>
+          <div className="space-y-4 p-5"><p className="text-xs font-semibold uppercase tracking-wide text-primary-700">Project explanation</p><p className="leading-7 text-primary-900">{renderStatement ? renderStatement(claim.statement) : claim.statement}</p>
+            {(claim.specificTradition || claim.interpretationScope) && <p className="text-sm text-primary-700">{claim.specificTradition || claim.interpretationScope?.replaceAll('_', ' ').toLowerCase()}</p>}
+            {primary && edition && <div className="border-t border-[#d7c5ad] pt-4"><p className="mb-2 text-xs font-semibold text-primary-700">{edition.name === 'Reader note (original)' ? 'Project reader note' : 'Scripture excerpt'} · {edition.name}</p><blockquote><ScriptText text={edition.text} quoted className="text-base leading-7 text-primary-800" /></blockquote></div>}
+          </div>
+        </article> }
+      })} />
+    <section className="editorial-card mt-8 p-5 sm:p-7" aria-label="Supporting passages"><h2 className="text-2xl">Supporting passages</h2><p className="mt-2 text-sm leading-6 text-primary-700">Read the sources in context. References across traditions do not imply equivalent passages.</p><ul className="mt-5 space-y-5">{comparison.claims.map(({ claim }) => <li key={claim.id}><p className="mb-2 font-semibold">{TRADITION_LABEL[claim.source.tradition]} · {claim.source.title}</p>{claim.verses.length ? <ul className="flex flex-wrap gap-x-5 gap-y-3">{claim.verses.map(({ verse }) => <li key={verse.id}><Citation sourceSlug={claim.source.slug} verse={verse} /></li>)}</ul> : <p className="text-sm text-primary-700">No passage reference is attached to this explanation.</p>}</li>)}</ul></section>
+  </div>
 }
