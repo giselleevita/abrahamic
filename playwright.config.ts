@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 import bcrypt from 'bcryptjs'
+import { existsSync } from 'node:fs'
 
 const port = 3100
 if (process.env.CI && (!process.env.E2E_ADMIN_EMAIL || !process.env.E2E_ADMIN_PASSWORD || !process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD_HASH || !process.env.RATE_LIMIT_SECRET)) {
@@ -13,6 +14,8 @@ process.env.E2E_ADMIN_PASSWORD ??= 'synthetic-ci-editorial-password'
 process.env.ADMIN_EMAIL ??= process.env.E2E_ADMIN_EMAIL
 process.env.RATE_LIMIT_SECRET ??= 'synthetic-ci-quota-secret-at-least-32-characters'
 process.env.ADMIN_PASSWORD_HASH ??= bcrypt.hashSync(process.env.E2E_ADMIN_PASSWORD, 10)
+
+const hasDotenvFile = ['.env', '.env.local', '.env.production', '.env.production.local'].some((f) => existsSync(f))
 
 export default defineConfig({
   testDir: './e2e',
@@ -32,8 +35,9 @@ export default defineConfig({
     timeout: 60_000,
     env: {
       ADMIN_EMAIL: process.env.ADMIN_EMAIL!,
-      // Next re-expands `$` in env values when the server starts, which truncates a bcrypt hash.
-      ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH!.replace(/[\\$]/g, '\\$&'),
+      // When any .env file exists, Next re-expands `$` in env values at server start, which truncates
+      // a bcrypt hash; escape it then. With no .env file (CI) the value must be passed through as is.
+      ADMIN_PASSWORD_HASH: hasDotenvFile ? process.env.ADMIN_PASSWORD_HASH!.replace(/[\\$]/g, '\\$&') : process.env.ADMIN_PASSWORD_HASH!,
       RATE_LIMIT_SECRET: process.env.RATE_LIMIT_SECRET!,
     },
   },
