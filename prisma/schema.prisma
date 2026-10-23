@@ -273,6 +273,22 @@ model Claim {
   embedding           Json?
   searchVector        Unsupported("tsvector")? @map("search_vector")
 
+  /// Bumped (by a database trigger) whenever the statement changes. Reviews are bound to a
+  /// revision, so an edit silently voids earlier sign-offs.
+  revision           Int         @default(1)
+  /// Traditions whose members must confirm they are fairly described before publication.
+  /// Derived from the source by `requiredTraditionsFor`; empty only on rows never reviewed.
+  requiredTraditions Tradition[] @default([])
+  /// Set by an administrator when a tradition's reviewer disagrees and we publish anyway,
+  /// showing the disagreement. Reset whenever the revision changes.
+  isContested        Boolean     @default(false)
+  /// Denormalised per-tradition review state for the current revision, for cheap badges.
+  signoffSummary     Json?
+
+  /// Set when a signed-in contributor proposed this claim. Null for staff-authored and seeded claims.
+  proposedById  String?
+  reports       CorrectionReport[]
+  reviews       ClaimReview[]
   verses        ClaimVerse[]
   figures       ClaimFigure[]
   themes        ClaimTheme[]
@@ -929,32 +945,151 @@ model VideoResourceTheme {
   @@map("video_resource_themes")
 }
 
+/// Failed-login counters for brute-force protection. The key is a SHA-256 hash
+/// of "email:<address>" or "ip:<address>", so no raw email or IP is stored.
+/// DB-backed because serverless instances do not share memory.
+model LoginAttempt {
+  key         String    @id @db.VarChar(64)
+  failures    Int       @default(0)
+  windowStart DateTime
+  lockedUntil DateTime?
 
-enum CorrectionStatus {
-  NEW
-  IN_REVIEW
-  RESOLVED
-  DISMISSED
+  @@map("login_attempts")
 }
 
-enum CorrectionCategory {
-  SOURCE
-  INTERPRETATION
-  LABEL
+// ─── Accounts & reviewer verification ────────────────────────────────────────
+// Contributors sign in with an OAuth provider. Identity is (provider, providerAccountId),
+// never email, so an unverified provider email cannot take over another account.
+// ADMIN is deliberately not a role here: it exists only as environment credentials,
+// so nothing in the database can mint an administrator.
+
+enum UserRole {
+  CONTRIBUTOR
+  EDITOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum ReviewerStatus {
+  PENDING
+  APPROVED
+  REVOKED
+}
+
+model User {
+  id                String     @id @default(cuid())
+  provider          String     @db.VarChar(20)
+  providerAccountId String     @db.VarChar(100)
+  email             String?
+  displayName       String?
+  role              UserRole   @default(CONTRIBUTOR)
+  status            UserStatus @default(ACTIVE)
+  createdAt         DateTime   @default(now())
+  lastSignInAt      DateTime   @default(now())
+
+  reviewerProfiles ReviewerProfile[]
+
+  @@unique([provider, providerAccountId])
+  @@map("users")
+}
+
+/// A user's request to review on behalf of one tradition. Approval is a human
+/// decision by an administrator. Never SHARED (CHECK constraint in the migration).
+model ReviewerProfile {
+  id          Int            @id @default(autoincrement())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tradition   Tradition
+  affiliation String         @db.VarChar(200)
+  statement   String         @db.Text
+  status      ReviewerStatus @default(PENDING)
+  decidedBy   String?
+  decidedAt   DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([userId, tradition])
+  @@index([status])
+  @@map("reviewer_profiles")
+}
+
+// ─── Tradition sign-off ──────────────────────────────────────────────────────
+// A claim may only become PUBLISHED when, for every tradition in `requiredTraditions`,
+// a reviewer has recorded ACCURATE for the CURRENT revision. Enforced by a trigger in the
+// migration (the API pre-checks only to give friendly errors).
+
+enum ReviewVerdict {
+  ACCURATE
+  NEEDS_CHANGES
+  OBJECTS
+}
+
+/// TRADITION_MEMBER: an administrator-approved reviewer who belongs to that tradition.
+/// PROJECT_EDITOR: the project's administrator standing in until a member reviews. It
+/// satisfies the publishing gate but is always labelled as such, never as a member review.
+enum ReviewerKind {
+  TRADITION_MEMBER
+  PROJECT_EDITOR
+}
+
+model ClaimReview {
+  id         Int           @id @default(autoincrement())
+  claimId    Int
+  claim      Claim         @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  revision   Int
+  tradition  Tradition
+  kind       ReviewerKind
+  /// User id, or "admin" for the environment administrator. Not a foreign key, so
+  /// deleting an account never deletes the review record (it simply becomes anonymous).
+  reviewerId String
+  verdict    ReviewVerdict
+  comment    String?       @db.Text
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@unique([claimId, revision, tradition, reviewerId])
+  @@index([claimId, revision])
+  @@map("claim_reviews")
+}
+
+// ─── Public correction reports ───────────────────────────────────────────────
+// Anyone may tell us something is wrong, with no account. Reports are input for editors, never
+// a vote and never a path to publication. The reporter's IP is stored only as a keyed hash, for
+// rate limiting, and is blanked after 30 days.
+
+enum ReportKind {
+  CORRECTION
+  UNFAIR_TO_TRADITION
+  SOURCE_ERROR
   OTHER
 }
 
+enum ReportStatus {
+  NEW
+  SEEN
+  ACTIONED
+  DISMISSED
+}
+
 model CorrectionReport {
-  id          Int                @id @default(autoincrement())
-  pagePath    String             @db.VarChar(2000)
-  reference   String?            @db.VarChar(300)
-  category    CorrectionCategory
-  description String             @db.VarChar(3000)
-  status      CorrectionStatus   @default(NEW)
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  id           Int          @id @default(autoincrement())
+  kind         ReportKind
+  claimId      Int?
+  claim        Claim?       @relation(fields: [claimId], references: [id], onDelete: SetNull)
+  pagePath     String?      @db.VarChar(300)
+  message      String       @db.Text
+  contactEmail String?      @db.VarChar(254)
+  ipHash       String       @db.VarChar(64)
+  status       ReportStatus @default(NEW)
+  handledBy    String?
+  handledAt    DateTime?
+  createdAt    DateTime     @default(now())
 
   @@index([status, createdAt])
+  @@index([ipHash, createdAt])
   @@map("correction_reports")
 }
 

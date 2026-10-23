@@ -35,6 +35,17 @@ This deletes removed translation names and rebuilds reader notes.
 
 The full `verses.ts` dataset still contains reference translation names for development comparison, but `buildPublicDemoTranslations()` strips them at seed time.
 
+## Terms last checked: 22 October 2026
+
+| Source | What its terms say | How the project meets it |
+|--------|--------------------|--------------------------|
+| AlQuran Cloud (Arabic Uthmani text) | Free to reproduce and display; a source acknowledgement is requested; text must not be altered or mixed with non-Quranic material in a misleading way; credits Tanzil.net and Quran Academy | Stored attribution credits all three; text is imported verbatim |
+| World English Bible (eBible.org) | Public domain; the name "World English Bible" is a trademark and may not be used for a modified text | Text is imported unchanged and keeps its name |
+| Sefaria "Tanach with Nikkud" | The Sefaria landing page does not state a licence for this text | The importer reads the licence Sefaria reports for each chapter and **refuses to import** anything that is not public domain |
+
+These were read from the providers' public pages and are a summary, not a legal opinion. Re-check them before any commercial use,
+and if a provider changes its terms.
+
 ## Not legal advice
 
 This is a conservative portfolio posture. Commercial scripture products need independent legal review.

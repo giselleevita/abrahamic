@@ -5,12 +5,15 @@ import prisma from '@/lib/prisma'
 import { claimHash } from '@/lib/hash'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { getStaffSessionSafe } from '@/lib/api-auth'
 import { canTransition, roleFromSession } from '@/lib/editorial-policy'
 import { sourceKeySchema } from '@/lib/schemas/enums'
 import { revalidateEntity } from '@/lib/cache'
+import { requiredTraditionsFor } from '@/lib/editorial/signoff'
+import { reviewTraditionSchema } from '@/lib/editorial/signoff-api'
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession(authOptions)
+  const session = await getStaffSessionSafe()
   const { searchParams } = req.nextUrl
   const rawSourceKey = searchParams.get('sourceKey')
   const parsedSourceKey = rawSourceKey ? sourceKeySchema.safeParse(rawSourceKey) : null
@@ -54,8 +57,11 @@ const createSchema = z.object({
   verseIds: z.array(z.number()).min(1, 'At least one verse is required'),
   figureIds: z.array(z.number()).optional(),
   themeIds: z.array(z.number()).optional(),
+  /** Accepted only as false: a claim cannot be created already published (it needs sign-off first). */
   isPublished: z.boolean().optional(),
   editorialStatus: z.enum(['DRAFT', 'IN_REVIEW']).optional(),
+  /** Extra traditions whose reviewers must confirm, beyond the source's own. */
+  extraTraditions: z.array(reviewTraditionSchema).optional(),
   interpretationScope: z.enum(['LITERAL', 'MAJORITY_SCHOLARLY', 'SPECIFIC_TRADITION']).optional(),
   specificTradition: z.string().max(100).optional(),
 }).refine(
@@ -72,8 +78,16 @@ export async function POST(req: Request) {
   const parsed = createSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
-  const { verseIds, figureIds, themeIds, isPublished, editorialStatus, ...data } = parsed.data
-  const targetStatus = editorialStatus ?? (isPublished ? 'PUBLISHED' : 'DRAFT')
+  const { verseIds, figureIds, themeIds, isPublished, editorialStatus, extraTraditions, ...data } = parsed.data
+  if (isPublished) {
+    return NextResponse.json(
+      { error: 'A claim cannot be created already published. Create it as a draft; publication needs tradition sign-off.' },
+      { status: 400 },
+    )
+  }
+  const source = await prisma.source.findUnique({ where: { id: data.sourceId }, select: { tradition: true } })
+  if (!source) return NextResponse.json({ error: 'Unknown source' }, { status: 400 })
+  const targetStatus = editorialStatus ?? 'DRAFT'
   if (!canTransition(role, 'DRAFT', targetStatus)) {
     return NextResponse.json({ error: 'Role cannot create content in the requested state' }, { status: 403 })
   }
@@ -89,7 +103,8 @@ export async function POST(req: Request) {
         ...data,
         contentHash: hash,
         editorialStatus: targetStatus,
-        isPublished: targetStatus === 'PUBLISHED',
+        isPublished: false,
+        requiredTraditions: requiredTraditionsFor(source.tradition, extraTraditions),
         verses: { create: verseIds.map((verseId, i) => ({ verseId, isPrimary: i === 0 })) },
         figures: figureIds ? { create: figureIds.map((figureId) => ({ figureId })) } : undefined,
         themes: themeIds ? { create: themeIds.map((themeId) => ({ themeId })) } : undefined,

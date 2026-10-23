@@ -1,5 +1,4 @@
 import { PassageFocus } from '@/components/sources/PassageFocus'
-import { CorrectionForm } from '@/components/corrections/CorrectionForm'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
@@ -198,7 +197,7 @@ export default async function VerseReaderPage({
         <h2 className="font-semibold text-stone-900">Keep exploring or suggest a correction</h2>
         <p className="mt-1 text-sm leading-relaxed text-[#51483c]">Our <Link href="/learn" className="editorial-link">guided journeys</Link> explain context and cite their sources. If a passage, label, or explanation seems wrong, share the details with our editorial team below.</p>
       </aside>
-      <CorrectionForm pagePath={reportPath} reference={book ? `${source.title} · ${book} ${activeChapter}` : source.title} />
+      <Link href={`/suggest?page=${encodeURIComponent(reportPath)}`} className="text-sm font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-900">Suggest a correction for this page</Link>
     </div></div>
   )
 }

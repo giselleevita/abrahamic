@@ -34,6 +34,8 @@ export async function GET(req: NextRequest) {
     },
     include: {
       claims: {
+        // A claim that is unpublished or archived must not keep appearing through a published page.
+        where: { claim: { isPublished: true } },
         orderBy: { position: 'asc' },
         include: {
           claim: {
@@ -72,6 +74,7 @@ const createSchema = z.object({
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const body = await req.json()
   const parsed = createSchema.safeParse(body)

@@ -5,7 +5,6 @@ import { NamedText } from '@/components/figures/NamedText'
 import { NextUp } from '@/components/layout/NextUp'
 import Link from 'next/link'
 import { SaveButton } from '@/components/experience/SavedItems'
-import { CorrectionForm } from '@/components/corrections/CorrectionForm'
 import type { Metadata } from 'next'
 import { PageIntro } from '@/components/layout/PageIntro'
 import { notFound } from 'next/navigation'
@@ -34,6 +33,7 @@ export default async function ComparisonDetailPage({ params }: { params: Promise
     where: { id: parseInt(id), isPublished: true },
     include: {
       claims: {
+        // A claim that is unpublished or archived must not keep appearing through a published page.
         where: { claim: { isPublished: true } },
         orderBy: { position: 'asc' },
         include: {
@@ -94,7 +94,7 @@ export default async function ComparisonDetailPage({ params }: { params: Promise
         <p className="text-sm leading-6 text-primary-700">Authored by the Abrahamic Texts project editorial team. Comparison labels are editorial judgments. <Link href="/editorial-method" className="editorial-link">How we review and attribute content</Link></p>
         <p className="text-sm text-primary-700">Last updated {comparison.updatedAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
       </aside>
-      <CorrectionForm pagePath={`/comparisons/${comparison.id}`} reference={comparison.title} />
+      <Link href={`/suggest?page=${encodeURIComponent(`/comparisons/${comparison.id}`)}`} className="text-sm font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-900">Suggest a correction for this page</Link>
       {related.length > 0 && <section className="mt-10"><h2 className="text-2xl">Keep exploring</h2><ul className="mt-4 grid gap-3">{related.map((item) => <li key={item.id}><Link href={`/comparisons/${item.id}`} className="editorial-card block p-5 font-semibold text-[#173b68] hover:border-gold-700">{item.title} →</Link></li>)}</ul></section>}
 
       <NoteButton href={`/comparisons/${comparison.id}`} label={comparison.title} />

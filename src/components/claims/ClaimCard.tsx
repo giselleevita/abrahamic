@@ -5,6 +5,7 @@ import { formatVerseRef, verseReaderHref } from '@/lib/verse-links'
 import { filterVerseTranslations } from '@/lib/filter-public-translations'
 import { Citation } from '@/components/ui/Citation'
 import { ScriptText } from '@/components/ui/ScriptText'
+import { SignoffBadge } from '@/components/claims/SignoffBadge'
 
 interface Props {
   claim: ClaimWithRelations
@@ -57,6 +58,12 @@ export function ClaimCard({ claim, showSource = true }: Props) {
       )}
 
       {claim.verses.length > 0 && <ul aria-label="All supporting passages" className="flex flex-wrap gap-3">{claim.verses.map(({ verse }) => <li key={verse.id}><Citation sourceSlug={claim.source.slug} verse={verse} /></li>)}</ul>}
+
+      <SignoffBadge requiredTraditions={claim.requiredTraditions} signoffSummary={claim.signoffSummary} revision={claim.revision} />
+      <Link href={`/suggest?claim=${claim.id}`} className="self-start text-xs text-stone-400 underline decoration-stone-300 underline-offset-2 hover:text-blue-800">
+        Report a problem with this claim
+      </Link>
+
       <div className="flex flex-wrap gap-1.5">
         {claim.interpretationScope && (
           <span className="rounded-full border border-stone-200 bg-stone-50 px-2 py-0.5 text-xs text-stone-500">
