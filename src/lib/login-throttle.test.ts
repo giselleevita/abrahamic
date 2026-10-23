@@ -46,6 +46,23 @@ describe('login throttle policy', () => {
     expect(retryAfterSeconds(null, T0)).toBe(0)
   })
 
+  it('keys the hash with the server secret, so the same email hashes differently under another secret', () => {
+    const original = process.env.NEXTAUTH_SECRET
+    try {
+      process.env.NEXTAUTH_SECRET = 'secret-one'
+      const one = loginKeys('admin@example.com', '203.0.113.9')
+      process.env.NEXTAUTH_SECRET = 'secret-two'
+      const two = loginKeys('admin@example.com', '203.0.113.9')
+      expect(one.email).not.toBe(two.email)
+      expect(one.ip).not.toBe(two.ip)
+      process.env.NEXTAUTH_SECRET = 'secret-one'
+      expect(loginKeys('admin@example.com', '203.0.113.9').email).toBe(one.email)
+    } finally {
+      if (original === undefined) delete process.env.NEXTAUTH_SECRET
+      else process.env.NEXTAUTH_SECRET = original
+    }
+  })
+
   it('hashes keys so raw emails and IPs are never stored', () => {
     const keys = loginKeys('Admin@Example.com', '203.0.113.9')
     expect(keys.email).toMatch(/^[0-9a-f]{64}$/)
