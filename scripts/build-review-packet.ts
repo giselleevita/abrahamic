@@ -36,7 +36,7 @@ p()
 const label = new Map(BIG_NODES.map((n) => [n.id, n.label]))
 p('| From | To | Kind | Sentence shown |')
 p('| --- | --- | --- | --- |')
-for (const l of BIG_LINKS) p(`| ${label.get(l.from) ?? l.from} | ${label.get(l.to) ?? l.to} | ${l.kind} | ${l.source.replace(/\|/g, '\\|')} |`)
+for (const l of BIG_LINKS) p(`| ${label.get(l.from) ?? l.from} | ${label.get(l.to) ?? l.to} | ${l.kind} | ${l.source.replace(/[\\|]/g, '\\$&')} |`)
 p()
 const subs = BIG_NODES.filter((n) => n.sub)
 p('Node sub-labels:')
@@ -68,10 +68,17 @@ p()
 p('**Flag for the editor:** the seed marks stories `APPROVED` and published with `reviewedAt` set at seed time and no named reviewer, and describes them as "hand-authored". Confirm who wrote and who approved each before relying on that status. One story is deliberately `PENDING` and unpublished.')
 p()
 const kidsSeed = readFileSync('prisma/seed/kidsStories.ts', 'utf8')
-const stories = kidsSeed.matchAll(/slug: '([^']+)',\s*title: '([^']+)',\s*ageBand: '([^']+)',\s*body:\s*((?:\s*'(?:[^'\\]|\\.)*'\s*\+?)+),[\s\S]*?status: '([^']+)',\s*isPublished: (true|false)/g)
-for (const s of stories) {
-  const body = [...s[4].matchAll(/'((?:[^'\\]|\\.)*)'/g)].map((m) => m[1].replace(/\\'/g, "'")).join('')
-  p(`#### ${s[2]} (${s[3]}, seed status ${s[5]}, published: ${s[6]})`)
+// Parsed block by block with simple patterns, not one nested regex, so a malformed seed cannot cause runaway backtracking.
+const blocks = kidsSeed.split(/\n\s*slug: '/).slice(1)
+for (const block of blocks) {
+  const slug = block.slice(0, block.indexOf("'"))
+  const title = /title: '([^']+)'/.exec(block)?.[1] ?? slug
+  const age = /ageBand: '([^']+)'/.exec(block)?.[1] ?? ''
+  const status = /status: '([^']+)'/.exec(block)?.[1] ?? ''
+  const published = /isPublished: (true|false)/.exec(block)?.[1] ?? ''
+  const bodyChunk = block.slice(block.indexOf('body:'), block.indexOf('glossary:'))
+  const body = [...bodyChunk.matchAll(/'((?:[^'\\]|\\.)*)'/g)].map((m) => m[1].replace(/\\'/g, "'")).join('')
+  p(`#### ${title} (${age}, seed status ${status}, published: ${published})`)
   p(quote(body))
   p()
 }

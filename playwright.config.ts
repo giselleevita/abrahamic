@@ -33,7 +33,7 @@ export default defineConfig({
     env: {
       ADMIN_EMAIL: process.env.ADMIN_EMAIL!,
       // Next re-expands `$` in env values when the server starts, which truncates a bcrypt hash.
-      ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH!.replace(/\$/g, '\\$'),
+      ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH!.replace(/[\\$]/g, '\\$&'),
       RATE_LIMIT_SECRET: process.env.RATE_LIMIT_SECRET!,
     },
   },
