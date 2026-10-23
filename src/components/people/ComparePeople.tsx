@@ -12,6 +12,7 @@ export function ComparePeople({ figures, events, claims, comparisons, initialA, 
   const [aSlug, setA] = useState(initialA ?? 'moses')
   const [bSlug, setB] = useState(initialB ?? 'muhammad')
   const a = figures.find((f) => f.slug === aSlug) ?? figures[0]
+  if (figures.length < 2) return <p className="rounded-2xl border border-[#d7c5ad] bg-white p-6">There are not enough people on the site to compare yet.</p>
   const b = figures.find((f) => f.slug === bSlug) ?? figures[1]
   const same = a.id === b.id
   const s = same ? null : summarisePair(a, b, events, claims, comparisons)
