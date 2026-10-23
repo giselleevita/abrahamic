@@ -45,3 +45,19 @@ npm run build
 ## Not legal advice
 
 See [`LICENSING.md`](LICENSING.md) for public-demo content policy.
+
+## Production snapshot (checked 2026-10-22)
+
+Read from the public `/api/sources` and `/api/health` endpoints:
+
+| Source | Verses | Claims |
+|--------|-------:|-------:|
+| Torah | 11,698 | 19 |
+| Hebrew Bible | 34,653 | 10 |
+| New Testament | 7,953 | 27 |
+| Qur'an (Arabic) | 6,236 | 28 |
+| Sirah Ibn Hisham | 0 | 0 |
+| Hadith tradition | 0 | 0 |
+| **Total verses** | **60,540** | |
+
+`/api/health` returned `{"status":"ok"}`. Sirah and Hadith are registered sources with no verse text yet.

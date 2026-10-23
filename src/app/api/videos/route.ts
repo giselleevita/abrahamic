@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { requireSession, hasSession } from '@/lib/api-auth'
+import { requireAdminSession, hasSession } from '@/lib/api-auth'
 import { createVideoSchema, extractYoutubeId } from '@/lib/schemas/video'
 import { revalidateEntity } from '@/lib/cache'
 
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const denied = await requireSession()
+  const denied = await requireAdminSession()
   if (denied) return denied
 
   const parsed = createVideoSchema.safeParse(await req.json())

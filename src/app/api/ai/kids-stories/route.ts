@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { requireSession } from '@/lib/api-auth'
+import { requireAdminSession } from '@/lib/api-auth'
 import { generateKidsStorySchema } from '@/lib/schemas/kids'
 import { proposeKidsStory, KIDS_STORY_MODEL, type ClaimForSummary } from '@/lib/ai'
 import { guardKidsStory } from '@/lib/kids/content-guard'
@@ -8,7 +8,7 @@ import { candidateStatusSchema } from '@/lib/schemas/enums'
 
 /** Review queue. Admin-only: these drafts are unreviewed by definition. */
 export async function GET(req: NextRequest) {
-  const denied = await requireSession()
+  const denied = await requireAdminSession()
   if (denied) return denied
 
   const statusParam = req.nextUrl.searchParams.get('status')
@@ -38,7 +38,7 @@ function slugify(title: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  const denied = await requireSession()
+  const denied = await requireAdminSession()
   if (denied) return denied
 
   if (!process.env.ANTHROPIC_API_KEY) {

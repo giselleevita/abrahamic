@@ -27,10 +27,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/claims" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Claims
           </Link>
-          <Link href="/admin/corrections" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">Correction inbox</Link>
           <Link href="/admin/editorial" className="block rounded px-2 py-1.5 font-medium text-amber-800 hover:bg-amber-50">
             Workflow & Audit
           </Link>
+          <Link href="/admin/suggestions" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
+            Correction reports
+          </Link>
+          {session.user.role === 'ADMIN' && (
+            <>
+              <Link href="/admin/users" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
+                Users
+              </Link>
+              <Link href="/admin/reviewers" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
+                Reviewers
+              </Link>
+            </>
+          )}
           <Link href="/admin/comparisons" className="block rounded px-2 py-1.5 text-stone-700 hover:bg-stone-100">
             Comparisons
           </Link>

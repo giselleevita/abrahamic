@@ -13,7 +13,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
 vi.mock('next-auth', () => ({ getServerSession: vi.fn(async () => null) }))
-vi.mock('@/lib/auth', () => ({ authOptions: {} }))
+vi.mock('@/lib/auth', () => ({ authOptions: {}, contributorSessionOptions: {} }))
 
 // A Prisma stand-in where every property access yields a spy. Any DB call by a
 // handler that should have short-circuited will register on `prismaCalls`.
@@ -37,43 +37,14 @@ vi.mock('@/lib/prisma', () => {
 
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 
-type Method = 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-
-const MUTATING_ROUTES: { path: string; module: string; methods: Method[] }[] = [
-  { path: '/api/admin/corrections/[id]', module: '@/app/api/admin/corrections/[id]/route', methods: ['PATCH'] },
-  { path: '/api/claims', module: '@/app/api/claims/route', methods: ['POST'] },
-  { path: '/api/claims/[id]', module: '@/app/api/claims/[id]/route', methods: ['PUT', 'DELETE'] },
-  { path: '/api/comparisons', module: '@/app/api/comparisons/route', methods: ['POST'] },
-  { path: '/api/comparisons/[id]', module: '@/app/api/comparisons/[id]/route', methods: ['PUT', 'DELETE'] },
-  { path: '/api/concepts', module: '@/app/api/concepts/route', methods: ['POST'] },
-  { path: '/api/concepts/[slug]', module: '@/app/api/concepts/[slug]/route', methods: ['PATCH', 'DELETE'] },
-  { path: '/api/figures', module: '@/app/api/figures/route', methods: ['POST'] },
-  { path: '/api/figures/[slug]', module: '@/app/api/figures/[slug]/route', methods: ['PATCH', 'DELETE'] },
-  { path: '/api/themes', module: '@/app/api/themes/route', methods: ['POST'] },
-  { path: '/api/themes/[slug]', module: '@/app/api/themes/[slug]/route', methods: ['PATCH', 'DELETE'] },
-  { path: '/api/timeline', module: '@/app/api/timeline/route', methods: ['POST'] },
-  { path: '/api/timeline/[slug]', module: '@/app/api/timeline/[slug]/route', methods: ['PATCH', 'DELETE'] },
-  { path: '/api/translations', module: '@/app/api/translations/route', methods: ['POST'] },
-  { path: '/api/translations/[id]', module: '@/app/api/translations/[id]/route', methods: ['PATCH', 'DELETE'] },
-  { path: '/api/verse-links', module: '@/app/api/verse-links/route', methods: ['POST'] },
-  { path: '/api/verse-links/[id]', module: '@/app/api/verse-links/[id]/route', methods: ['DELETE'] },
-  { path: '/api/sources/[sourceKey]', module: '@/app/api/sources/[sourceKey]/route', methods: ['PATCH'] },
-  { path: '/api/ai/summary', module: '@/app/api/ai/summary/route', methods: ['POST'] },
-  { path: '/api/ai/theme-suggestions', module: '@/app/api/ai/theme-suggestions/route', methods: ['POST'] },
-  { path: '/api/ai/verse-link-candidates', module: '@/app/api/ai/verse-link-candidates/route', methods: ['POST'] },
-  { path: '/api/ai/verse-link-candidates/[id]', module: '@/app/api/ai/verse-link-candidates/[id]/route', methods: ['PATCH'] },
-  { path: '/api/ai/kids-stories', module: '@/app/api/ai/kids-stories/route', methods: ['POST'] },
-  { path: '/api/ai/kids-stories/[id]', module: '@/app/api/ai/kids-stories/[id]/route', methods: ['PATCH', 'DELETE'] },
-  { path: '/api/videos', module: '@/app/api/videos/route', methods: ['POST'] },
-  { path: '/api/videos/[id]', module: '@/app/api/videos/[id]/route', methods: ['PATCH', 'DELETE'] },
-]
+import { MUTATING_ROUTES } from './mutating-routes'
 
 beforeEach(() => {
   prismaCalls.length = 0
 })
 
 describe('admin boundary', () => {
-  const cases = MUTATING_ROUTES.flatMap((r) =>
+  const cases = MUTATING_ROUTES.filter((r) => !r.public).flatMap((r) =>
     r.methods.map((method) => ({ ...r, method })),
   )
 

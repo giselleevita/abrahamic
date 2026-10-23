@@ -1,5 +1,6 @@
 import { createHash } from 'crypto'
 import type { PrismaClient } from '@/generated/prisma/client'
+import { requiredTraditionsFor } from '../../src/lib/editorial/signoff'
 
 function claimHash(sourceId: number, statement: string): string {
   const normalized = statement.trim().toLowerCase().replace(/\s+/g, ' ')
@@ -640,6 +641,7 @@ const claimsData: ClaimData[] = [
 export async function seedClaims(prisma: PrismaClient) {
   const sources = await prisma.source.findMany()
   const sourceMap = new Map(sources.map((s) => [s.key, s.id]))
+  const traditionMap = new Map(sources.map((s) => [s.key, s.tradition]))
 
   const figures = await prisma.figure.findMany()
   const figureMap = new Map(figures.map((f) => [f.slug, f.id]))
@@ -656,14 +658,20 @@ export async function seedClaims(prisma: PrismaClient) {
 
     const claim = await prisma.claim.upsert({
       where: { contentHash: hash },
-      update: { isPublished: true, editorialStatus: 'PUBLISHED' },
+      // Re-seeding must never overwrite editorial decisions (a claim moved back to draft, or
+      // sent for review, stays there) and must not try to re-publish: publication now needs
+      // tradition sign-off. Only the review scope is kept in step with the source.
+      update: { requiredTraditions: requiredTraditionsFor(traditionMap.get(c.sourceKey)!) },
       create: {
         sourceId,
         statement: c.statement,
         contentHash: hash,
         notes: c.notes,
+        // Seed content is trusted, grandfathered material. It is inserted already published
+        // (the gate applies to transitions) and shows as awaiting review until signed off.
         isPublished: true,
         editorialStatus: 'PUBLISHED',
+        requiredTraditions: requiredTraditionsFor(traditionMap.get(c.sourceKey)!),
       },
     })
 

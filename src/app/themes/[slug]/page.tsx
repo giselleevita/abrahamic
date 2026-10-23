@@ -30,6 +30,8 @@ export default async function ThemePage({ params }: { params: Promise<{ slug: st
     where: { slug },
     include: {
       claims: {
+        // A claim that is unpublished or archived must not keep appearing through a published page.
+        where: { claim: { isPublished: true } },
         include: {
           claim: {
             include: {

@@ -51,7 +51,8 @@ if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).
   try {
     let output
     try {
-      output = execFileSync('npm', ['audit', '--json'], { encoding: 'utf8', maxBuffer: 10_000_000 })
+      // On Windows npm is a .cmd shim, which Node can only launch through a shell.
+      output = execFileSync('npm', ['audit', '--json'], { encoding: 'utf8', maxBuffer: 10_000_000, shell: process.platform === 'win32' })
     } catch (error) {
       output = error.stdout
     }

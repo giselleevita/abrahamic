@@ -75,27 +75,26 @@ test('public pages fit the viewport and support keyboard entry', async ({ page }
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused()
 })
 
-test('anonymous corrections stay private and an editor can resolve them', async ({ page, request }) => {
+test('anonymous corrections stay private and an editor can handle them', async ({ page, request }) => {
   test.skip(!process.env.E2E_ADMIN_EMAIL || !process.env.E2E_ADMIN_PASSWORD, 'Set synthetic local editorial credentials to verify the inbox.')
   const description = `Browser verification report ${Date.now()}: verify this source reference.`
   await openComparison(page)
-  await page.getByText('Suggest a correction', { exact: true }).click()
-  await page.getByLabel('What needs correcting?').fill(description)
-  await page.getByRole('button', { name: 'Submit correction' }).click()
-  await expect(page.getByText('Thank you. The editorial team can now review your report.')).toBeVisible()
-  expect((await request.get('/api/admin/corrections')).status()).toBe(401)
+  await page.getByRole('link', { name: 'Suggest a correction for this page' }).click()
+  await page.waitForURL('**/suggest?page=*')
+  await page.getByLabel('What is wrong, and what should it say?').fill(description)
+  await page.getByRole('button', { name: 'Send report' }).click()
+  await expect(page.getByText('Thank you. Your report has been sent to the editors.')).toBeVisible()
+  expect((await request.patch('/api/admin/reports/1', { data: { status: 'SEEN' } })).status()).toBe(401)
   await page.goto('/login')
   await page.getByLabel('Email', { exact: true }).fill(process.env.E2E_ADMIN_EMAIL!)
   await page.getByLabel('Password', { exact: true }).fill(process.env.E2E_ADMIN_PASSWORD!)
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
   await page.waitForURL('**/admin')
-  await page.goto('/admin/corrections')
-  const report = page.locator('li').filter({ hasText: description })
+  await page.goto('/admin/suggestions')
+  const report = page.locator('article').filter({ hasText: description })
   await expect(report).toBeVisible()
-  await report.getByRole('combobox').selectOption('RESOLVED')
-  await expect(report).toHaveCount(0)
-  await page.getByRole('combobox', { name: 'Report status', exact: true }).selectOption('RESOLVED')
-  await expect(report).toBeVisible()
+  await report.getByRole('button', { name: 'Acted on' }).click()
+  await expect(report.getByText('ACTIONED')).toBeVisible()
 })
 
 test('Arabic text keeps its direction and verse sharing copies a canonical reference', async ({ page, context }) => {

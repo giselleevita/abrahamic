@@ -4,6 +4,7 @@ import { ClaimForm } from '@/components/admin/ClaimForm'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { roleFromSession } from '@/lib/editorial-policy'
+import { SignoffPanel } from '@/components/admin/SignoffPanel'
 
 export default async function EditClaimPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -40,6 +41,7 @@ export default async function EditClaimPage({ params }: { params: Promise<{ id: 
         initialData={claim}
         role={role}
       />
+      <SignoffPanel claimId={claim.id} role={role} />
     </div>
   )
 }

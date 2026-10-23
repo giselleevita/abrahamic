@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { requireSession } from '@/lib/api-auth'
+import { requireAdminSession } from '@/lib/api-auth'
 import { reviewKidsStorySchema } from '@/lib/schemas/kids'
 import { guardKidsStory } from '@/lib/kids/content-guard'
 import { revalidateEntity } from '@/lib/cache'
@@ -13,7 +13,7 @@ import { revalidateEntity } from '@/lib/cache'
  * click should not take a draft from unreviewed to publicly readable.
  */
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const denied = await requireSession()
+  const denied = await requireAdminSession()
   if (denied) return denied
 
   const { id } = await params
@@ -74,7 +74,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const denied = await requireSession()
+  const denied = await requireAdminSession()
   if (denied) return denied
 
   const { id } = await params

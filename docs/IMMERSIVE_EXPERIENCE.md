@@ -12,7 +12,7 @@ Do not backfill Shared ground or Key differences automatically. Editors author t
 
 Reading preferences, motion preferences, and saved identifiers/links/labels use separate versioned localStorage keys. Saves store no scripture text and require no account. When persistence fails, reading preferences apply for the current visit; saved-item controls explicitly report failure. Existing journey and kids progress keys are unchanged. The kids area has no correction form or effects-preference storage.
 
-`POST /api/corrections` accepts anonymous reports only for existing comparison/reader contexts. Reports have a category, 20–3,000-character description, optional reference, and New/In review/Resolved/Dismissed status. The public endpoint is write-only. Authenticated `/api/admin/corrections` endpoints list the most recent 100 reports per status and change status; reports never automatically modify published content. The honeypot, same-origin check, and PostgreSQL-backed five-per-ten-minute quota reduce spam across deployment instances. No contact details or personal replies are requested.
+`POST /api/reports` accepts anonymous correction reports, optionally about a comparison or source-reader page (`?page=`) or a claim (`?claim=`). Reports have a kind, a 20–3,000-character message and an optional reply email. They are never returned by a public endpoint, are limited per sender and site-wide, and are handled by staff at `/admin/suggestions`. See `docs/CONTRIBUTOR_GUIDE.md`.
 
 ## Verification
 
