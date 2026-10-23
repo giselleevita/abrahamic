@@ -7,14 +7,14 @@
  *
  * Two counters are kept per attempt: one per email and one per IP. The email
  * counter stops password guessing against an account; the IP counter stops an
- * attacker rotating through many emails. Keys are SHA-256 hashes, so no raw
- * email address or IP is stored.
+ * attacker rotating through many emails. Keys are keyed (HMAC-SHA-256)
+ * hashes, so no raw email address or IP is stored and the table cannot be reversed without the secret.
  *
  * Read-modify-write is not atomic. Under heavy concurrency a few extra guesses
  * can slip through before the lock lands; that is an acceptable bound for a
  * lock after 5 failures, and keeps the logic simple and testable.
  */
-import { createHash } from 'node:crypto'
+import { createHmac } from 'node:crypto'
 import type { PrismaClient } from '@/generated/prisma/client'
 
 export const MAX_FAILURES = 5
@@ -48,7 +48,12 @@ export function retryAfterSeconds(state: AttemptState | null, now: Date): number
   return Math.ceil((state.lockedUntil.getTime() - now.getTime()) / 1000)
 }
 
-const hash = (value: string) => createHash('sha256').update(value).digest('hex')
+/**
+ * Keyed with the server secret so that a leaked table cannot be reversed by trying every email address
+ * or every IPv4 address (a plain hash of those spaces is easy to enumerate).
+ */
+const hash = (value: string) =>
+  createHmac('sha256', process.env.NEXTAUTH_SECRET || 'dev-only-unkeyed').update(value).digest('hex')
 
 export function loginKeys(email: string, ip: string | null | undefined): { email: string; ip: string } & LoginKeys {
   return {
