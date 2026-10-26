@@ -25,33 +25,14 @@ export type NavGroup = {
 export const NAV_GROUPS: NavGroup[] = [
   {
     id: 'learn',
-    label: 'Journeys',
+    label: 'Learn',
     items: [
       { href: '/learn', label: 'Journeys', description: 'Guided, sourced paths through the three traditions.' },
-      { href: '/kids', label: 'For kids', description: 'Reviewed stories and accessible learning games.' },
-      { href: '/timeline', label: 'Timeline', description: 'Major people and events in chronological order.' },
-    ],
-  },
-  {
-    id: 'explore',
-    label: 'Explore',
-    items: [
       { href: '/figures', label: 'People', description: 'Abraham, Moses, Jesus, Muhammad and others.' },
       { href: '/themes', label: 'Themes', description: 'Prayer, law, prophecy, ethics and more.' },
       { href: '/concepts', label: 'Beliefs & concepts', description: 'How each tradition defines key ideas.' },
-      { href: '/family-tree', label: 'Family tree', description: 'The big picture of how the traditions connect, and who was whose parent.' },
-      { href: '/names', label: 'Name explorer', description: 'Type a name and see the same person in all three traditions.' },
-      { href: '/map', label: 'Map', description: 'Where the stories happened, from Ur to Medina.' },
-    ],
-  },
-  {
-    id: 'play',
-    label: 'Play',
-    items: [
+      { href: '/timeline', label: 'Timeline', description: 'Major people and events in chronological order.' },
       { href: '/daily', label: 'Daily challenge', description: 'Three quick questions, new every day.' },
-      { href: '/evidence', label: 'Evidence board', description: 'Sort statements into the tradition they come from.' },
-      { href: '/build-story', label: 'Build the story', description: 'Pin events to places, then put them in order.' },
-      { href: '/album', label: 'Streak and badges', description: 'Your progress, kept on this device.' },
     ],
   },
   {
@@ -60,6 +41,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: '/comparisons', label: 'Comparisons', description: 'Side-by-side, with sources attached.' },
       { href: '/compare-people', label: 'Compare two people', description: 'Pick any two and see what they share.' },
+      { href: '/evidence', label: 'Evidence board', description: 'Sort statements into the tradition they come from.' },
       { href: '/web', label: 'Web of ideas', description: 'How beliefs and people connect.' },
       { href: '/verse-links', label: 'Cross-references', description: 'Linked passages between scriptures.' },
     ],
@@ -69,10 +51,10 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'Read',
     items: [
       { href: '/sources', label: 'Sources', description: 'Torah, Hebrew Bible, New Testament, Quran.' },
-      { href: '/videos', label: 'Videos', description: 'Editorially reviewed explainers with privacy-friendly embeds.' },
-      { href: '/notebook', label: 'My notebook', description: 'Your private notes and reading list, kept on this device.' },
-      { href: '/saved', label: 'Saved', description: 'Passages and comparisons saved on this device.' },
+      { href: '/search', label: 'Search', description: 'Find people, ideas, passages, and comparisons.' },
       { href: '/glossary', label: 'Glossary', description: 'Plain-language definitions of the terms used.' },
+      { href: '/saved', label: 'Saved', description: 'Passages and comparisons saved on this device.' },
+      { href: '/notebook', label: 'My notebook', description: 'Your notes and reading list, kept on this device.' },
     ],
   },
 ]
@@ -81,10 +63,10 @@ export const NAV_GROUPS: NavGroup[] = [
 export const ALL_NAV_ITEMS: NavItem[] = NAV_GROUPS.flatMap((group) => group.items)
 
 /**
- * Hrefs promoted to the header bar. Everything else lives in the "More" menu.
+ * Core tasks promoted as top-level navigation destinations.
  * Order here is the order shown.
  */
-const PRIMARY_NAV_HREFS = ['/learn', '/figures', '/comparisons', '/sources'] as const
+const PRIMARY_NAV_HREFS = ['/learn', '/comparisons', '/sources'] as const
 
 /**
  * Header links shown directly (not behind the "More" menu). Derived from
@@ -107,12 +89,26 @@ export const SECONDARY_NAV_GROUPS: NavGroup[] = NAV_GROUPS.map((group) => ({
 
 /** Footer columns: the content groups plus a site-level column. */
 export const FOOTER_GROUPS: NavGroup[] = [
-  ...NAV_GROUPS,
+  { id: 'learn', label: 'Learn', items: [
+    { href: '/learn', label: 'Journeys' }, { href: '/figures', label: 'People' },
+    { href: '/themes', label: 'Themes' }, { href: '/concepts', label: 'Beliefs & concepts' },
+  ] },
+  { id: 'compare', label: 'Compare', items: [
+    { href: '/comparisons', label: 'Comparisons' }, { href: '/compare-people', label: 'Compare two people' },
+    { href: '/evidence', label: 'Evidence board' },
+  ] },
+  { id: 'read', label: 'Read', items: [
+    { href: '/sources', label: 'Sources' }, { href: '/search', label: 'Search' },
+    { href: '/glossary', label: 'Glossary' }, { href: '/saved', label: 'Saved' },
+  ] },
+  { id: 'families', label: 'For families', items: [
+    { href: '/kids', label: 'For kids' }, { href: '/notebook', label: 'My notebook' },
+    { href: '/videos', label: 'Videos' },
+  ] },
   {
     id: 'site',
-    label: 'Site',
+    label: 'About',
     items: [
-      { href: '/search', label: 'Search' },
       { href: '/about', label: 'About' },
       { href: '/suggest', label: 'Suggest a correction' },
       { href: '/account', label: 'Contribute' },

@@ -97,8 +97,8 @@ test('anonymous corrections stay private and an editor can handle them', async (
   await page.goto('/admin/suggestions')
   const report = page.locator('article').filter({ hasText: description })
   await expect(report).toBeVisible()
-  await report.getByRole('button', { name: 'Acted on' }).click()
-  await expect(report.getByText('ACTIONED')).toBeVisible()
+  await report.getByRole('button', { name: 'Resolve' }).click()
+  await expect(report.getByText('Resolved')).toBeVisible()
 })
 
 test('Arabic text keeps its direction and verse sharing copies a canonical reference', async ({ page, context }) => {

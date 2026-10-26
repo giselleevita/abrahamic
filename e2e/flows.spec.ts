@@ -218,8 +218,8 @@ test('notebook: add a note and list item, reload, export, and refuse a crafted s
   await page.getByLabel(/^Your note about/).fill('Remember to compare the three accounts.')
   await press(page, page.getByRole('button', { name: 'Save note' }))
   await expect(keep.getByText('Note saved on this device.')).toBeVisible()
-  await press(page, keep.getByRole('button', { name: /Add to my reading list/ }))
-  await expect(keep.getByRole('button', { name: /In my reading list/ })).toHaveAttribute('aria-pressed', 'true')
+  await press(page, keep.getByRole('button', { name: /Add to notebook reading list/ }))
+  await expect(keep.getByRole('button', { name: /In notebook reading list/ })).toHaveAttribute('aria-pressed', 'true')
 
   let sent = 0
   page.on('request', (r) => { if (r.method() !== 'GET' && !r.url().includes('/_next/')) sent++ })

@@ -246,8 +246,9 @@ export function QuizRunner({
                 <ul className="mt-3 space-y-2">
                   {question.verses.map((v) => (
                     <li key={v.href} className="rounded-lg bg-white/70 px-3 py-2">
-                      {v.text && <p className="text-sm italic leading-6 text-slate-700">{v.text}</p>}
-                      <Link href={v.href} className="text-xs font-semibold text-blue-700 hover:text-blue-900">
+                      {v.text && <><p className="mb-1 text-xs font-semibold text-slate-600">{v.edition === 'Reader note (original)' ? 'Project explanation · ' : 'Edition: '}{v.edition}{v.attribution ? ` · ${v.attribution}` : ''}</p><p className="text-sm italic leading-6 text-slate-700">{v.text}</p></>}
+                      {!v.text && <p className="text-sm text-slate-700">No permitted excerpt is available here; open the source to explore its available text.</p>}
+                      <Link href={v.href} className="mt-1 inline-flex min-h-11 items-center text-xs font-semibold text-blue-700 hover:text-blue-900">
                         {v.reference}
                       </Link>
                     </li>

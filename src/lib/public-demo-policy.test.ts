@@ -4,6 +4,7 @@ import {
   buildPublicDemoTranslations,
   filterPublicDemoTranslations,
   isPublicDemoTranslation,
+  preferredPublicTranslation,
   readerNoteForVerse,
 } from './public-demo-policy'
 
@@ -38,6 +39,16 @@ describe('public demo translation policy', () => {
     for (const removed of REMOVED_TRANSLATION_NAMES) {
       expect(result.some((t) => t.name === removed)).toBe(false)
     }
+  })
+
+  it('uses a permitted scripture excerpt ahead of a default project note', () => {
+    const edition = preferredPublicTranslation([
+      { name: 'Reader note (original)', text: 'Project explanation', isDefault: true, licenseCode: 'PROJECT' },
+      { name: 'World English Bible', text: 'Permitted scripture', isDefault: false, licenseCode: 'PD', attribution: 'World English Bible' },
+      { name: 'ESV', text: 'Restricted text', isDefault: false, licenseCode: 'LICENSED' },
+    ])
+    expect(edition?.name).toBe('World English Bible')
+    expect(edition?.text).toBe('Permitted scripture')
   })
 
   it('buildPublicDemoTranslations produces only originals + a reader note, never a licensed translation', () => {

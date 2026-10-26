@@ -1,6 +1,7 @@
 {
-  "timestamp": "2026-10-19T19:29:24.718Z",
+  "timestamp": "2026-10-26T09:15:54.189Z",
   "scope": "Disposable local seeded databases only. No production backup was accessed or verified.",
+  "encryption": "GPG symmetric AES256; synthetic one-run passphrase",
   "counts": [
     {
       "table": "sources",
@@ -59,11 +60,11 @@
     },
     {
       "table": "_prisma_migrations",
-      "before": 22,
-      "after": 22
+      "before": 28,
+      "after": 28
     }
   ],
   "contentFingerprintMatches": true,
-  "constraints": 116,
+  "constraints": 127,
   "restoreVerified": true
 }

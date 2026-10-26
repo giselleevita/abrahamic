@@ -43,3 +43,22 @@ Human review and production publication remain separate decisions.
 See [content corrections](CONTENT_CORRECTIONS.md) for corrected glossary wording, targeted legacy family-data migrations, reference-only destinations and public hold filtering. Regression coverage includes migration preservation of editor-authored notes, parent classification, withheld identities, idempotent reference creation and inspectable glossary citations. This follow-up does not replace the outstanding five-person sessions or theological review.
 
 Follow-up local verification: **370 unit/integration tests and 42 browser scenarios passed**, zero skipped; types, zero-warning lint and production build passed. Disposable seeded restore passed with 100 verses, 156 translations, 22 migrations and 116 constraints. Eleven-route transfer comparison remains within the 10% budget; maximum measured growth 5.18%, with zero measured layout shift.
+
+## 26 October 2026 release-experience follow-up
+
+| Check | Result |
+| --- | --- |
+| Unit/integration suite | 702 passed across 74 files against disposable PostgreSQL. |
+| Browser suite | 78 passed, zero skipped, across desktop, tablet and 320px, including the authenticated correction inbox. |
+| Type checking and lint | Passed; lint had zero warnings. |
+| Production build | Passed on Node 24 with the disposable seeded database. |
+| Dependency audit | `npm audit` found zero vulnerabilities after compatible Zod and transitive patch updates. The high-severity threshold and reviewed dev-advisory policy passed. |
+| Legacy and fresh database migrations | Both passed. The legacy rehearsal preserved the synthetic report, category, reference and status; the fresh database migrated cleanly. |
+| Encrypted local restore | GPG AES256 dump/restore passed with matching rows, content fingerprints and 127 constraints. Only generated synthetic data was used. |
+| Preview isolation | Both isolation guard tests passed. |
+| Performance | [11-route encoded transfer comparison](PERFORMANCE_EVIDENCE.json), measured against pre-change `main` at `d0f1c63` on the same local seeded database. Maximum growth was 0.85%; measured layout shift peaked at 0.0031 and was identical in baseline and updated builds. |
+| Visual inspection | Captured desktop and 320px homepage and comparison screens in `.impeccable/review/`; keyboard flow, Arabic right-to-left reading, device-storage failure, reduced motion, saved passages and report resolution passed in browser coverage. |
+
+GitHub `main` now requires the `build`, `audit-and-container` and `codeql` checks, requires branches to be up to date, enforces protection for administrators and blocks force pushes and deletion. The backup workflow cannot run against production until repository secrets `BACKUP_DATABASE_URL` and `BACKUP_PASSPHRASE` are configured by the database owner. No production backup or restore was accessed or verified. Vercel's Production branch and manual-promotion settings still need confirmation in the Vercel project dashboard.
+
+Human usability sessions and qualified Jewish, Christian and Muslim review remain outstanding. No theological sign-off or production publication is claimed.

@@ -2,133 +2,133 @@
   {
     "route": "/",
     "baseline": {
-      "bytes": 190867,
+      "bytes": 199071,
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 190980,
+      "bytes": 198792,
       "layoutShift": 0
     },
-    "increasePercent": 0.06
+    "increasePercent": -0.14
   },
   {
     "route": "/learn/abraham-across-traditions",
     "baseline": {
-      "bytes": 181726,
+      "bytes": 188461,
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 182981,
+      "bytes": 188103,
       "layoutShift": 0
     },
-    "increasePercent": 0.69
+    "increasePercent": -0.19
   },
   {
     "route": "/timeline",
     "baseline": {
-      "bytes": 235759,
-      "layoutShift": 0
+      "bytes": 251593,
+      "layoutShift": 0.0029196159122085045
     },
     "updated": {
-      "bytes": 235827,
-      "layoutShift": 0
+      "bytes": 251279,
+      "layoutShift": 0.0029196159122085045
     },
-    "increasePercent": 0.03
+    "increasePercent": -0.12
   },
   {
     "route": "/comparisons",
     "baseline": {
-      "bytes": 197107,
-      "layoutShift": 0
+      "bytes": 202550,
+      "layoutShift": 0.0004873113854595336
     },
     "updated": {
-      "bytes": 197217,
-      "layoutShift": 0
+      "bytes": 202240,
+      "layoutShift": 0.0004873113854595336
     },
-    "increasePercent": 0.06
+    "increasePercent": -0.15
   },
   {
     "route": "/family-tree",
     "baseline": {
-      "bytes": 199482,
-      "layoutShift": 0
+      "bytes": 207675,
+      "layoutShift": 0.003113991769547325
     },
     "updated": {
-      "bytes": 190273,
-      "layoutShift": 0
+      "bytes": 207417,
+      "layoutShift": 0.003113991769547325
     },
-    "increasePercent": -4.62
+    "increasePercent": -0.12
   },
   {
     "route": "/glossary",
     "baseline": {
-      "bytes": 182455,
+      "bytes": 197059,
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 191900,
+      "bytes": 196768,
       "layoutShift": 0
     },
-    "increasePercent": 5.18
+    "increasePercent": -0.15
   },
   {
     "route": "/search?q=Abraham",
     "baseline": {
-      "bytes": 194745,
+      "bytes": 204707,
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 197134,
+      "bytes": 205259,
       "layoutShift": 0
     },
-    "increasePercent": 1.23
+    "increasePercent": 0.27
   },
   {
     "route": "/kids/stories",
     "baseline": {
-      "bytes": 185437,
+      "bytes": 223090,
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 187805,
+      "bytes": 224367,
       "layoutShift": 0
     },
-    "increasePercent": 1.28
+    "increasePercent": 0.57
   },
   {
     "route": "/kids/games",
     "baseline": {
-      "bytes": 184985,
+      "bytes": 221083,
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 185189,
+      "bytes": 222953,
+      "layoutShift": 0
+    },
+    "increasePercent": 0.85
+  },
+  {
+    "route": "/sources/torah/read?book=Genesis&chapter=22",
+    "baseline": {
+      "bytes": 190444,
+      "layoutShift": 0
+    },
+    "updated": {
+      "bytes": 190653,
       "layoutShift": 0
     },
     "increasePercent": 0.11
   },
   {
-    "route": "/sources/torah/read?book=Genesis&chapter=22",
-    "baseline": {
-      "bytes": 190226,
-      "layoutShift": 0
-    },
-    "updated": {
-      "bytes": 190321,
-      "layoutShift": 0
-    },
-    "increasePercent": 0.05
-  },
-  {
     "route": "/sources/quran/read?book=Al-Ikhlas&chapter=112",
     "baseline": {
-      "bytes": 186589,
+      "bytes": 190312,
       "layoutShift": 0
     },
     "updated": {
-      "bytes": 186689,
+      "bytes": 190555,
       "layoutShift": 0
     },
-    "increasePercent": 0.05
+    "increasePercent": 0.13
   }
 ]

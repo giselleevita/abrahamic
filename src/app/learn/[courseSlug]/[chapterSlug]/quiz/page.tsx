@@ -7,6 +7,7 @@ import { QuizRunner } from '@/components/learn/QuizRunner'
 import { ControversialBanner } from '@/components/claims/ControversialBanner'
 import type { QuizQuestionData } from '@/components/learn/types'
 import { filterVerseTranslations } from '@/lib/filter-public-translations'
+import { preferredPublicTranslation } from '@/lib/public-demo-policy'
 import { formatVerseRef, verseReaderHref } from '@/lib/verse-links'
 
 export const dynamic = 'force-dynamic'
@@ -86,10 +87,12 @@ export default async function QuizPage({ params }: { params: Params }) {
     // Verse text goes through the public-demo policy — a quiz must not become
     // a way to read licensed translations the rest of the site withholds.
     verses: q.verses.map(({ verse }) => {
-      const allowed = filterVerseTranslations(verse.translations)
+      const translation = preferredPublicTranslation(filterVerseTranslations(verse.translations))
       return {
         reference: formatVerseRef(verse),
-        text: allowed[0]?.text ?? null,
+        text: translation?.text ?? null,
+        edition: translation?.name ?? null,
+        attribution: translation?.attribution ?? null,
         href: verseReaderHref(verse.source.slug, verse),
       }
     }),

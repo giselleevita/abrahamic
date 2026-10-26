@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { diffWords } from '@/lib/word-diff'
 import { TRADITION_LABEL } from '@/lib/constants'
 import type { Tradition } from '@/generated/prisma/client'
+import { ArrowLeftRight } from 'lucide-react'
 
 export type SwapView = { tradition: Tradition; statement: string; source: string }
 
@@ -47,15 +48,15 @@ export function PerspectiveSwap({ views }: { views: SwapView[] }) {
 
   return (
     <section aria-labelledby="swap-title" className="mt-10 rounded-3xl border border-[#d7c5ad] bg-white p-5 sm:p-7">
-      <h2 id="swap-title" className="font-serif text-2xl text-slate-950">Compare two versions closely</h2>
+      <h2 id="swap-title" className="font-serif text-2xl text-slate-950">Compare two project explanations</h2>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-700">
-        Pick two traditions. Words found in only one of the versions are marked. A marked word does not mean
+        Pick two traditions. This activity compares project-authored explanations, not scripture translations. Words found in only one explanation are marked. A marked word does not mean
         the traditions disagree, only that you should read that part closely.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         {select(aT, setA, 'Left')}
-        <button type="button" onClick={swap} className="reading-action" aria-label="Swap the two traditions">⇄ Swap</button>
+        <button type="button" onClick={swap} className="reading-action" aria-label="Swap the two traditions"><ArrowLeftRight size={16} aria-hidden /> Swap</button>
         {select(bT, setB, 'Right')}
         <div role="group" aria-label="Mode" className="ml-auto flex gap-2">
           {(['highlight', 'challenge'] as const).map((m) => (

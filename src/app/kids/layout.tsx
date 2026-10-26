@@ -27,19 +27,19 @@ export default function KidsLayout({ children }: { children: React.ReactNode }) 
           <nav aria-label="Kids sections" className="flex items-center gap-1 text-base font-semibold">
             <Link
               href="/kids/stories"
-              className="rounded-lg px-3 py-2 transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
             >
               Stories
             </Link>
             <Link
               href="/kids/games"
-              className="rounded-lg px-3 py-2 transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
             >
               Games
             </Link>
             <Link
               href="/"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-primary-600 transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-primary-600 transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-600"
             >
               For grown-ups
             </Link>
@@ -47,7 +47,7 @@ export default function KidsLayout({ children }: { children: React.ReactNode }) 
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">{children}</main>
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">{children}</div>
 
       <footer className="mt-12 border-t border-primary-200 bg-white">
         <div className="mx-auto max-w-5xl space-y-3 px-4 py-8 text-sm text-primary-700 sm:px-6">
@@ -59,9 +59,9 @@ export default function KidsLayout({ children }: { children: React.ReactNode }) 
             appears here.
           </p>
           <p className="leading-relaxed">
-            <strong className="font-semibold">This site does not save anything about you.</strong>{' '}
-            There are no accounts and no sign-in. Your game scores are kept only on this device,
-            and you can erase them at any time.
+            <strong className="font-semibold">Your game progress stays in this browser on this device.</strong>{' '}
+            The kids pages do not have accounts, name fields, correction forms, or page-view analytics.
+            Ask a grown-up before leaving this section. You can erase your progress at any time.
           </p>
           <ClearProgressButton />
         </div>

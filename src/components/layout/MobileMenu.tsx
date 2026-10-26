@@ -56,7 +56,7 @@ export function MobileMenu() {
                       href={item.href}
                       onClick={() => setOpen(false)}
                       aria-current={active ? 'page' : undefined}
-                      className={`block rounded-lg px-3 py-3 text-base font-semibold transition-colors ${
+                    className={`block min-h-11 rounded-lg px-3 py-3 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a67222] ${
                         active ? 'bg-[#f3eadb] text-blue-900' : 'text-slate-800 hover:bg-[#f3eadb] hover:text-blue-900'
                       }`}
                     >

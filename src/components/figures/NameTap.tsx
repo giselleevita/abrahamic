@@ -28,7 +28,7 @@ export function NameTap({ text, figure }: { text: string; figure: NameFigure }) 
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={`${text}: show this person's names in each tradition`}
-        className="rounded-sm underline decoration-[#b7791f] decoration-dotted underline-offset-4 hover:bg-[#fbf6ec] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b7791f]"
+        className="inline-flex min-h-11 items-center rounded-sm align-middle underline decoration-[#b7791f] decoration-dotted underline-offset-4 hover:bg-[#fbf6ec] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b7791f]"
       >
         {text}
       </button>
