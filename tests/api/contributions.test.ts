@@ -19,6 +19,7 @@ describeDb('public reports and contributor proposals', () => {
   let proposals: typeof import('@/app/api/contributions/claims/route')
   let torahId = 0
   let ipCounter = 0
+  let originalRateLimitSecret: string | undefined
 
   const post = (route: { POST: (r: Request) => Promise<Response> }, url: string, body: unknown, headers: Record<string, string> = {}) =>
     route.POST(new Request(`http://x${url}`, { method: 'POST', body: JSON.stringify(body), headers: { 'content-type': 'application/json', ...headers } }))
@@ -33,10 +34,13 @@ describeDb('public reports and contributor proposals', () => {
 
   async function wipe() {
     await prisma.correctionReport.deleteMany({ where: { message: { startsWith: TAG } } })
+    await prisma.correctionRateBucket.deleteMany()
     await prisma.claim.deleteMany({ where: { proposedById: USER } })
   }
 
   beforeAll(async () => {
+    originalRateLimitSecret = process.env.RATE_LIMIT_SECRET
+    process.env.RATE_LIMIT_SECRET = 'integration-test-rate-limit-secret-with-more-than-32-characters'
     prisma = (await import('@/lib/prisma')).default
     reports = await import('@/app/api/reports/route')
     adminReport = await import('@/app/api/admin/reports/[id]/route')
@@ -45,7 +49,11 @@ describeDb('public reports and contributor proposals', () => {
     await wipe()
   })
   beforeEach(() => { session.current = null })
-  afterAll(async () => { await wipe() })
+  afterAll(async () => {
+    await wipe()
+    if (originalRateLimitSecret === undefined) delete process.env.RATE_LIMIT_SECRET
+    else process.env.RATE_LIMIT_SECRET = originalRateLimitSecret
+  })
 
   describe('public reports', () => {
     it('accepts a report from anyone, with no account', async () => {
@@ -85,6 +93,40 @@ describeDb('public reports and contributor proposals', () => {
     it('rejects an oversized body', async () => {
       const res = await post(reports, '/api/reports', { kind: 'OTHER', message: 'x' }, { ...freshIp(), 'content-length': '999999' })
       expect(res.status).toBe(413)
+    })
+
+    it('fails closed when the shared limiter is missing configuration', async () => {
+      const configuredSecret = process.env.RATE_LIMIT_SECRET
+      delete process.env.RATE_LIMIT_SECRET
+      try {
+        const res = await report({ message: `${TAG} should not be accepted without quota protection` })
+        expect(res.status).toBe(503)
+        expect(res.headers.get('retry-after')).toBe('60')
+        expect(await prisma.correctionReport.count({ where: { message: `${TAG} should not be accepted without quota protection` } })).toBe(0)
+      } finally {
+        process.env.RATE_LIMIT_SECRET = configuredSecret
+      }
+    })
+
+    it('fails closed when the quota database query fails', async () => {
+      const spy = vi.spyOn(prisma, '$queryRaw').mockRejectedValueOnce(new Error('synthetic database failure'))
+      try {
+        const message = `${TAG} should not be accepted if quota storage fails`
+        const res = await report({ message })
+        expect(res.status).toBe(503)
+        expect(await prisma.correctionReport.count({ where: { message } })).toBe(0)
+      } finally {
+        spy.mockRestore()
+      }
+    })
+
+    it('allows at most five same-key submissions under concurrency', async () => {
+      const sender = { 'x-forwarded-for': '192.0.2.222' }
+      const responses = await Promise.all(Array.from({ length: 7 }, (_, index) =>
+        report({ message: `${TAG} concurrent quota submission ${index}` }, sender),
+      ))
+      expect(responses.filter((response) => response.status === 201)).toHaveLength(5)
+      expect(responses.filter((response) => response.status === 429)).toHaveLength(2)
     })
 
     it('limits one sender to five reports a day, but not other senders', async () => {

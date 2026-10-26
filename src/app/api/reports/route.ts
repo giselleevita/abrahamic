@@ -38,16 +38,22 @@ export async function POST(req: Request) {
   const { website: _website, ...data } = parsed.data
   void _website
 
-  // Atomic, instance-wide quota (5 per ten minutes), used when RATE_LIMIT_SECRET is configured. Without it,
-  // the database-count limits below still apply, so the form keeps working.
-  if (process.env.RATE_LIMIT_SECRET) {
-    const quota = await correctionRateLimit(requestKey(req)).catch(() => null)
-    if (quota && !quota.ok) {
-      return NextResponse.json(
-        { error: 'Too many reports. Please try again later.' },
-        { status: 429, headers: { 'Retry-After': String(quota.retryAfterSeconds) } },
-      )
-    }
+  // This shared atomic quota is required. A missing secret or database failure
+  // must never silently accept a report without its abuse controls.
+  let quota: Awaited<ReturnType<typeof correctionRateLimit>>
+  try {
+    quota = await correctionRateLimit(requestKey(req))
+  } catch {
+    return NextResponse.json(
+      { error: 'Report protection is temporarily unavailable. Please try again shortly.' },
+      { status: 503, headers: { 'Retry-After': '60' } },
+    )
+  }
+  if (!quota.ok) {
+    return NextResponse.json(
+      { error: 'Too many reports. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(quota.retryAfterSeconds) } },
+    )
   }
 
   const hash = ipHash(ipFromHeaders(req.headers))

@@ -5,7 +5,8 @@ import { MotionSettings } from '@/components/experience/Motion'
 import { Footer } from '@/components/layout/Footer'
 import { PublicDemoBanner } from '@/components/layout/PublicDemoBanner'
 import { getSiteUrl } from '@/lib/site-url'
-import { Analytics } from '@vercel/analytics/next'
+import { PublicShell } from '@/components/layout/PublicShell'
+import { PublicAnalytics } from '@/components/layout/PublicAnalytics'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = getSiteUrl()
@@ -49,12 +50,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-[#fffaf5] text-slate-900">
         <a href="#main-content" className="skip-link">Skip to content</a>
-        <PublicDemoBanner />
-        <Nav />
-        <main id="main-content" className="flex-1 public-content">{children}</main>
-        <MotionSettings />
-        <Footer />
-        <Analytics />
+        <PublicShell
+          chrome={<><PublicDemoBanner /><Nav /></>}
+          settings={<MotionSettings />}
+          footer={<Footer />}
+        >
+          {children}
+        </PublicShell>
+        <PublicAnalytics />
       </body>
     </html>
   )

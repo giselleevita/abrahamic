@@ -6,6 +6,7 @@ if [[ "${VERCEL_ENV:-}" == "preview" ]]; then
     echo "An isolated preview database is required" >&2
     exit 1
   fi
+  node scripts/reconcile-legacy-corrections.mjs
   exec npx prisma migrate deploy
 fi
 
@@ -21,4 +22,5 @@ if [[ -z "${DIRECT_URL}" ]]; then
   export DIRECT_URL="${DATABASE_URL}"
 fi
 
+node scripts/reconcile-legacy-corrections.mjs
 exec npx prisma migrate deploy

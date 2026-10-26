@@ -39,5 +39,5 @@ export type QuizQuestionData = {
   /** Where the answer comes from — always present, enforced by CHECK. */
   citation: QuizCitation | null
   /** Verse references, already filtered by the public-demo policy. */
-  verses: { reference: string; text: string | null; href: string }[]
+  verses: { reference: string; text: string | null; edition: string | null; attribution: string | null; href: string }[]
 }

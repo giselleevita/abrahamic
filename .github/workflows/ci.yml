@@ -60,6 +60,12 @@ jobs:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
           DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
 
+      - name: Verify fresh and legacy correction report upgrades
+        run: node scripts/test-legacy-report-migration.mjs
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/abrahamic"
+
       - name: Verify licensed demonstration seed is idempotent
         run: bash scripts/verify-idempotent-seed.sh
         env:

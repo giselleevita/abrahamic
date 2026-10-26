@@ -4,10 +4,10 @@ import { ComparisonBlock } from '@/components/claims/ComparisonBlock'
 import type { ComparisonWithClaims } from '@/types'
 
 it('shows every citation, hides unlicensed excerpts, and identifies the available edition', () => {
-  const comparison = { title: 'Abraham', tag: 'SHARED', claims: [{ claim: { id: 1, statement: 'A project explanation.', source: { slug: 'torah', title: 'Torah', tradition: 'JEWISH' }, verses: [
+  const comparison = { title: 'Abraham', tag: 'SHARED', claims: [{ claim: { id: 1, statement: 'A project explanation.', requiredTraditions: ['JEWISH'], signoffSummary: null, revision: 1, source: { slug: 'torah', title: 'Torah', tradition: 'JEWISH' }, verses: [
     { isPrimary: true, verse: { id: 1, book: 'Genesis', chapter: 22, verse: 2, translations: [{ name: 'KJV', text: 'Unlicensed quote' }] } },
     { verse: { id: 2, book: 'Genesis', chapter: 17, verse: 1, translations: [] } },
-  ] } }, { claim: { id: 2, statement: 'Another explanation.', source: { slug: 'quran', title: 'Quran', tradition: 'ISLAMIC' }, verses: [{ verse: { id: 3, book: 'Al-Ikhlas', chapter: 112, verse: 1, translations: [{ name: 'Arabic', text: 'قُلْ هُوَ ٱللَّهُ أَحَدٌ', isDefault: true }] } }] } }] } as unknown as ComparisonWithClaims
+  ] } }, { claim: { id: 2, statement: 'Another explanation.', requiredTraditions: ['ISLAMIC'], signoffSummary: null, revision: 1, source: { slug: 'quran', title: 'Quran', tradition: 'ISLAMIC' }, verses: [{ verse: { id: 3, book: 'Al-Ikhlas', chapter: 112, verse: 1, translations: [{ name: 'Arabic', text: 'قُلْ هُوَ ٱللَّهُ أَحَدٌ', isDefault: true }] } }] } }] } as unknown as ComparisonWithClaims
   render(<ComparisonBlock comparison={comparison} />)
   expect(screen.queryByText('Unlicensed quote')).not.toBeInTheDocument()
   expect(screen.getByRole('link', { name: /Genesis 22:2/ })).toHaveAttribute('href', '/sources/torah/read?book=Genesis&chapter=22#v-2')

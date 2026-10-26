@@ -16,6 +16,7 @@ const STATUS_STYLE = {
   ACTIONED: 'bg-emerald-100 text-emerald-800',
   DISMISSED: 'bg-slate-200 text-slate-700',
 } as const
+const STATUS_LABEL = { NEW: 'New', SEEN: 'In review', ACTIONED: 'Resolved', DISMISSED: 'Dismissed' } as const
 
 export default async function SuggestionsPage() {
   const reports = await prisma.correctionReport.findMany({
@@ -39,8 +40,9 @@ export default async function SuggestionsPage() {
           <article key={report.id} className="rounded-xl border border-stone-200 bg-white p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-sm font-semibold text-stone-900">{KIND_LABEL[report.kind]}</p>
-              <span className={`rounded-full px-2 py-1 text-xs font-semibold ${STATUS_STYLE[report.status]}`}>{report.status}</span>
+              <span className={`rounded-full px-2 py-1 text-xs font-semibold ${STATUS_STYLE[report.status]}`}>{STATUS_LABEL[report.status]}</span>
             </div>
+            {(report.pagePath || report.reference || report.legacyCategory) && <p className="mt-2 text-xs text-stone-600">{report.pagePath ? `Page: ${report.pagePath}` : ''}{report.reference ? ` · Passage: ${report.reference}` : ''}{report.legacyCategory ? ` · Original category: ${report.legacyCategory}` : ''}</p>}
             <p className="mt-2 whitespace-pre-wrap text-sm text-stone-700">{report.message}</p>
             {report.claim && (
               <p className="mt-3 rounded bg-stone-50 p-3 text-xs text-stone-600">

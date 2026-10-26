@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 import bcrypt from 'bcryptjs'
 import { existsSync } from 'node:fs'
 
-const port = 3100
+const port = Number(process.env.PLAYWRIGHT_PORT ?? 3100)
 if (process.env.CI && (!process.env.E2E_ADMIN_EMAIL || !process.env.E2E_ADMIN_PASSWORD || !process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD_HASH || !process.env.RATE_LIMIT_SECRET)) {
   throw new Error('CI requires synthetic editorial credentials for the inbox scenario')
 }
