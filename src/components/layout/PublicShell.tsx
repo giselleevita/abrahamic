@@ -16,10 +16,12 @@ export function PublicShell({
 }) {
   const pathname = usePathname()
   const isKidsPage = pathname === '/kids' || pathname?.startsWith('/kids/')
+  const isAdminPage = pathname === '/admin' || pathname?.startsWith('/admin/')
+  const ContentWrapper = isAdminPage ? 'div' : 'main'
 
   return <>
     {!isKidsPage && chrome}
-    <main id="main-content" className="flex-1 public-content">{children}</main>
+    <ContentWrapper id="main-content" className="flex-1 public-content">{children}</ContentWrapper>
     {!isKidsPage && settings}
     {!isKidsPage && footer}
   </>
