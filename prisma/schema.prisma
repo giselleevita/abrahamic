@@ -591,19 +591,19 @@ enum QuestionDifficulty {
 }
 
 model Course {
-  id          Int     @id @default(autoincrement())
-  slug        String  @unique
-  title       String
-  subtitle    String?
-  description String? @db.Text
-  position    Int     @default(0)
-  isPublished Boolean @default(false)
+  id               Int     @id @default(autoincrement())
+  slug             String  @unique
+  title            String
+  subtitle         String?
+  description      String? @db.Text
+  position         Int     @default(0)
+  isPublished      Boolean @default(false)
   estimatedMinutes Int?
-  artworkPath       String?
-  artworkAlt        String?
-  artworkCredit     String?
-  artworkSourceUrl  String?
-  artworkLicense    String?
+  artworkPath      String?
+  artworkAlt       String?
+  artworkCredit    String?
+  artworkSourceUrl String?
+  artworkLicense   String?
 
   chapters Chapter[]
 
@@ -619,19 +619,19 @@ model Chapter {
   courseId Int
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  slug        String  @unique
-  title       String
-  summary     String? @db.Text
-  position    Int     @default(0)
-  isPublished Boolean @default(false)
+  slug              String  @unique
+  title             String
+  summary           String? @db.Text
+  position          Int     @default(0)
+  isPublished       Boolean @default(false)
   estimatedMinutes  Int?
-  artworkPath        String?
-  artworkAlt         String?
-  artworkCredit      String?
-  artworkSourceUrl   String?
-  artworkLicense     String?
+  artworkPath       String?
+  artworkAlt        String?
+  artworkCredit     String?
+  artworkSourceUrl  String?
+  artworkLicense    String?
   learningObjective String? @db.Text
-  takeaway           String? @db.Text
+  takeaway          String? @db.Text
 
   /// Human sign-off that this chapter's quiz is attributive. Required to
   /// publish — the automated lint is a speed bump, this is the real gate.
@@ -1075,18 +1075,21 @@ enum ReportStatus {
 }
 
 model CorrectionReport {
-  id           Int          @id @default(autoincrement())
-  kind         ReportKind
-  claimId      Int?
-  claim        Claim?       @relation(fields: [claimId], references: [id], onDelete: SetNull)
-  pagePath     String?      @db.VarChar(300)
-  message      String       @db.Text
-  contactEmail String?      @db.VarChar(254)
-  ipHash       String       @db.VarChar(64)
-  status       ReportStatus @default(NEW)
-  handledBy    String?
-  handledAt    DateTime?
-  createdAt    DateTime     @default(now())
+  id             Int          @id @default(autoincrement())
+  kind           ReportKind
+  claimId        Int?
+  claim          Claim?       @relation(fields: [claimId], references: [id], onDelete: SetNull)
+  pagePath       String?      @db.VarChar(2000)
+  reference      String?      @db.VarChar(300)
+  message        String       @db.Text
+  legacyCategory String?      @db.VarChar(30)
+  contactEmail   String?      @db.VarChar(254)
+  ipHash         String       @db.VarChar(64)
+  status         ReportStatus @default(NEW)
+  handledBy      String?
+  handledAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@index([status, createdAt])
   @@index([ipHash, createdAt])

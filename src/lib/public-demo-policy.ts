@@ -69,6 +69,17 @@ export function isPermittedTranslation(row: TranslationPermissionInput): boolean
   return PUBLIC_DEMO_TRANSLATION_NAMES.has(row.name)
 }
 
+/** Pick a lawful, useful excerpt for a public comparison. A project note is a fallback. */
+export function preferredPublicTranslation<T extends TranslationPermissionInput & { text: string; isDefault?: boolean }>(
+  translations: T[],
+): T | undefined {
+  const usable = translations.filter((translation) => isPermittedTranslation(translation) && translation.text.trim())
+  const sourceDefault = usable.find((translation) => translation.isDefault && translation.name !== 'Reader note (original)')
+  if (sourceDefault) return sourceDefault
+  const preferred = DEFAULT_PRIORITY.map((name) => usable.find((translation) => translation.name === name)).find(Boolean)
+  return preferred ?? usable.find((translation) => translation.isDefault) ?? usable[0]
+}
+
 /** Select these wherever licence-based permission should apply. */
 export const PUBLIC_TRANSLATION_FIELDS = {
   name: true,

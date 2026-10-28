@@ -21,25 +21,33 @@ export function ReportForm({ claimId, pagePath }: { claimId?: number; pagePath?:
     event.preventDefault()
     setState('sending')
     setError('')
-    const res = await fetch('/api/reports', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ kind, message, claimId, pagePath, contactEmail: email || undefined, website }),
-    })
-    if (res.ok) {
-      setState('sent')
-      return
+    try {
+      const res = await fetch('/api/reports', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ kind, message, claimId, pagePath, contactEmail: email || undefined, website }),
+      })
+      if (res.ok) {
+        setState('sent')
+        return
+      }
+      const data = await res.json().catch(() => ({}))
+      const fields = data.error?.fieldErrors
+      const retryAfter = Number(res.headers.get('Retry-After'))
+      setError(
+        res.status === 429 && Number.isFinite(retryAfter) && retryAfter > 0
+          ? `Please try again in about ${Math.ceil(retryAfter / 60)} minute${Math.ceil(retryAfter / 60) === 1 ? '' : 's'}. Your report is still here.`
+          : typeof data.error === 'string'
+            ? data.error
+            : fields
+              ? (Object.values(fields).flat() as string[]).join(' ')
+              : 'Something went wrong. Your report is still here; please try again.'
+      )
+    } catch {
+      setError('We could not connect. Your report is still here; check your connection and try again.')
+    } finally {
+      setState((current) => current === 'sent' ? 'sent' : 'idle')
     }
-    setState('idle')
-    const data = await res.json().catch(() => ({}))
-    const fields = data.error?.fieldErrors
-    setError(
-      typeof data.error === 'string'
-        ? data.error
-        : fields
-          ? (Object.values(fields).flat() as string[]).join(' ')
-          : 'Something went wrong. Please try again.',
-    )
   }
 
   if (state === 'sent') {
@@ -75,7 +83,7 @@ export function ReportForm({ claimId, pagePath }: { claimId?: number; pagePath?:
         <label>Leave this empty<input tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} /></label>
       </div>
       {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
-      <button type="submit" disabled={state === 'sending'} className="rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white hover:bg-blue-800 disabled:opacity-50">
+      <button type="submit" disabled={state === 'sending'} className="min-h-11 rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white hover:bg-blue-800 disabled:opacity-50">
         {state === 'sending' ? 'Sending…' : 'Send report'}
       </button>
     </form>

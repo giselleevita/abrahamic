@@ -10,6 +10,9 @@ import { Badge } from '@/components/ui/Badge'
 import { TRADITION_BG } from '@/lib/constants'
 import { ScriptText } from '@/components/ui/ScriptText'
 import { verseAnchorId } from '@/lib/verse-links'
+import { preferredPublicTranslation } from '@/lib/public-demo-policy'
+import { filterVerseTranslations } from '@/lib/filter-public-translations'
+import Link from 'next/link'
 
 type LinkedVerse = Verse & {
   source: Source
@@ -43,6 +46,14 @@ export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture', ini
   // Collect all unique translation names and labels present in this chapter
   const allTranslations = verses.flatMap((v) => v.translations)
   const translationNames = Array.from(new Set(allTranslations.map((t) => t.name))).filter(Boolean)
+  const editionOptions = translationNames.map((name) => {
+    const editionRows = allTranslations.filter((translation) => translation.name === name)
+    return {
+      name,
+      isDefault: editionRows.some((translation) => translation.isDefault),
+      coverage: editionRows.filter((translation) => translation.text.trim().length > 0).length,
+    }
+  })
   const availableLabels = LABEL_ORDER.filter((label) =>
     allTranslations.some((t) => t.label === label)
   )
@@ -51,7 +62,8 @@ export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture', ini
   const [sessionPreferences, setSessionPreferences] = useState<typeof DEFAULT_READING | null>(null)
   const preferences = sessionPreferences ?? (initialEdition ? { ...storedPreferences, edition: initialEdition } : storedPreferences)
   const [preferenceMessage, setPreferenceMessage] = useState('')
-  const selectedTranslation = activeEdition(preferences.edition, allTranslations)
+  const selectedTranslation = activeEdition(preferences.edition, editionOptions)
+  const selectedCoverage = editionOptions.find((edition) => edition.name === selectedTranslation)?.coverage ?? 0
   function updatePreferences(next: typeof preferences) {
     const ok = save(next)
     setSessionPreferences(next)
@@ -132,7 +144,8 @@ export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture', ini
         )}
       </div>
 
-      <p className="mb-4 text-sm text-primary-700">{sideBySide ? 'Editions shown below each passage.' : `Edition: ${selectedTranslation}`} · {selectedTranslation === 'Reader note (original)' && !sideBySide ? 'Project explanation' : 'Source text'}</p>
+      <p className="mb-4 text-sm text-primary-700">{sideBySide ? 'Editions shown below each passage.' : `Edition: ${selectedTranslation}`} · {selectedTranslation === 'Reader note (original)' && !sideBySide ? 'Project explanation' : 'Source text'}{!sideBySide && selectedCoverage < verses.length ? ` · Text is unavailable for ${verses.length - selectedCoverage} verse${verses.length - selectedCoverage === 1 ? '' : 's'} in this chapter.` : ''}</p>
+      {!sideBySide && selectedCoverage === 0 && sourceSlug && <p className="mb-4 text-sm text-primary-700">This edition has no text in this chapter. <Link href={`/sources/${sourceSlug}`} className="editorial-link">Explore this source&rsquo;s available material</Link>.</p>}
       {/* Verse list */}
       <div className="verse-reading space-y-1" style={{ fontSize: `${preferences.size}px`, lineHeight: preferences.spacious ? 2.2 : 1.8 }}>
         {verses.map((verse) => {
@@ -162,18 +175,18 @@ export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture', ini
                         if (!t) return null
                         return (
                           <div key={name}>
-                            <span className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-stone-400">
-                              {LABEL_DISPLAY[t.label as LabelKey] ?? t.label} — {t.name}
+                            <span className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-primary-700">
+                              {t.name === 'Reader note (original)' ? 'Project explanation' : LABEL_DISPLAY[t.label as LabelKey] ?? t.label} — {t.name}
                             </span>
-                            <ScriptText text={t.text} className="verse-text text-[#242019]" />
+                            <ScriptText text={t.text || 'Text unavailable in this edition for this verse.'} className="verse-text text-[#242019]" />
                           </div>
                         )
                       })}
                     </div>
                   ) : (
                     <ScriptText
-                      text={
-                        verse.translations.find((t) => t.name === selectedTranslation)?.text ?? 'No text is available in this edition for this verse.'
+                        text={
+                        verse.translations.find((t) => t.name === selectedTranslation)?.text || 'Text unavailable in this edition. Choose another listed edition or return to the source library to explore other available material.'
                       }
                       className="verse-text text-[#242019]"
                     />
@@ -196,7 +209,7 @@ export function VerseReader({ verses, sourceSlug, sourceTitle = 'Scripture', ini
                   {isExpanded && allLinks.length > 0 && (
                     <div className="mt-3 space-y-2 border-l-2 border-stone-200 pl-3">
                       {allLinks.map((link) => {
-                        const linkedDefault = link.linkedVerse.translations[0]
+                        const linkedDefault = preferredPublicTranslation(filterVerseTranslations(link.linkedVerse.translations))
                         const trad = link.linkedVerse.source.tradition as keyof typeof TRADITION_BG
                         return (
                           <div key={link.id}>

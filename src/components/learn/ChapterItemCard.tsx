@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import type { ChapterItemType } from '@/generated/prisma/client'
 import { ScriptText } from '@/components/ui/ScriptText'
+import { preferredPublicTranslation } from '@/lib/public-demo-policy'
 
 /**
  * Renders one playlist entry, switching on the discriminator.
@@ -48,7 +49,7 @@ const KIND_STYLE: Record<ChapterItemType, string> = {
   VERSE: 'bg-[#dce8f2] text-[#173b68]',
 }
 
-function resolve(item: ItemShape): { href: string; title: string; description: string | null } | null {
+function resolve(item: ItemShape): { href: string; title: string; description: string | null; edition?: string; attribution?: string | null } | null {
   switch (item.itemType) {
     case 'CONCEPT':
       return item.concept && { href: `/concepts/${item.concept.slug}`, title: item.concept.name, description: item.concept.summary }
@@ -62,11 +63,13 @@ function resolve(item: ItemShape): { href: string; title: string; description: s
       return item.theme && { href: `/themes/${item.theme.slug}`, title: item.theme.name, description: item.theme.description }
     case 'VERSE': {
       if (!item.verse) return null
-      const translation = item.verse.translations.find((t) => t.name === 'World English Bible') ?? item.verse.translations[0]
+      const translation = preferredPublicTranslation(item.verse.translations)
       return {
         href: `/sources/${item.verse.source.key.toLowerCase().replaceAll('_', '-')}/read?book=${encodeURIComponent(item.verse.book)}&chapter=${item.verse.chapter}`,
         title: `${item.verse.book} ${item.verse.chapter}:${item.verse.verse}`,
         description: translation?.text ?? null,
+        edition: translation?.name,
+        attribution: translation?.attribution,
       }
     }
     default:
@@ -88,10 +91,11 @@ export function ChapterItemCard({ item }: { item: ItemShape }) {
         </p>
       )}
       <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${KIND_STYLE[item.itemType]}`}>
-        {KIND_LABEL[item.itemType]}
+        {item.itemType === 'VERSE' && resolved.edition === 'Reader note (original)' ? 'Project note' : KIND_LABEL[item.itemType]}
       </span>
       <h3 className="mt-2 text-lg font-bold text-[#242019]">{resolved.title}</h3>
-      {item.itemType === 'VERSE' && item.verse && <p className="mt-1 text-xs font-semibold text-[#655a4b]">{item.verse.source.title} · {item.verse.translations.find((t) => t.name === 'World English Bible')?.name ?? item.verse.translations[0]?.name ?? 'Source excerpt'}{item.verse.source.key === 'QURAN' ? '' : ` · ${item.verse.versification === 'MASORETIC' ? 'Masoretic' : 'Christian'} numbering`}</p>}
+      {item.itemType === 'VERSE' && item.verse && <p className="mt-1 text-xs font-semibold text-[#51483c]">{item.verse.source.title} · {resolved.edition === 'Reader note (original)' ? 'Project explanation · Reader note (original)' : resolved.edition ? `Edition: ${resolved.edition}${resolved.attribution ? ` · ${resolved.attribution}` : ''}` : 'No permitted excerpt is available'}{item.verse.source.key === 'QURAN' ? '' : ` · ${item.verse.versification === 'MASORETIC' ? 'Masoretic' : 'Christian'} numbering`}</p>}
+      {item.itemType === 'VERSE' && !resolved.description && <p className="mt-3 text-sm text-[#51483c]">No permitted excerpt is available here. Open the source to check its coverage.</p>}
       {resolved.description && (item.itemType === 'VERSE' ? <ScriptText text={resolved.description} className="mt-3 border-l-2 border-[#c9ad7e] pl-4 text-base leading-8 text-[#242019]" /> : <p className="mt-1 line-clamp-3 leading-7 text-[#51483c]">{resolved.description}</p>)}
       <Link
         href={resolved.href}

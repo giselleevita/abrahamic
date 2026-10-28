@@ -7,7 +7,7 @@ import { NOTES_KEY, READLIST_KEY, parseList, parseNotes, toggleListItem, upsertN
 const NO_NOTES: Note[] = []
 const NO_LIST: ListItem[] = []
 
-/** A private note and a reading-list toggle for the page you are on. Stored on this device only. */
+/** Private notes and a notebook reading list; quick saves live in the separate Saved collection. */
 export function NoteButton({ href, label }: { href: string; label: string }) {
   const notes = useDeviceStore(NOTES_KEY, NO_NOTES, parseNotes)
   const list = useDeviceStore(READLIST_KEY, NO_LIST, parseList)
@@ -29,10 +29,10 @@ export function NoteButton({ href, label }: { href: string; label: string }) {
       <h2 id="note-title" className="font-serif text-xl text-slate-950">Keep this page</h2>
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <button type="button" className="reading-action" onClick={open ? () => setOpen(false) : begin} aria-expanded={open}>📝 {existing ? 'Edit my note' : 'Add a private note'}</button>
-        <button type="button" className="reading-action" aria-pressed={inList} onClick={() => setMsg(list.save(toggleListItem(list.value, { href, label })) ? (inList ? 'Removed from your reading list.' : 'Added to your reading list.') : 'Could not save.')}>
-          {inList ? '✓ In my reading list' : '＋ Add to my reading list'}
+        <button type="button" className="reading-action" aria-pressed={inList} onClick={() => setMsg(list.save(toggleListItem(list.value, { href, label })) ? (inList ? 'Removed from your notebook reading list.' : 'Added to your notebook reading list.') : 'Could not save.')}>
+          {inList ? '✓ In notebook reading list' : '＋ Add to notebook reading list'}
         </button>
-        <a href="/notebook" className="text-sm font-bold text-[#173b68] hover:underline">Open my notebook →</a>
+        <a href="/notebook" className="min-h-11 inline-flex items-center text-sm font-bold text-[#173b68] hover:underline">Open notebook →</a>
       </div>
       {existing && !open && <p className="mt-3 whitespace-pre-line rounded-2xl bg-[#fbf6ec] p-4 text-slate-800">{existing.text}</p>}
       {open && (
@@ -46,7 +46,7 @@ export function NoteButton({ href, label }: { href: string; label: string }) {
         </div>
       )}
       <p role="status" className="mt-2 text-sm text-slate-700">{msg}</p>
-      <p className="mt-1 text-xs text-slate-600">Notes stay on this device. Nothing is sent anywhere.</p>
+      <p className="mt-1 text-xs text-slate-600">Notebook notes and reading lists stay on this device. For one-tap passage and comparison saves, use <a className="font-semibold underline" href="/saved">Saved</a>.</p>
     </section>
   )
 }

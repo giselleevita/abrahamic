@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="mt-20 border-t border-amber-200 bg-[#f3eadb]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/" className="text-lg font-serif font-bold text-slate-950">
@@ -34,7 +34,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm font-medium text-slate-700 hover:text-jewish-700 transition-colors"
+                      className="inline-flex min-h-11 items-center text-sm font-medium text-slate-700 hover:text-jewish-700 transition-colors"
                     >
                       {link.label}
                     </Link>
