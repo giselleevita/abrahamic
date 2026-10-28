@@ -89,7 +89,7 @@ const comparisonsData: ComparisonData[] = [
     claimStatements: [
       'The fourth commandment requires Israel to remember the Sabbath day and keep it holy, refraining from all work — because God rested on the seventh day.',
       'Jesus teaches that the Sabbath was created for the benefit of humanity — it exists to serve people, and the Son of Man is Lord even of the Sabbath.',
-      'The Quran commands believers to leave trade and hasten to the congregational prayer (Jumu\'ah) on Friday — Islam\'s weekly communal assembly replaces the Sabbath.',
+      'The Quran commands believers to leave trade and hasten to the congregational prayer (Jumu\'ah) on Friday — Islam\'s weekly day of communal assembly. Unlike the Sabbath, it does not require rest from work once the prayer is over (62:10).',
     ],
   },
   {
@@ -136,7 +136,7 @@ const comparisonsData: ComparisonData[] = [
       'Isaiah 53 is the most contested passage in all of Abrahamic scripture. Judaism reads the Servant as the nation of Israel — suffering in exile, rejected by the nations, eventually vindicated. Christianity reads it as a precise prophecy of Jesus\' crucifixion and atonement, fulfilled verse by verse: despised, rejected, pierced for our transgressions. Islam affirms Jesus as the Messiah honoured in both worlds — but denies his crucifixion entirely (Quran 4:157), making the Christian reading of Isaiah 53 as a death-and-atonement prophecy theologically irreconcilable with Islamic teaching. These three readings do not merely differ — they contradict each other on whether the Servant suffers, dies, and atones.',
     claimStatements: [
       'Isaiah describes the Servant of the LORD as despised, pierced for our transgressions and crushed for our iniquities — the LORD laid on him the iniquity of us all, and by his wounds we are healed.',
-      'The New Testament reads Isaiah\'s Suffering Servant as a direct prophecy of Jesus Christ — fulfilled in his rejection, crucifixion, and the healing of humanity through his atoning death.',
+      'The New Testament reads Isaiah\'s Suffering Servant as a prophecy of Jesus Christ — in Acts, Philip explains Isaiah 53 to an Ethiopian official as pointing to Jesus — understood as fulfilled in his rejection, crucifixion, and atoning death. Jewish tradition reads the Servant differently: Rashi and many medieval commentators take him to be the people of Israel, while some earlier rabbinic sources read the passage of the Messiah.',
       'The Quran honours Isa as the Messiah — a word from God, honoured in this world and the next, and among those brought near to God — but denies his crucifixion, making a suffering-servant reading of his death impossible within Islamic theology.',
     ],
   },
@@ -147,7 +147,7 @@ const comparisonsData: ComparisonData[] = [
     summary:
       'All three traditions use the word Messiah (Hebrew: Mashiach; Greek: Christos; Arabic: Al-Masih) — but they mean radically different things by it. Judaism awaits a human king from the line of David who will rebuild the Temple, gather the exiles, and usher in universal peace — criteria Jesus did not fulfill. Christianity teaches that Jesus is the Messiah who fulfilled the prophetic scriptures spiritually and will complete the remaining prophecies at his Second Coming. Islam affirms Jesus as al-Masih — a title of honour — but denies his divinity; a different messianic figure (the Mahdi) is awaited in Islamic eschatology. All three traditions expect a messianic resolution to history; none agree on who it is.',
     claimStatements: [
-      'Isaiah prophesies a child born to be king, bearing the names Wonderful Counsellor, Mighty God, Everlasting Father, Prince of Peace — his government and peace shall have no end, established on the throne of David.',
+      'Isaiah prophesies a child born to be king, bearing the names Wonderful Counsellor, Mighty God, Everlasting Father, Prince of Peace in the Christian rendering — his government and peace shall have no end, established on the throne of David. Jewish tradition reads the passage differently, for example as describing Hezekiah or as praising God, and translates the names differently.',
       'Peter confesses Jesus as the Messiah and Son of the living God; Jesus declares this a revelation from the Father, not a human insight — and on this confession he will build his church.',
       'The angels announce to Maryam that God gives her glad tidings of a Word from Him, whose name is the Messiah, Jesus son of Mary — honoured in this world and the next, and among those brought near to God.',
     ],
@@ -196,7 +196,7 @@ const comparisonsData: ComparisonData[] = [
     summary:
       'No single question divides the three Abrahamic traditions more sharply than whether Jesus died on the cross. For Christianity, the crucifixion is the central event of salvation history — the atoning death of God\'s Son for humanity\'s sin, verified by the resurrection. For Islam, the Quran explicitly denies it happened: it was made to appear so, but Jesus was raised alive to God. For Judaism, the crucifixion is historically affirmed (confirmed by Roman sources) but carries no theological significance, and the attribution of Jewish collective guilt for it fueled centuries of Christian antisemitism. Three traditions, three fundamentally irreconcilable positions.',
     claimStatements: [
-      'Jesus is declared to be the Christ, the Son of the living God — the first explicit apostolic confession of his divine messianic identity, which Jesus affirms as revealed by the Father in heaven.',
+      'Jesus is declared to be the Christ, the Son of the living God — Peter\'s confession of his messianic identity, which Jesus affirms as revealed by the Father in heaven.',
       'The Quran categorically denies that Jesus was killed or crucified — it was made to appear so — and affirms that God raised him up to Himself; those who dispute this have only conjecture and no certainty.',
     ],
   },
@@ -267,7 +267,7 @@ const comparisonsData: ComparisonData[] = [
     claimStatements: [
       'Paul instructs that he does not permit a woman to teach or exercise authority over a man — she is to remain quiet; this is the most cited text in debates about women\'s ordination and authority in the church.',
       'Paul writes that in Christ there is no male or female — all are equally heirs of the promise of Abraham; egalitarian Christians use this verse to argue for women\'s full equality in church ministry.',
-      'Men are declared to be in charge of (qawwamun) women by virtue of what God has given one over the other and because men provide for women from their wealth — the Quranic basis for male guardianship in Islamic law.',
+      'Men are declared to be in charge of (qawwamun) women by virtue of what God has given one over the other and because men provide for women from their wealth — pre-modern commentators generally read this as men\'s authority over women in marriage, though not uniformly, while many modern Muslim scholars read it differently, for example as men\'s duty of financial support.',
     ],
   },
   {
@@ -278,8 +278,8 @@ const comparisonsData: ComparisonData[] = [
       'Circumcision was given to Abraham as the physical sign of the covenant — an outward mark of belonging to God\'s people. Judaism has maintained it as a binding covenant obligation for 4,000 years; brit milah on the 8th day is the most universally observed Jewish ritual. Islam practices circumcision as obligatory sunnah of Ibrahim, universal among Muslim men. Christianity, through Paul\'s decisive intervention at the Jerusalem Council (Galatians 2; Acts 15), declared that circumcision is not required for Gentile Christians and that the "circumcision that counts" is of the heart — the New Covenant replaces the physical sign with baptism. This is one of the clearest examples of Christianity breaking from its Jewish roots.',
     claimStatements: [
       'God commands Abraham that every male in his household must be circumcised as the sign of the covenant — this is the foundational commandment of brit milah, observed by Jews on the 8th day of a male child\'s life.',
-      'Paul argues that true circumcision is of the heart, by the Spirit — the physical circumcision of the flesh is not required for Gentile Christians, and those who insist on it are mutilating themselves.',
-      'The Quran commands believers to follow the religion of Ibrahim as a hanif (pure monotheist), the same Ibrahim whom God chose as a close friend — Islamic tradition understands this to include circumcision as part of the fitra (natural human state).',
+      'Paul argues that a person is a true Jew inwardly, and that true circumcision is of the heart, by the Spirit rather than by the letter — outward circumcision of the flesh is not what makes someone one of God\'s people.',
+      'The Quran calls believers to follow the religion of Ibrahim as a hanif (pure monotheist) and says God took Ibrahim as a close friend; circumcision is not mentioned in the Quran, but Islamic tradition, drawing on the hadith, counts it among the practices of the fitra (natural human state), though jurists differ on whether it is obligatory.',
     ],
   },
   {
@@ -337,7 +337,7 @@ const comparisonsData: ComparisonData[] = [
     summary:
       'The Book of Enoch (1 Enoch) is one of the most fascinating texts in Abrahamic history — a 2nd–1st century BCE Jewish apocalyptic work that was enormously influential in its time but whose canonical status diverges sharply across traditions. It describes Enoch\'s journey through the heavens, the fall of the Watchers (angels who mated with human women), the origin of demons, cosmic geography, and detailed prophecies of judgment. Mainstream Judaism excluded it from the Tanakh — though it profoundly influenced Jewish apocalypticism and mysticism. Early Christianity was split: Jude 1:14–15 quotes it as prophecy, and many early Church Fathers treated it as scripture, but it was ultimately excluded from most Christian canons. The Ethiopian Orthodox Church alone preserves 1 Enoch as canonical scripture to this day. Islam does not reference the Book of Enoch but honours Idris as a prophet of knowledge and writing — and Islamic commentators associate him with the transmission of heavenly wisdom, echoing Enochic themes.',
     claimStatements: [
-      'Jude quotes directly from the Book of Enoch: "Enoch, the seventh from Adam, prophesied, saying, Behold, the Lord cometh with ten thousands of his saints" — the only New Testament citation of an apocryphal text attributed to Enoch, giving the Book of Enoch apostolic weight.',
+      'Jude quotes a prophecy attributed to Enoch: "Enoch, the seventh from Adam, prophesied, saying, Behold, the Lord cometh with ten thousands of his saints" — a passage also found in the Book of Enoch, and the only New Testament quotation of a text attributed to Enoch. Whether this gives that book authority is disputed: most Christian traditions do not treat it as scripture, while the Ethiopian and Eritrean Orthodox churches do.',
       'Enoch walked with God for 365 years, and then "was not, for God took him" — the Torah\'s terse account of the first human being taken to heaven without dying, a phrase that generated an enormous body of apocalyptic and mystical literature in all three traditions.',
       'Idris is listed alongside Ishmael and Dhul-Kifl among "the patient" — prophets praised for constancy and perseverance — confirming his status as a major prophetic figure in the Quranic tradition.',
     ],

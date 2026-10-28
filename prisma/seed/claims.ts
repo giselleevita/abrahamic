@@ -176,7 +176,7 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'QURAN',
-    statement: 'The Quran commands believers to leave trade and hasten to the congregational prayer (Jumu\'ah) on Friday — Islam\'s weekly communal assembly replaces the Sabbath.',
+    statement: 'The Quran commands believers to leave trade and hasten to the congregational prayer (Jumu\'ah) on Friday — Islam\'s weekly day of communal assembly. Unlike the Sabbath, it does not require rest from work once the prayer is over (62:10).',
     verseRefs: ['QURAN.Al-Jumua.62.9'],
     themeSlugs: ['prayer', 'law'],
   },
@@ -276,8 +276,8 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'NEW_TESTAMENT',
-    statement: 'The New Testament reads Isaiah\'s Suffering Servant as a direct prophecy of Jesus Christ — fulfilled in his rejection, crucifixion, and the healing of humanity through his atoning death.',
-    verseRefs: ['NEW_TESTAMENT.Matthew.16.16'],
+    statement: 'The New Testament reads Isaiah\'s Suffering Servant as a prophecy of Jesus Christ — in Acts, Philip explains Isaiah 53 to an Ethiopian official as pointing to Jesus — understood as fulfilled in his rejection, crucifixion, and atoning death. Jewish tradition reads the Servant differently: Rashi and many medieval commentators take him to be the people of Israel, while some earlier rabbinic sources read the passage of the Messiah.',
+    verseRefs: ['NEW_TESTAMENT.Acts.8.32', 'NEW_TESTAMENT.Acts.8.35'],
     figureSlugs: ['jesus'],
     themeSlugs: ['prophecy'],
   },
@@ -292,7 +292,7 @@ const claimsData: ClaimData[] = [
   // ── The Messiah ───────────────────────────────────────────────────────────
   {
     sourceKey: 'HEBREW_BIBLE',
-    statement: 'Isaiah prophesies a child born to be king, bearing the names Wonderful Counsellor, Mighty God, Everlasting Father, Prince of Peace — his government and peace shall have no end, established on the throne of David.',
+    statement: 'Isaiah prophesies a child born to be king, bearing the names Wonderful Counsellor, Mighty God, Everlasting Father, Prince of Peace in the Christian rendering — his government and peace shall have no end, established on the throne of David. Jewish tradition reads the passage differently, for example as describing Hezekiah or as praising God, and translates the names differently.',
     verseRefs: ['HEBREW_BIBLE.Isaiah.9.6'],
     themeSlugs: ['prophecy'],
   },
@@ -385,7 +385,7 @@ const claimsData: ClaimData[] = [
   {
     sourceKey: 'NEW_TESTAMENT',
     statement: 'Peter uses the days of Noah and the ark as a type of Christian salvation through baptism — as eight people were saved through water, so baptism now saves believers through the resurrection of Jesus Christ.',
-    verseRefs: ['NEW_TESTAMENT.Matthew.24.2'],
+    verseRefs: ['NEW_TESTAMENT.1 Peter.3.20', 'NEW_TESTAMENT.1 Peter.3.21'],
     figureSlugs: ['noah', 'jesus'],
     themeSlugs: ['salvation', 'judgment'],
   },
@@ -407,15 +407,15 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'NEW_TESTAMENT',
-    statement: 'Paul argues that true circumcision is of the heart, by the Spirit — the physical circumcision of the flesh is not required for Gentile Christians, and those who insist on it are mutilating themselves.',
-    verseRefs: ['NEW_TESTAMENT.Romans.3.28'],
+    statement: 'Paul argues that a person is a true Jew inwardly, and that true circumcision is of the heart, by the Spirit rather than by the letter — outward circumcision of the flesh is not what makes someone one of God\'s people.',
+    verseRefs: ['NEW_TESTAMENT.Romans.2.28', 'NEW_TESTAMENT.Romans.2.29'],
     figureSlugs: ['abraham'],
     themeSlugs: ['law', 'salvation'],
   },
   {
     sourceKey: 'QURAN',
-    statement: 'The Quran commands believers to follow the religion of Ibrahim as a hanif (pure monotheist), the same Ibrahim whom God chose as a close friend — Islamic tradition understands this to include circumcision as part of the fitra (natural human state).',
-    verseRefs: ['QURAN.Al-Baqarah.2.177'],
+    statement: 'The Quran calls believers to follow the religion of Ibrahim as a hanif (pure monotheist) and says God took Ibrahim as a close friend; circumcision is not mentioned in the Quran, but Islamic tradition, drawing on the hadith, counts it among the practices of the fitra (natural human state), though jurists differ on whether it is obligatory.',
+    verseRefs: ['QURAN.Al-Baqarah.2.135', 'QURAN.An-Nisa.4.125'],
     figureSlugs: ['abraham', 'muhammad'],
     themeSlugs: ['law'],
   },
@@ -423,8 +423,8 @@ const claimsData: ClaimData[] = [
   // ── Trinity / Crucifixion ─────────────────────────────────────────────────
   {
     sourceKey: 'NEW_TESTAMENT',
-    statement: 'Jesus dies on the cross crying "My God, my God, why have you forsaken me?" — quoting Psalm 22:1 — and gives up his spirit; his death is the atoning sacrifice for the sins of all humanity, confirmed by the resurrection three days later.',
-    verseRefs: ['NEW_TESTAMENT.Matthew.24.2'],
+    statement: 'Jesus dies on the cross crying "My God, my God, why have you forsaken me?" — quoting Psalm 22:1 — and gives up his spirit; Christians understand his death as the atoning sacrifice for the sins of all humanity, confirmed by the resurrection three days later.',
+    verseRefs: ['NEW_TESTAMENT.Matthew.27.46'],
     figureSlugs: ['jesus'],
     themeSlugs: ['salvation', 'judgment'],
   },
@@ -437,7 +437,7 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'NEW_TESTAMENT',
-    statement: 'Jesus is declared to be the Christ, the Son of the living God — the first explicit apostolic confession of his divine messianic identity, which Jesus affirms as revealed by the Father in heaven.',
+    statement: 'Jesus is declared to be the Christ, the Son of the living God — Peter\'s confession of his messianic identity, which Jesus affirms as revealed by the Father in heaven.',
     verseRefs: ['NEW_TESTAMENT.Matthew.16.16'],
     figureSlugs: ['jesus'],
     themeSlugs: ['god', 'prophecy'],
@@ -517,7 +517,7 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'QURAN',
-    statement: 'Men are declared to be in charge of (qawwamun) women by virtue of what God has given one over the other and because men provide for women from their wealth — the Quranic basis for male guardianship in Islamic law.',
+    statement: 'Men are declared to be in charge of (qawwamun) women by virtue of what God has given one over the other and because men provide for women from their wealth — pre-modern commentators generally read this as men\'s authority over women in marriage, though not uniformly, while many modern Muslim scholars read it differently, for example as men\'s duty of financial support.',
     verseRefs: ['QURAN.An-Nisa.4.34'],
     themeSlugs: ['law', 'ethics'],
   },
@@ -531,7 +531,7 @@ const claimsData: ClaimData[] = [
   // ── Holy War / Jihad ──────────────────────────────────────────────────────
   {
     sourceKey: 'QURAN',
-    statement: 'The Quran permits fighting those who fight you in the way of God, but prohibits transgressing limits — God does not love those who go beyond what is necessary; this establishes the foundational Quranic principle of defensive jihad.',
+    statement: 'The Quran permits fighting those who fight you in the way of God, but prohibits transgressing limits — God does not love those who go beyond what is necessary; many scholars read this verse as setting the limits of defensive warfare, while others read it differently.',
     verseRefs: ['QURAN.Al-Baqarah.2.190'],
     themeSlugs: ['law', 'holy-war'],
   },
@@ -569,7 +569,7 @@ const claimsData: ClaimData[] = [
   // ── Ezra / Uzayr ─────────────────────────────────────────────────────────
   {
     sourceKey: 'QURAN',
-    statement: 'The Quran states that the Jews call Uzair (Ezra) the son of God, just as Christians call the Messiah the son of God — both claims are rejected as distortions; the curse is upon those who say this.',
+    statement: 'The Quran states that the Jews say Uzair (Ezra) is the son of God, just as the Christians say of the Messiah, and it rejects both statements. Classical commentators generally take this to refer to some Jews of Arabia rather than to Jews in general, and Jewish tradition does not teach it.',
     verseRefs: ['QURAN.At-Tawbah.9.30'],
     figureSlugs: ['ezra'],
     themeSlugs: ['god'],
@@ -608,7 +608,7 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'NEW_TESTAMENT',
-    statement: 'Jude quotes directly from the Book of Enoch: "Enoch, the seventh from Adam, prophesied, saying, Behold, the Lord cometh with ten thousands of his saints" — the only New Testament citation of an apocryphal text attributed to Enoch, giving the Book of Enoch apostolic weight.',
+    statement: 'Jude quotes a prophecy attributed to Enoch: "Enoch, the seventh from Adam, prophesied, saying, Behold, the Lord cometh with ten thousands of his saints" — a passage also found in the Book of Enoch, and the only New Testament quotation of a text attributed to Enoch. Whether this gives that book authority is disputed: most Christian traditions do not treat it as scripture, while the Ethiopian and Eritrean Orthodox churches do.',
     verseRefs: ['NEW_TESTAMENT.Jude.1.14'],
     figureSlugs: ['enoch'],
     themeSlugs: ['prophecy', 'judgment'],
@@ -677,7 +677,9 @@ export async function seedClaims(prisma: PrismaClient) {
 
     // Link verses (first is primary)
     for (let i = 0; i < c.verseRefs.length; i++) {
-      const verseId = verseMap.get(c.verseRefs[i])
+      // Imported corpus rows are keyed "Book.chapter.verse"; the small demo set is prefixed with the source key.
+      const ref = c.verseRefs[i]
+      const verseId = verseMap.get(ref) ?? verseMap.get(ref.replace(/^[A-Z_]+\./, ''))
       if (!verseId) {
         console.warn(`  ⚠ Verse not found: ${c.verseRefs[i]}`)
         continue
