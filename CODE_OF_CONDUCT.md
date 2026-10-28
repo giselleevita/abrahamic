@@ -24,7 +24,7 @@ Not acceptable:
 
 ## Enforcement
 
-Instances of unacceptable behavior may be reported to yusaftareen@gmail.com. Reports will be reviewed and addressed as appropriate to the circumstances — from a private word to removal from the project. Maintainers will respect the reporter's confidentiality.
+Instances of unacceptable behavior may be reported to giselle.evita@gmail.com. Reports will be reviewed and addressed as appropriate to the circumstances — from a private word to removal from the project. Maintainers will respect the reporter's confidentiality.
 
 ## Scope
 

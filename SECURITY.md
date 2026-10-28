@@ -4,7 +4,7 @@
 
 Please **do not** open a public GitHub issue for a security vulnerability.
 
-Instead, report it privately via [GitHub Security Advisories](../../security/advisories/new) for this repository, or email the maintainer directly at yusaftareen@gmail.com with:
+Instead, report it privately via [GitHub Security Advisories](../../security/advisories/new) for this repository, or email the maintainer directly at giselle.evita@gmail.com with:
 
 - A description of the issue and its potential impact
 - Steps to reproduce (a minimal repro is ideal)
