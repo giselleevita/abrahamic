@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 15
     env:
       # Must be >= the Postgres major version of the Neon project.
-      PG_MAJOR: '17'
+      PG_MAJOR: '18'
     steps:
       - name: Check secrets are configured
         env:
