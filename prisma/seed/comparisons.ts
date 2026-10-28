@@ -136,7 +136,7 @@ const comparisonsData: ComparisonData[] = [
       'Isaiah 53 is the most contested passage in all of Abrahamic scripture. Judaism reads the Servant as the nation of Israel — suffering in exile, rejected by the nations, eventually vindicated. Christianity reads it as a precise prophecy of Jesus\' crucifixion and atonement, fulfilled verse by verse: despised, rejected, pierced for our transgressions. Islam affirms Jesus as the Messiah honoured in both worlds — but denies his crucifixion entirely (Quran 4:157), making the Christian reading of Isaiah 53 as a death-and-atonement prophecy theologically irreconcilable with Islamic teaching. These three readings do not merely differ — they contradict each other on whether the Servant suffers, dies, and atones.',
     claimStatements: [
       'Isaiah describes the Servant of the LORD as despised, pierced for our transgressions and crushed for our iniquities — the LORD laid on him the iniquity of us all, and by his wounds we are healed.',
-      'The New Testament reads Isaiah\'s Suffering Servant as a prophecy of Jesus Christ — in Acts, Philip explains Isaiah 53 to an Ethiopian official as pointing to Jesus — understood as fulfilled in his rejection, crucifixion, and atoning death. Jewish tradition reads the Servant differently, most often as Israel.',
+      'The New Testament reads Isaiah\'s Suffering Servant as a prophecy of Jesus Christ — in Acts, Philip explains Isaiah 53 to an Ethiopian official as pointing to Jesus — understood as fulfilled in his rejection, crucifixion, and atoning death. Jewish tradition reads the Servant differently: Rashi and many medieval commentators take him to be the people of Israel, while some earlier rabbinic sources read the passage of the Messiah.',
       'The Quran honours Isa as the Messiah — a word from God, honoured in this world and the next, and among those brought near to God — but denies his crucifixion, making a suffering-servant reading of his death impossible within Islamic theology.',
     ],
   },
@@ -267,7 +267,7 @@ const comparisonsData: ComparisonData[] = [
     claimStatements: [
       'Paul instructs that he does not permit a woman to teach or exercise authority over a man — she is to remain quiet; this is the most cited text in debates about women\'s ordination and authority in the church.',
       'Paul writes that in Christ there is no male or female — all are equally heirs of the promise of Abraham; egalitarian Christians use this verse to argue for women\'s full equality in church ministry.',
-      'Men are declared to be in charge of (qawwamun) women by virtue of what God has given one over the other and because men provide for women from their wealth — classical commentators take this as male guardianship, while many modern Muslim scholars read qawwamun as financial responsibility and support rather than authority.',
+      'Men are declared to be in charge of (qawwamun) women by virtue of what God has given one over the other and because men provide for women from their wealth — pre-modern commentators generally read this as men\'s authority over women in marriage, though not uniformly, while many modern Muslim scholars read it differently, for example as men\'s duty of financial support.',
     ],
   },
   {
@@ -279,7 +279,7 @@ const comparisonsData: ComparisonData[] = [
     claimStatements: [
       'God commands Abraham that every male in his household must be circumcised as the sign of the covenant — this is the foundational commandment of brit milah, observed by Jews on the 8th day of a male child\'s life.',
       'Paul argues that a person is a true Jew inwardly, and that true circumcision is of the heart, by the Spirit rather than by the letter — outward circumcision of the flesh is not what makes someone one of God\'s people.',
-      'The Quran calls believers to follow the religion of Ibrahim as a hanif (pure monotheist) and says God took Ibrahim as a close friend; circumcision is not mentioned in the Quran, but Islamic tradition, drawing on the hadith, counts it among the practices of the fitra (natural human state).',
+      'The Quran calls believers to follow the religion of Ibrahim as a hanif (pure monotheist) and says God took Ibrahim as a close friend; circumcision is not mentioned in the Quran, but Islamic tradition, drawing on the hadith, counts it among the practices of the fitra (natural human state), though jurists differ on whether it is obligatory.',
     ],
   },
   {
@@ -337,7 +337,7 @@ const comparisonsData: ComparisonData[] = [
     summary:
       'The Book of Enoch (1 Enoch) is one of the most fascinating texts in Abrahamic history — a 2nd–1st century BCE Jewish apocalyptic work that was enormously influential in its time but whose canonical status diverges sharply across traditions. It describes Enoch\'s journey through the heavens, the fall of the Watchers (angels who mated with human women), the origin of demons, cosmic geography, and detailed prophecies of judgment. Mainstream Judaism excluded it from the Tanakh — though it profoundly influenced Jewish apocalypticism and mysticism. Early Christianity was split: Jude 1:14–15 quotes it as prophecy, and many early Church Fathers treated it as scripture, but it was ultimately excluded from most Christian canons. The Ethiopian Orthodox Church alone preserves 1 Enoch as canonical scripture to this day. Islam does not reference the Book of Enoch but honours Idris as a prophet of knowledge and writing — and Islamic commentators associate him with the transmission of heavenly wisdom, echoing Enochic themes.',
     claimStatements: [
-      'Jude quotes a prophecy attributed to Enoch: "Enoch, the seventh from Adam, prophesied, saying, Behold, the Lord cometh with ten thousands of his saints" — a passage also found in the Book of Enoch, and the only New Testament quotation of a text attributed to Enoch. Whether this gives that book authority is disputed: most Christian traditions do not treat it as scripture, while the Ethiopian Orthodox churches do.',
+      'Jude quotes a prophecy attributed to Enoch: "Enoch, the seventh from Adam, prophesied, saying, Behold, the Lord cometh with ten thousands of his saints" — a passage also found in the Book of Enoch, and the only New Testament quotation of a text attributed to Enoch. Whether this gives that book authority is disputed: most Christian traditions do not treat it as scripture, while the Ethiopian and Eritrean Orthodox churches do.',
       'Enoch walked with God for 365 years, and then "was not, for God took him" — the Torah\'s terse account of the first human being taken to heaven without dying, a phrase that generated an enormous body of apocalyptic and mystical literature in all three traditions.',
       'Idris is listed alongside Ishmael and Dhul-Kifl among "the patient" — prophets praised for constancy and perseverance — confirming his status as a major prophetic figure in the Quranic tradition.',
     ],

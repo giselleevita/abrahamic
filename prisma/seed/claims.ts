@@ -276,7 +276,7 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'NEW_TESTAMENT',
-    statement: 'The New Testament reads Isaiah\'s Suffering Servant as a prophecy of Jesus Christ — in Acts, Philip explains Isaiah 53 to an Ethiopian official as pointing to Jesus — understood as fulfilled in his rejection, crucifixion, and atoning death. Jewish tradition reads the Servant differently, most often as Israel.',
+    statement: 'The New Testament reads Isaiah\'s Suffering Servant as a prophecy of Jesus Christ — in Acts, Philip explains Isaiah 53 to an Ethiopian official as pointing to Jesus — understood as fulfilled in his rejection, crucifixion, and atoning death. Jewish tradition reads the Servant differently: Rashi and many medieval commentators take him to be the people of Israel, while some earlier rabbinic sources read the passage of the Messiah.',
     verseRefs: ['NEW_TESTAMENT.Acts.8.32', 'NEW_TESTAMENT.Acts.8.35'],
     figureSlugs: ['jesus'],
     themeSlugs: ['prophecy'],
@@ -414,7 +414,7 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'QURAN',
-    statement: 'The Quran calls believers to follow the religion of Ibrahim as a hanif (pure monotheist) and says God took Ibrahim as a close friend; circumcision is not mentioned in the Quran, but Islamic tradition, drawing on the hadith, counts it among the practices of the fitra (natural human state).',
+    statement: 'The Quran calls believers to follow the religion of Ibrahim as a hanif (pure monotheist) and says God took Ibrahim as a close friend; circumcision is not mentioned in the Quran, but Islamic tradition, drawing on the hadith, counts it among the practices of the fitra (natural human state), though jurists differ on whether it is obligatory.',
     verseRefs: ['QURAN.Al-Baqarah.2.135', 'QURAN.An-Nisa.4.125'],
     figureSlugs: ['abraham', 'muhammad'],
     themeSlugs: ['law'],
@@ -517,7 +517,7 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'QURAN',
-    statement: 'Men are declared to be in charge of (qawwamun) women by virtue of what God has given one over the other and because men provide for women from their wealth — classical commentators take this as male guardianship, while many modern Muslim scholars read qawwamun as financial responsibility and support rather than authority.',
+    statement: 'Men are declared to be in charge of (qawwamun) women by virtue of what God has given one over the other and because men provide for women from their wealth — pre-modern commentators generally read this as men\'s authority over women in marriage, though not uniformly, while many modern Muslim scholars read it differently, for example as men\'s duty of financial support.',
     verseRefs: ['QURAN.An-Nisa.4.34'],
     themeSlugs: ['law', 'ethics'],
   },
@@ -569,7 +569,7 @@ const claimsData: ClaimData[] = [
   // ── Ezra / Uzayr ─────────────────────────────────────────────────────────
   {
     sourceKey: 'QURAN',
-    statement: 'The Quran states that the Jews say Uzair (Ezra) is the son of God, just as the Christians say of the Messiah, and it rejects both statements. Jewish tradition does not teach this, and Muslim commentators differ on whom the verse describes.',
+    statement: 'The Quran states that the Jews say Uzair (Ezra) is the son of God, just as the Christians say of the Messiah, and it rejects both statements. Classical commentators generally take this to refer to some Jews of Arabia rather than to Jews in general, and Jewish tradition does not teach it.',
     verseRefs: ['QURAN.At-Tawbah.9.30'],
     figureSlugs: ['ezra'],
     themeSlugs: ['god'],
@@ -608,7 +608,7 @@ const claimsData: ClaimData[] = [
   },
   {
     sourceKey: 'NEW_TESTAMENT',
-    statement: 'Jude quotes a prophecy attributed to Enoch: "Enoch, the seventh from Adam, prophesied, saying, Behold, the Lord cometh with ten thousands of his saints" — a passage also found in the Book of Enoch, and the only New Testament quotation of a text attributed to Enoch. Whether this gives that book authority is disputed: most Christian traditions do not treat it as scripture, while the Ethiopian Orthodox churches do.',
+    statement: 'Jude quotes a prophecy attributed to Enoch: "Enoch, the seventh from Adam, prophesied, saying, Behold, the Lord cometh with ten thousands of his saints" — a passage also found in the Book of Enoch, and the only New Testament quotation of a text attributed to Enoch. Whether this gives that book authority is disputed: most Christian traditions do not treat it as scripture, while the Ethiopian and Eritrean Orthodox churches do.',
     verseRefs: ['NEW_TESTAMENT.Jude.1.14'],
     figureSlugs: ['enoch'],
     themeSlugs: ['prophecy', 'judgment'],
