@@ -49,7 +49,7 @@ jobs:
             --symmetric --cipher-algo AES256 --output "backup-$(date -u +%Y%m%d).dump.gpg" backup.dump
           rm -f backup.dump
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: abrahamic-db-backup
           path: backup-*.dump.gpg
